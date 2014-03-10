@@ -13,6 +13,6 @@ public interface FooClient extends FooClientExtention {
 
 	JsonResponse<GetFooResponse> getFoo(GetFooParam params);
 	
-	JsonResponse<DeleteFooResponse> deleteFoo(String meetingId);
+	JsonResponse<DeleteFooResponse> deleteFoo(String id);
 
 }
