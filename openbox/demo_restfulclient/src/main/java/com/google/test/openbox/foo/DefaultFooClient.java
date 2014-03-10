@@ -77,8 +77,8 @@ public class DefaultFooClient extends AbstractFooClient {
 	}
 
 	@Override
-	public JsonResponse<DeleteFooResponse> deleteFoo(String meetingId) {
-		DeleteFooRequest request = new DeleteFooRequest(url, version, meetingId);
+	public JsonResponse<DeleteFooResponse> deleteFoo(String id) {
+		DeleteFooRequest request = new DeleteFooRequest(url, version, id);
 
 		HttpExecutor<JsonResponse<DeleteFooResponse>> httpExecutor = new DefaultHttpExecutor<JsonResponse<DeleteFooResponse>>(
 				getHttpClient(), request,
