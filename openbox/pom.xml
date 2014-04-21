@@ -14,6 +14,21 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<distributionManagement>
+		<repository>
+			<id>openbox-google-code-repo</id>
+			<name>Google Code Repo for OpenBox (releases)</name>
+			<url>dav:https://openbox.googlecode.com/svn/maven-repo/releases</url>
+			<uniqueVersion>false</uniqueVersion>
+		</repository>
+		<snapshotRepository>
+			<id>openbox-google-code-snapshot</id>
+			<name>Google Code Repo OpenBox (snapshots)</name>
+			<url>dav:https://openbox.googlecode.com/svn/maven-repo/snapshots</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -29,7 +44,7 @@
 	<build>
 		<directory>target</directory>
 		<outputDirectory>target/classes</outputDirectory>
-		<finalName>${artifactId}-${version}</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
@@ -80,6 +95,13 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
 	</build>
 	<modules>
 		<module>common</module>
@@ -94,7 +116,6 @@
 		<module>log</module>
 		<module>maventools</module>
 		<module>demo_restfulclient</module>
-		<module>demo_testcases</module>
 		<module>demo_performancetest</module>
 	</modules>
 </project>
