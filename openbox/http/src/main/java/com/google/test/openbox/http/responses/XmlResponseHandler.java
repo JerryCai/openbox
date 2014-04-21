@@ -9,6 +9,15 @@ import com.google.test.openbox.http.AbstractResponseHandler;
 
 public class XmlResponseHandler extends AbstractResponseHandler<XmlResponse> {
 
+	private static final XmlResponseHandler instance = new XmlResponseHandler();
+
+	private XmlResponseHandler() {
+	}
+
+	public static final XmlResponseHandler getInstance() {
+		return instance;
+	}
+
 	@Override
 	public XmlResponse handleResponse(HttpResponse response)
 			throws ClientProtocolException, IOException {

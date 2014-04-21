@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.http.Consts;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
@@ -70,6 +71,11 @@ public abstract class AbstractRequestBuilder implements RequestBuilder {
 	}
 
 	@Override
+	public RequestConfig getRequestConfig() {
+		return null;
+	}
+
+	@Override
 	public List<NameValuePair> getHeaders() {
 		return headers;
 	}
@@ -83,20 +89,19 @@ public abstract class AbstractRequestBuilder implements RequestBuilder {
 		if (null == headers) {
 			headers = new LinkedList<NameValuePair>();
 		}
-		add(headers,name,value);
+		add(headers, name, value);
 	}
 
 	public void setHeader(String name, String value) {
 		if (null == headers) {
 			headers = new LinkedList<NameValuePair>();
 		}
-		set(headers,name,value);
+		set(headers, name, value);
 	}
 
 	public void removeHeader(String name) {
 		remove(headers, name);
 	}
-
 
 	protected void add(List<NameValuePair> list, String name, String value) {
 		list.add(new BasicNameValuePair(name, value));

@@ -4,6 +4,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.logging.log4j.LogManager;
@@ -48,6 +49,10 @@ public final class RequestConverter {
 					request);
 		}
 
+		RequestConfig config = request.getRequestConfig();
+		if (null != config) {
+			httpRequestBase.setConfig(config);
+		}
 		return httpRequestBase;
 	}
 

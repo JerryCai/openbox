@@ -10,6 +10,15 @@ import com.google.test.openbox.http.AbstractResponseHandler;
 public class StringResponseHandler extends
 		AbstractResponseHandler<StringResponse> {
 
+	private static final StringResponseHandler instance = new StringResponseHandler();
+
+	private StringResponseHandler() {
+	}
+
+	public static final StringResponseHandler getInstance() {
+		return instance;
+	}
+
 	@Override
 	public StringResponse handleResponse(HttpResponse response)
 			throws ClientProtocolException, IOException {
