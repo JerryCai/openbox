@@ -7,7 +7,7 @@
 		<version>1.0.0</version>
 	</parent>
 	<artifactId>demo_performancetest</artifactId>
-	<name>performance</name>
+	<name>Demo Performance</name>
 	<description>Request Performance  Test</description>
 
 	<dependencies>
