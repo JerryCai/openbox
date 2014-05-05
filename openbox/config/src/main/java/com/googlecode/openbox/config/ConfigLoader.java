@@ -1,4 +1,4 @@
-package com.google.test.openbox.config;
+package com.googlecode.openbox.config;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +8,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.test.openbox.common.IOUtils;
+import com.googlecode.openbox.common.IOUtils;
 
 public class ConfigLoader {
 	private static final Logger logger = LogManager.getLogger();

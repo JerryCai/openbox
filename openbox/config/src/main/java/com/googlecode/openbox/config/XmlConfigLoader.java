@@ -1,12 +1,12 @@
-package com.google.test.openbox.config;
+package com.googlecode.openbox.config;
 
 import java.io.InputStream;
 import java.util.Map;
 
 import org.dom4j.Document;
 
-import com.google.test.openbox.common.IOUtils;
-import com.google.test.openbox.common.XmlUtils;
+import com.googlecode.openbox.common.IOUtils;
+import com.googlecode.openbox.common.XmlUtils;
 
 public class XmlConfigLoader {
 

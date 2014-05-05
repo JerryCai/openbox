@@ -1,10 +1,10 @@
-package com.google.test.openbox.config;
+package com.googlecode.openbox.config;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.test.openbox.common.IOUtils;
+import com.googlecode.openbox.common.IOUtils;
 
 public class ContentLoader {
 

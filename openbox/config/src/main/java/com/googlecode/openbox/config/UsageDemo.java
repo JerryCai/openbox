@@ -1,4 +1,4 @@
-package com.google.test.openbox.config;
+package com.googlecode.openbox.config;
 
 interface DemoConfig{
 	
