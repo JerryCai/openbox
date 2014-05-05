@@ -1,4 +1,4 @@
-package com.google.test.openbox.log;
+package com.googlecode.openbox.log;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;

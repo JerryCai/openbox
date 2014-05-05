@@ -6,7 +6,7 @@
     <version>1.0.0</version>
   </parent>
   <artifactId>log</artifactId>
-  <name>log</name>
+  <name>Log</name>
   <description>TestNG log4j2 appender</description>
   
   	<dependencies>
