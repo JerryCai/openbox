@@ -1,10 +1,10 @@
-package com.google.test.openbox.demo.performance.client;
+package com.googlecode.openbox.demo.performance.client;
 
 
-import com.google.test.openbox.demo.performance.requests.DemoProxyRequestParam;
-import com.google.test.openbox.http.GsonFactory;
-import com.google.test.openbox.http.httpbuilder.HttpBuilder;
-import com.google.test.openbox.http.httpbuilder.HttpBuilder.Response;
+import com.googlecode.openbox.demo.performance.requests.DemoProxyRequestParam;
+import com.googlecode.openbox.http.GsonFactory;
+import com.googlecode.openbox.http.httpbuilder.HttpBuilder;
+import com.googlecode.openbox.http.httpbuilder.HttpBuilder.Response;
 
 public class DemoProxyRequestByBuilder {
 	public static final String HEADERNAME_DCNAME = "DCName";

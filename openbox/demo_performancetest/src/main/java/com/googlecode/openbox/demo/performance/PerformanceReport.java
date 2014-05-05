@@ -1,4 +1,4 @@
-package com.google.test.openbox.demo.performance;
+package com.googlecode.openbox.demo.performance;
 
 public interface PerformanceReport {
 

@@ -1,4 +1,4 @@
-package com.google.test.openbox.demo.performance;
+package com.googlecode.openbox.demo.performance;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -10,9 +10,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.test.openbox.demo.performance.requests.DemoProxyRequestParam;
-import com.google.test.openbox.http.TimeLine;
-import com.google.test.openbox.http.monitors.CyclicBarrierMonitor;
+import com.googlecode.openbox.demo.performance.requests.DemoProxyRequestParam;
+import com.googlecode.openbox.http.TimeLine;
+import com.googlecode.openbox.http.monitors.CyclicBarrierMonitor;
 
 public abstract class AbstractRequestSender implements RequestSender {
 	private static final Logger logger = LogManager.getLogger();

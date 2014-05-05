@@ -1,4 +1,4 @@
-package com.google.test.openbox.demo.performance.requests;
+package com.googlecode.openbox.demo.performance.requests;
 
 public class DemoProxyRequestParam {
 	

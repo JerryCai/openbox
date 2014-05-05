@@ -1,12 +1,12 @@
-package com.google.test.openbox.demo.performance.requests;
+package com.googlecode.openbox.demo.performance.requests;
 
 import java.io.IOException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 
-import com.google.test.openbox.http.AbstractResponseHandler;
-import com.google.test.openbox.http.responses.JsonResponse;
+import com.googlecode.openbox.http.AbstractResponseHandler;
+import com.googlecode.openbox.http.responses.JsonResponse;
 
 public class DemoProxyResponseHandler extends
 		AbstractResponseHandler<JsonResponse<DemoProxyResponse>> {

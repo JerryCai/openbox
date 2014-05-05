@@ -1,7 +1,7 @@
-package com.google.test.openbox.demo.performance.report;
+package com.googlecode.openbox.demo.performance.report;
 
-import com.google.test.openbox.common.IOUtils;
-import com.google.test.openbox.demo.performance.PerformanceDataGroup;
+import com.googlecode.openbox.common.IOUtils;
+import com.googlecode.openbox.demo.performance.PerformanceDataGroup;
 
 public class TextPerformanceReport extends AbstractPerformanceReport {
 

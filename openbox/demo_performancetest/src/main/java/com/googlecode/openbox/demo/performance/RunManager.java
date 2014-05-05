@@ -1,4 +1,4 @@
-package com.google.test.openbox.demo.performance;
+package com.googlecode.openbox.demo.performance;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.test.openbox.demo.performance.report.JFreeChartPerformanceReport;
-import com.google.test.openbox.demo.performance.report.TextPerformanceReport;
+import com.googlecode.openbox.demo.performance.report.JFreeChartPerformanceReport;
+import com.googlecode.openbox.demo.performance.report.TextPerformanceReport;
 
 public class RunManager {
 	private static final Logger logger = LogManager.getLogger();

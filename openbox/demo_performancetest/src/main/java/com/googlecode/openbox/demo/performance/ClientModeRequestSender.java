@@ -1,12 +1,12 @@
-package com.google.test.openbox.demo.performance;
+package com.googlecode.openbox.demo.performance;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 
-import com.google.test.openbox.demo.performance.client.DefaultDemoClient;
-import com.google.test.openbox.demo.performance.client.DemoClient;
-import com.google.test.openbox.demo.performance.requests.DemoProxyRequestParam;
-import com.google.test.openbox.demo.performance.requests.DemoProxyResponse;
-import com.google.test.openbox.http.responses.JsonResponse;
+import com.googlecode.openbox.demo.performance.client.DefaultDemoClient;
+import com.googlecode.openbox.demo.performance.client.DemoClient;
+import com.googlecode.openbox.demo.performance.requests.DemoProxyRequestParam;
+import com.googlecode.openbox.demo.performance.requests.DemoProxyResponse;
+import com.googlecode.openbox.http.responses.JsonResponse;
 
 public class ClientModeRequestSender extends AbstractRequestSender {
 

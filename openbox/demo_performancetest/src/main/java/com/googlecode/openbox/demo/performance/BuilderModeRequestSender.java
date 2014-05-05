@@ -1,15 +1,15 @@
-package com.google.test.openbox.demo.performance;
+package com.googlecode.openbox.demo.performance;
 
 
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import com.google.gson.Gson;
-import com.google.test.openbox.demo.performance.requests.DemoProxyRequestParam;
-import com.google.test.openbox.demo.performance.requests.DemoProxyResponse;
-import com.google.test.openbox.http.GsonFactory;
-import com.google.test.openbox.http.httpbuilder.HttpBuilder;
-import com.google.test.openbox.http.httpbuilder.HttpBuilder.Response;
+import com.googlecode.openbox.demo.performance.requests.DemoProxyRequestParam;
+import com.googlecode.openbox.demo.performance.requests.DemoProxyResponse;
+import com.googlecode.openbox.http.GsonFactory;
+import com.googlecode.openbox.http.httpbuilder.HttpBuilder;
+import com.googlecode.openbox.http.httpbuilder.HttpBuilder.Response;
 
 public class BuilderModeRequestSender extends AbstractRequestSender {
 

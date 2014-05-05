@@ -1,9 +1,9 @@
-package com.google.test.openbox.demo.performance.report;
+package com.googlecode.openbox.demo.performance.report;
 
 import java.io.File;
 
-import com.google.test.openbox.common.IOUtils;
-import com.google.test.openbox.demo.performance.PerformanceReport;
+import com.googlecode.openbox.common.IOUtils;
+import com.googlecode.openbox.demo.performance.PerformanceReport;
 
 public abstract class AbstractPerformanceReport implements PerformanceReport {
 

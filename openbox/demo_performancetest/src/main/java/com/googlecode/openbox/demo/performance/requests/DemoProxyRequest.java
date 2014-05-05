@@ -1,8 +1,8 @@
-package com.google.test.openbox.demo.performance.requests;
+package com.googlecode.openbox.demo.performance.requests;
 
 import org.apache.http.client.methods.HttpPost;
 
-import com.google.test.openbox.http.requests.JsonBodyRequest;
+import com.googlecode.openbox.http.requests.JsonBodyRequest;
 
 public class DemoProxyRequest extends JsonBodyRequest<DemoProxyRequestParam> {
 

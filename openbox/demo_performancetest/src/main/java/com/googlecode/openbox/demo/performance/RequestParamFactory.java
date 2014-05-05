@@ -1,7 +1,7 @@
-package com.google.test.openbox.demo.performance;
+package com.googlecode.openbox.demo.performance;
 
-import com.google.test.openbox.common.UtilsAPI;
-import com.google.test.openbox.demo.performance.requests.DemoProxyRequestParam;
+import com.googlecode.openbox.common.UtilsAPI;
+import com.googlecode.openbox.demo.performance.requests.DemoProxyRequestParam;
 
 public class RequestParamFactory {
 	private RequestParamFactory() {

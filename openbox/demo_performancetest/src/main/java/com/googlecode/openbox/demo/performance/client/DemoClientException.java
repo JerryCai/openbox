@@ -1,4 +1,4 @@
-package com.google.test.openbox.demo.performance.client;
+package com.googlecode.openbox.demo.performance.client;
 
 public class DemoClientException extends RuntimeException {
 

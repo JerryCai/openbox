@@ -1,15 +1,15 @@
-package com.google.test.openbox.demo.performance.client;
+package com.googlecode.openbox.demo.performance.client;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 
-import com.google.test.openbox.demo.performance.requests.DemoProxyRequest;
-import com.google.test.openbox.demo.performance.requests.DemoProxyRequestParam;
-import com.google.test.openbox.demo.performance.requests.DemoProxyResponse;
-import com.google.test.openbox.demo.performance.requests.DemoProxyResponseHandler;
-import com.google.test.openbox.http.DefaultHttpExecutor;
-import com.google.test.openbox.http.HttpExecutor;
-import com.google.test.openbox.http.extention.ExtendedAppClient;
-import com.google.test.openbox.http.responses.JsonResponse;
+import com.googlecode.openbox.demo.performance.requests.DemoProxyRequest;
+import com.googlecode.openbox.demo.performance.requests.DemoProxyRequestParam;
+import com.googlecode.openbox.demo.performance.requests.DemoProxyResponse;
+import com.googlecode.openbox.demo.performance.requests.DemoProxyResponseHandler;
+import com.googlecode.openbox.http.DefaultHttpExecutor;
+import com.googlecode.openbox.http.HttpExecutor;
+import com.googlecode.openbox.http.extention.ExtendedAppClient;
+import com.googlecode.openbox.http.responses.JsonResponse;
 
 public class DefaultDemoClient extends ExtendedAppClient implements DemoClient {
 	private String url;

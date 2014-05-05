@@ -1,4 +1,4 @@
-package com.google.test.openbox.demo.performance.report;
+package com.googlecode.openbox.demo.performance.report;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,7 +17,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
-import com.google.test.openbox.demo.performance.PerformanceDataGroup;
+import com.googlecode.openbox.demo.performance.PerformanceDataGroup;
 
 public class JFreeChartPerformanceReport extends AbstractPerformanceReport {
 

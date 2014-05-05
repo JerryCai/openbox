@@ -1,8 +1,8 @@
-package com.google.test.openbox.demo.performance;
+package com.googlecode.openbox.demo.performance;
 
-import com.google.test.openbox.common.ToolUtils;
-import com.google.test.openbox.demo.performance.report.JFreeChartPerformanceReport;
-import com.google.test.openbox.demo.performance.report.TextPerformanceReport;
+import com.googlecode.openbox.common.ToolUtils;
+import com.googlecode.openbox.demo.performance.report.JFreeChartPerformanceReport;
+import com.googlecode.openbox.demo.performance.report.TextPerformanceReport;
 
 public class CommandMain {
 

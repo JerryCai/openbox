@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="debug" packages="com.openbox.demo.log">
+<configuration status="debug" packages="com.google.test.openbox.log">
 	<appenders>
 		<Console name="CONSOLE" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d %-5p %c{2} - %m%n" /> <!--without location -->
@@ -15,7 +15,7 @@
 		<root level="debug">
 			<appender-ref ref="CONSOLE" level="INFO" />
 			<!-- <appender-ref ref="DEBUG_FILE" />  -->
-			<appender-ref ref="DEBUG_FILE" level="INFO"/>
+			<appender-ref ref="TESTNGREPORTER" level="INFO"/>
 		</root>
 	</loggers>
 </configuration>
