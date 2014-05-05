@@ -1,4 +1,4 @@
-package com.google.test.openbox.db;
+package com.googlecode.openbox.db;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
@@ -136,7 +136,7 @@ public class C3p0DbPoolImpl implements DbPool {
 	private Properties getProperies(String path) {
 		try {
 			Properties p = new Properties();
-			p.load(getClass().getResourceAsStream(path));
+			p.load(getClass().getClassLoader().getResourceAsStream(path));
 			return p;
 		} catch (IOException e) {
 			String msg = "load " + DB_PROPERTIES + " error";

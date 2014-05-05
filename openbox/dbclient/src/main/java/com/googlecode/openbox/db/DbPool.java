@@ -1,4 +1,4 @@
-package com.google.test.openbox.db;
+package com.googlecode.openbox.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
