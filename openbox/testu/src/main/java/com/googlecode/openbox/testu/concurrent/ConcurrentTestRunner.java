@@ -1,4 +1,4 @@
-package com.google.test.openbox.testu.concurrent;
+package com.googlecode.openbox.testu.concurrent;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -6,14 +6,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import com.google.test.openbox.common.algorithm.Homogenizer;
-import com.google.test.openbox.common.algorithm.Homogenizer.Action;
-import com.google.test.openbox.common.context.BasicContext;
-import com.google.test.openbox.common.context.CommonContext;
-import com.google.test.openbox.http.Response;
-import com.google.test.openbox.http.monitors.CyclicBarrierMonitor;
-import com.google.test.openbox.testu.TestResult;
-import com.google.test.openbox.testu.TestUException;
+import com.googlecode.openbox.common.algorithm.Homogenizer;
+import com.googlecode.openbox.common.algorithm.Homogenizer.Action;
+import com.googlecode.openbox.common.context.BasicContext;
+import com.googlecode.openbox.common.context.CommonContext;
+import com.googlecode.openbox.http.Response;
+import com.googlecode.openbox.http.monitors.CyclicBarrierMonitor;
+import com.googlecode.openbox.testu.TestResult;
+import com.googlecode.openbox.testu.TestUException;
 
 public abstract class ConcurrentTestRunner {
 	private String runName;

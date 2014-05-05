@@ -1,10 +1,10 @@
-package com.google.test.openbox.testu.tools;
+package com.googlecode.openbox.testu.tools;
 
 import java.io.File;
 import java.net.URL;
 
-import com.google.test.openbox.common.IOUtils;
-import com.google.test.openbox.testu.TestngSuite;
+import com.googlecode.openbox.common.IOUtils;
+import com.googlecode.openbox.testu.TestngSuite;
 
 public class TestngSuiteBuilder {
 	public static final String CLASS_POSTFIX = ".class";
@@ -12,30 +12,32 @@ public class TestngSuiteBuilder {
 	private StringBuilder builder;
 	private String suiteName = "Default Suite";
 	private String testModuleName = "Default Test";
-	private String testPrefixName = "TestCase";
+	private String testPrefixName = "";
+	private String testPostfixName = "Test";
 	private Class<?> suiteClass;
 	private String testngXmlLocation = "src/test/resources/suites/testng_default.xml";
 
 	private TestngSuiteBuilder(String suiteName, String testModuleName,
-			String testPrefixName, Class<?> suiteClass, String testngXmlLocation) {
+			String testPrefixName, String testPostfixName, Class<?> suiteClass, String testngXmlLocation) {
 		this.builder = new StringBuilder();
 		this.suiteName = suiteName;
 		this.testModuleName = testModuleName;
 		this.testPrefixName = testPrefixName;
+		this.testPostfixName = testPostfixName;
 		this.suiteClass = suiteClass;
 		this.testngXmlLocation = testngXmlLocation;
 	}
 
 	public static TestngSuiteBuilder create(String suiteName,
-			String testModuleName, String testPrefixName, Class<?> suiteClass,
+			String testModuleName, String testPrefixName, String testPostfixName, Class<?> suiteClass,
 			String testngXmlLocation) {
 		return new TestngSuiteBuilder(suiteName, testModuleName,
-				testPrefixName, suiteClass, testngXmlLocation);
+				testPrefixName, testPostfixName,suiteClass, testngXmlLocation);
 	}
 
 	public static TestngSuiteBuilder create(TestngSuite suite) {
 		return create(suite.getSuiteName(), suite.getTestModuleName(),
-				suite.getTestPrefixName(), suite.getSuiteClass(),
+				suite.getTestPrefixName(), suite.getTestPostfixName(),suite.getSuiteClass(),
 				suite.getTestngXmlLocation());
 
 	}
@@ -74,7 +76,7 @@ public class TestngSuiteBuilder {
 			if (name.indexOf("$") < 0) {
 				int op = name.lastIndexOf(".");
 				String strName = name.substring(0, op);
-				if (strName.startsWith(testPrefixName)) {
+				if (strName.startsWith(testPrefixName) && strName.endsWith(testPostfixName)) {
 					String path = file.getPath();
 					int pp = path.indexOf(startPackage);
 					int endPP = path.indexOf(CLASS_POSTFIX);

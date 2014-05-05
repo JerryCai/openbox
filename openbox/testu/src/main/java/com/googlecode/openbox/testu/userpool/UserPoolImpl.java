@@ -1,9 +1,9 @@
-package com.google.test.openbox.testu.userpool;
+package com.googlecode.openbox.testu.userpool;
 
 import java.util.List;
 
-import com.google.test.openbox.jsonpool.JsonStorePool;
-import com.google.test.openbox.jsonpool.JsonStorePoolImpl;
+import com.googlecode.openbox.jsonpool.JsonStorePool;
+import com.googlecode.openbox.jsonpool.JsonStorePoolImpl;
 
 public class UserPoolImpl<T> implements UserPool<T> {
 

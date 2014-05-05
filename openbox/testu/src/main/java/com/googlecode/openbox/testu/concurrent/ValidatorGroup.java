@@ -1,11 +1,11 @@
-package com.google.test.openbox.testu.concurrent;
+package com.googlecode.openbox.testu.concurrent;
 
 import java.util.concurrent.Future;
 
-import com.google.test.openbox.common.algorithm.Homogenizer.Action;
-import com.google.test.openbox.common.context.CommonContext;
-import com.google.test.openbox.http.Response;
-import com.google.test.openbox.testu.TestResult;
+import com.googlecode.openbox.common.algorithm.Homogenizer.Action;
+import com.googlecode.openbox.common.context.CommonContext;
+import com.googlecode.openbox.http.Response;
+import com.googlecode.openbox.testu.TestResult;
 
 public abstract class ValidatorGroup implements Action<TestResult> {
 

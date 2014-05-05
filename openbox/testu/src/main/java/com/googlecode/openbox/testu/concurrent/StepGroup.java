@@ -1,10 +1,10 @@
-package com.google.test.openbox.testu.concurrent;
+package com.googlecode.openbox.testu.concurrent;
 
 
-import com.google.test.openbox.common.algorithm.Homogenizer.Action;
-import com.google.test.openbox.common.context.CommonContext;
-import com.google.test.openbox.http.Response;
-import com.google.test.openbox.http.monitors.CyclicBarrierMonitor;
+import com.googlecode.openbox.common.algorithm.Homogenizer.Action;
+import com.googlecode.openbox.common.context.CommonContext;
+import com.googlecode.openbox.http.Response;
+import com.googlecode.openbox.http.monitors.CyclicBarrierMonitor;
 
 public abstract class StepGroup implements Action<ConcurrentStep> {
 

@@ -1,4 +1,4 @@
-package com.google.test.openbox.testu;
+package com.googlecode.openbox.testu;
 
 import java.io.IOException;
 

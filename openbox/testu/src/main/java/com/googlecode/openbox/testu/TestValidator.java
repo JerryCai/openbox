@@ -1,4 +1,4 @@
-package com.google.test.openbox.testu;
+package com.googlecode.openbox.testu;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.Assert;
 
-import com.google.test.openbox.http.Response;
+import com.googlecode.openbox.http.Response;
 
 public class TestValidator {
 

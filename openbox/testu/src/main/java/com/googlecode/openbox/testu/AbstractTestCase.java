@@ -1,4 +1,4 @@
-package com.google.test.openbox.testu;
+package com.googlecode.openbox.testu;
 
 import junit.framework.TestCase;
 
@@ -8,7 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
-import com.google.test.openbox.common.DateHelper;
+import com.googlecode.openbox.common.DateHelper;
 
 public abstract class AbstractTestCase extends TestCase {
 	private static final Logger logger = LogManager.getLogger();

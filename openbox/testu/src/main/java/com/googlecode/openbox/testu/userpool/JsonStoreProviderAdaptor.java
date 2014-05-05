@@ -1,9 +1,9 @@
-package com.google.test.openbox.testu.userpool;
+package com.googlecode.openbox.testu.userpool;
 
 import java.io.File;
 import java.util.List;
 
-import com.google.test.openbox.jsonpool.JsonStoreProvider;
+import com.googlecode.openbox.jsonpool.JsonStoreProvider;
 
 class JsonStoreProviderAdaptor<T> implements JsonStoreProvider<DC, T> {
 	private static final String USER_POOL_STORE_FOLDER = "/users/";

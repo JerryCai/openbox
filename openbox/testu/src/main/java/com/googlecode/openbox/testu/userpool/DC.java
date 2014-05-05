@@ -1,4 +1,4 @@
-package com.google.test.openbox.testu.userpool;
+package com.googlecode.openbox.testu.userpool;
 
 public class DC {
 
