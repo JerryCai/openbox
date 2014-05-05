@@ -1,0 +1,3 @@
+clean package -DskipTests
+
+clean test -DtestNG.file=testng_suite.xml
