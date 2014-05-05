@@ -1,4 +1,4 @@
-package com.google.test.openbox.common.algorithm;
+package com.googlecode.openbox.common.algorithm;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.google.test.openbox.common.context;
+package com.googlecode.openbox.common.context;
 
 public interface CommonContext {
     public static final String RESERVED_PREFIX  = "cc.";

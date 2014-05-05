@@ -1,9 +1,9 @@
-package com.google.test.openbox.common.context;
+package com.googlecode.openbox.common.context;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.test.openbox.common.ArgsUtils;
+import com.googlecode.openbox.common.ArgsUtils;
 
 public class BasicContext implements CommonContext {
 

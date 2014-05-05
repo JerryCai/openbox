@@ -1,4 +1,4 @@
-package com.google.test.openbox.common.pool;
+package com.googlecode.openbox.common.pool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
