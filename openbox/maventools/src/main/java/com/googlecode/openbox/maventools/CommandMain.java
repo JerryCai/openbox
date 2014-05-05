@@ -1,6 +1,6 @@
-package com.google.test.openbox.maventools;
+package com.googlecode.openbox.maventools;
 
-import com.google.test.openbox.common.ToolUtils;
+import com.googlecode.openbox.common.ToolUtils;
 
 public class CommandMain {
 	public static void main(String... args) {

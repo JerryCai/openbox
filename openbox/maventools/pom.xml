@@ -7,7 +7,7 @@
 		<version>1.0.0</version>
 	</parent>
 	<artifactId>maventools</artifactId>
-	<name>maven tools</name>
+	<name>MavenTools</name>
 	<description>This project contain some maven tools for daily usage</description>
 
 	<dependencies>

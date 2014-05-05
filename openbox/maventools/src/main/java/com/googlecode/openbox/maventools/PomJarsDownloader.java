@@ -1,4 +1,4 @@
-package com.google.test.openbox.maventools;
+package com.googlecode.openbox.maventools;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,9 +13,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
-import com.google.test.openbox.common.IOUtils;
-import com.google.test.openbox.common.UtilsAPI;
-import com.google.test.openbox.common.XmlUtils;
+import com.googlecode.openbox.common.IOUtils;
+import com.googlecode.openbox.common.UtilsAPI;
+import com.googlecode.openbox.common.XmlUtils;
 
 public class PomJarsDownloader {
 
