@@ -1,4 +1,4 @@
-package com.google.test.openbox.cors.request;
+package com.googlecode.openbox.cors.request;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +11,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.util.Args;
 
-import com.google.test.openbox.http.Request;
+import com.googlecode.openbox.http.Request;
 
 public class CorsRequest extends Request {
 	

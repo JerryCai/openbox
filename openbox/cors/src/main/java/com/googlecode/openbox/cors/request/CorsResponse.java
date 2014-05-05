@@ -1,4 +1,4 @@
-package com.google.test.openbox.cors.request;
+package com.googlecode.openbox.cors.request;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,8 +10,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.Args;
 
-import com.google.test.openbox.http.ExecutorMonitorManager;
-import com.google.test.openbox.http.responses.CommonResponse;
+import com.googlecode.openbox.http.ExecutorMonitorManager;
+import com.googlecode.openbox.http.responses.CommonResponse;
 
 public class CorsResponse extends CommonResponse {
 	private Set<String> allowedMethods;

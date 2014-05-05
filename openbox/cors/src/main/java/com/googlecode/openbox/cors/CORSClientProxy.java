@@ -1,10 +1,10 @@
-package com.google.test.openbox.cors;
+package com.googlecode.openbox.cors;
 
 
 
-import com.google.test.openbox.cors.request.CorsRequest;
-import com.google.test.openbox.http.Request;
-import com.google.test.openbox.http.RequestProxy;
+import com.googlecode.openbox.cors.request.CorsRequest;
+import com.googlecode.openbox.http.Request;
+import com.googlecode.openbox.http.RequestProxy;
 
 public class CORSClientProxy implements RequestProxy {
 

@@ -1,4 +1,4 @@
-package com.google.test.openbox.cors;
+package com.googlecode.openbox.cors;
 
 import java.io.IOException;
 import java.util.Set;
@@ -8,13 +8,13 @@ import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
-import com.google.test.openbox.cors.request.CorsRequest;
-import com.google.test.openbox.cors.request.CorsResponse;
-import com.google.test.openbox.cors.request.CorsResponseHandler;
-import com.google.test.openbox.http.DefaultHttpExecutor;
-import com.google.test.openbox.http.HttpClientException;
-import com.google.test.openbox.http.HttpExecutor;
-import com.google.test.openbox.http.Request;
+import com.googlecode.openbox.cors.request.CorsRequest;
+import com.googlecode.openbox.cors.request.CorsResponse;
+import com.googlecode.openbox.cors.request.CorsResponseHandler;
+import com.googlecode.openbox.http.DefaultHttpExecutor;
+import com.googlecode.openbox.http.HttpClientException;
+import com.googlecode.openbox.http.HttpExecutor;
+import com.googlecode.openbox.http.Request;
 
 public class PreflightCORSClientProxy extends CORSClientProxy {
 

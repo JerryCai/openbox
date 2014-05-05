@@ -1,11 +1,11 @@
-package com.google.test.openbox.cors.request;
+package com.googlecode.openbox.cors.request;
 
 import java.io.IOException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 
-import com.google.test.openbox.http.AbstractResponseHandler;
+import com.googlecode.openbox.http.AbstractResponseHandler;
 
 public class CorsResponseHandler extends AbstractResponseHandler<CorsResponse> {
 
