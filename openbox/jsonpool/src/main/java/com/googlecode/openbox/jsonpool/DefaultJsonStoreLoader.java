@@ -1,4 +1,4 @@
-package com.google.test.openbox.jsonpool;
+package com.googlecode.openbox.jsonpool;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.google.test.openbox.common.IOUtils;
+import com.googlecode.openbox.common.IOUtils;
 
 class DefaultJsonStoreLoader<K, V> extends AbstractJsonStoreLoader<K, V> {
 	private static final Logger logger = LogManager.getLogger();

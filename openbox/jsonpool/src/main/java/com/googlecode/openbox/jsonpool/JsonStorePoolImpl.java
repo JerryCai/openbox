@@ -1,9 +1,9 @@
-package com.google.test.openbox.jsonpool;
+package com.googlecode.openbox.jsonpool;
 
 import java.util.List;
 
-import com.google.test.openbox.common.pool.InitSizeObjectPools;
-import com.google.test.openbox.common.pool.ObjectPools;
+import com.googlecode.openbox.common.pool.InitSizeObjectPools;
+import com.googlecode.openbox.common.pool.ObjectPools;
 
 public class JsonStorePoolImpl<K, V> implements JsonStorePool<K, V> {
 

@@ -1,4 +1,4 @@
-package com.google.test.openbox.jsonpool;
+package com.googlecode.openbox.jsonpool;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
