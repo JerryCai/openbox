@@ -1,9 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 	<groupId>com.googlecode.openbox</groupId>
 	<artifactId>openbox</artifactId>
-	<version>1.0.0</version>
+	<packaging>pom</packaging>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>OpenBox</name>
 	<description>This is common test framework and toolkit name as OpenBox</description>
 	<url>http://code.google.com/p/openbox/</url>
@@ -15,8 +21,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>https://openbox.googlecode.com/svn/trunk/openbox</url>
-		<connection>https://openbox.googlecode.com/svn/trunk/openbox</connection>
+		<connection>scm:svn:http://openbox.googlecode.com/svn/trunk/openbox/</connection>
+		<developerConnection>scm:svn:http://openbox.googlecode.com/svn/trunk/openbox/</developerConnection>
+		<url>http://openbox.googlecode.com/svn/trunk/openbox/</url>
 	</scm>
 	<developers>
 		<developer>
@@ -25,24 +32,21 @@
 			<email>jerrycai.cn@gmail.com</email>
 		</developer>
 	</developers>
-
-	<packaging>pom</packaging>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<distributionManagement>
 		<repository>
-			<id>openbox-google-code-repo</id>
-			<name>Google Code Repo for OpenBox (releases)</name>
-			<url>svn:https://openbox.googlecode.com/svn/maven-repo/releases</url>
+			<id>sonatype-nexus-staging</id>
+			<name>Google Code for OpenBox (releases)</name>
+			<url>svn:https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 			<uniqueVersion>false</uniqueVersion>
 		</repository>
 		<snapshotRepository>
-			<id>openbox-google-code-snapshot</id>
-			<name>Google Code Repo OpenBox (snapshots)</name>
-			<url>svn:https://openbox.googlecode.com/svn/maven-repo/snapshots</url>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Google Code  OpenBox (snapshots)</name>
+			<url>svn:https://oss.sonatype.org/content/repositories/snapshots</url>
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
@@ -96,6 +100,20 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
@@ -142,6 +160,46 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.2.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-changelog-plugin</artifactId>
+						<version>2.2</version>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.9.1</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<modules>
 		<module>common</module>
 		<module>http</module>

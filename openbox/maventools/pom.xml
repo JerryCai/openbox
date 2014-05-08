@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.googlecode.openbox</groupId>
 		<artifactId>openbox</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>maventools</artifactId>
 	<name>MavenTools</name>
@@ -13,39 +13,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.googlecode.openbox</groupId>
-			<artifactId>common</artifactId>
+			<artifactId>common-SNAPSHOT</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.openbox</groupId>
 			<artifactId>http</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>com.google.test.openbox.maventools.CommandMain</mainClass>
-						</manifest>
-					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id> <!-- this is used for inheritance merges -->
-						<phase>package</phase> <!-- bind to the packaging phase -->
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 </project>
