@@ -17,6 +17,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -54,12 +55,14 @@ public class HttpBuilder {
 	private HttpEntity requestEntity;
 	private URIBuilder uriBuilder;
 	private EntityBuilder entityBuilder;
+	private RequestConfig requestConfig;
 	private boolean hasForm;
 	private boolean hasOtherBody;
 	private Response response;
 	private ExecutorMonitorManager executorMonitorManager;
 	private CloseableHttpClient customHttpClient;
-
+	
+	
 	private HttpBuilder() {
 		this.uriBuilder = new URIBuilder();
 		this.entityBuilder = EntityBuilder.create();
@@ -318,6 +321,10 @@ public class HttpBuilder {
 	public Response execute() {
 		try {
 			HttpRequestBase request = build();
+			if (null != requestConfig) {
+				request.setConfig(requestConfig);
+			}
+			
 			if (logger.isInfoEnabled()) {
 				logger.info(getRequestLog());
 			}
@@ -551,5 +558,14 @@ public class HttpBuilder {
 			return httpResponse.getStatusLine();
 		}
 
+	}
+
+	public RequestConfig getRequestConfig() {
+		return requestConfig;
+	}
+
+	public HttpBuilder setRequestConfig(RequestConfig config) {
+		this.requestConfig = config;
+		return this;
 	}
 }
