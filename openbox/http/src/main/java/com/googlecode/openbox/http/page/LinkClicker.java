@@ -1,5 +1,7 @@
 package com.googlecode.openbox.http.page;
 
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 
@@ -42,7 +44,8 @@ public final class LinkClicker {
 		try {
 			clicked = true;
 			response = HttpBuilder.create(getHttpClient()).setUrl(link)
-					.setMethod(HttpGet.METHOD_NAME).execute();
+					.setMethod(HttpGet.METHOD_NAME).setRequestConfig(RequestConfig.custom()
+							.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build()).execute();
 			return this;
 		} catch (Exception e) {
 			throw HttpClientException.create("click page link [" + link
