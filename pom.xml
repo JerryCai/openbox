@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -8,7 +9,7 @@
 	<groupId>com.googlecode.openbox</groupId>
 	<artifactId>openbox</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.0</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>OpenBox</name>
 	<description>This is common test framework and toolkit name as OpenBox</description>
 	<url>http://code.google.com/p/openbox/</url>
@@ -20,9 +21,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:http://openbox.googlecode.com/svn/tags/openbox-1.0.0</connection>
-		<developerConnection>scm:svn:http://openbox.googlecode.com/svn/tags/openbox-1.0.0</developerConnection>
-		<url>http://openbox.googlecode.com/svn/tags/openbox-1.0.0</url>
+		<connection>scm:svn:https://openbox.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://openbox.googlecode.com/svn/trunk/</developerConnection>
+		<url>https://openbox.googlecode.com/svn/trunk/</url>
 	</scm>
 	<developers>
 		<developer>
