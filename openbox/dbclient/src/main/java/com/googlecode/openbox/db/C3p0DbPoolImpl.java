@@ -56,9 +56,11 @@ public class C3p0DbPoolImpl implements DbPool {
 	}
 
 	public void printConnectionInfo() {
-		logger.info("\n\r");
-		logger.info(ds.toString());
-		logger.info("\n\r");
+		if (logger.isInfoEnabled()) {
+			logger.info("\n\r");
+			logger.info(ds.toString());
+			logger.info("\n\r");
+		}
 	}
 
 	public void execute(String sql) throws SQLException {
