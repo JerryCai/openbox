@@ -13,13 +13,6 @@ import java.util.Random;
 
 public class UtilsAPI {
 
-	/**
-	 * find a special string whether it is in a string array
-	 * 
-	 * @param strs
-	 * @param str
-	 * @return
-	 */
 	public static boolean findString(String[] strs, String str) {
 		boolean isFind = false;
 
@@ -43,13 +36,6 @@ public class UtilsAPI {
 		return isFind;
 	}
 
-	/**
-	 * find a special string whether it is in a string array (IgnoreCase)
-	 * 
-	 * @param strs
-	 * @param str
-	 * @return
-	 */
 	public static boolean findStringIgnoreCase(String[] strs, String str) {
 		boolean isFind = false;
 
@@ -132,13 +118,6 @@ public class UtilsAPI {
 		return subPath;
 	}
 
-	/**
-	 * filter all of itmes of strArrays base on keys
-	 * 
-	 * @param strArrays
-	 * @param keys
-	 * @return
-	 */
 	public static String[] filterStringArray(String[] strArrays, String[] keys) {
 
 		List<String> filtedList = new LinkedList<String>();
@@ -154,13 +133,6 @@ public class UtilsAPI {
 		return filtedArray;
 	}
 
-	/**
-	 * filter all of itmes of strArrays base on key
-	 * 
-	 * @param strArrays
-	 * @param key
-	 * @return
-	 */
 	public static String[] filterStringArray(String[] strArrays, String key) {
 		List<String> filtedList = new LinkedList<String>();
 		for (int i = 0; i < strArrays.length; i++) {
@@ -173,13 +145,6 @@ public class UtilsAPI {
 		return filtedArray;
 	}
 
-	/**
-	 * count the sub string existed how many times in one string
-	 * 
-	 * @param str
-	 * @param key
-	 * @return
-	 */
 	public static int countKeyInString(String str, String key) {
 		int num = 0;
 		int fromIndex = 0;
@@ -202,11 +167,6 @@ public class UtilsAPI {
 		if (length1 != length2) {
 			return false;
 		}
-		// Arrays.sort(str1, new Comparator<String>(){
-		// public int compare(String o1, String o2) {
-		// return o1.compareTo(o2);
-		// }
-		// });
 		Arrays.sort(str1);
 		for (int i = 0; i < length1; i++) {
 			if (str1[i] != str2[i]) {
@@ -217,17 +177,6 @@ public class UtilsAPI {
 		return true;
 	}
 
-	/**
-	 * select a sub string from str where begin with beginKey , and endwith
-	 * endKey
-	 * 
-	 * eg: selectString("aaabbbccc","aaa","ccc") ==> "bbb"
-	 * 
-	 * @param str
-	 * @param beginKey
-	 * @param endKey
-	 * @return
-	 */
 	public static String selectString(String str, String beginKey, String endKey) {
 		int begin = str.indexOf(beginKey);
 		if (-1 == begin) {
@@ -242,14 +191,6 @@ public class UtilsAPI {
 		return str.substring(begin, end);
 	}
 
-	/**
-	 * update the list's all item by String.replaceFirst(regex, replacement)
-	 * 
-	 * @param list
-	 * @param regex
-	 * @param replacement
-	 * @return replaced list
-	 */
 	public static LinkedList<String> replaceAll(List<String> list,
 			String regex, String replacement) {
 		LinkedList<String> replacedList = new LinkedList<String>();
@@ -262,14 +203,6 @@ public class UtilsAPI {
 		return replacedList;
 	}
 
-	/**
-	 * update the list's all item by String.replaceFirst(regex, replacement)
-	 * 
-	 * @param list
-	 * @param regex
-	 * @param replacement
-	 * @return replaced list
-	 */
 	public static String[] replaceAll(String[] list, String regex,
 			String replacement) {
 		String[] replacedList = new String[list.length];
@@ -280,13 +213,6 @@ public class UtilsAPI {
 		return replacedList;
 	}
 
-	/**
-	 * update the key by key.replaceFirst(regex, replacement)
-	 * 
-	 * @param aMap
-	 * @param regex
-	 * @param replacement
-	 */
 	public static void updateAllKeys(Map<String, Object> aMap, String regex,
 			String replacement) {
 		Iterator<String> keys = aMap.keySet().iterator();
@@ -300,38 +226,17 @@ public class UtilsAPI {
 		}
 	}
 
-	/**
-	 * Get current called API name
-	 * 
-	 * @return current API name
-	 */
 	public static String getName() {
-		// return Thread.currentThread().getStackTrace()[2].getMethodName();
 		return Thread.currentThread().getStackTrace()[2].getMethodName()
 				+ "_Threads_" + Thread.currentThread().getId();
 	}
 
-	/**
-	 * format the time to string
-	 * 
-	 * @param date
-	 * @param format
-	 *            , such as : "yyyyMMddHHmmssSSS"
-	 * @return
-	 */
 	public static String formatDate(Date date, String format) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		String currentDate = sdf.format(date);
 		return currentDate;
 	}
 
-	/**
-	 * format the current time to string
-	 * 
-	 * @param format
-	 *            such as : "MM/dd/yyyy HH:mm:ss"
-	 * @return
-	 */
 	public static String formatCurrentDate(String format) {
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -357,7 +262,6 @@ public class UtilsAPI {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		// config.infoPrintln("Parse Linux logTime=["+logTime+"] to ["+date.toString()+"] success");
 		return date;
 	}
 
@@ -373,7 +277,6 @@ public class UtilsAPI {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		// config.infoPrintln("Parse Linux logTime=["+logTime+"] to ["+longtime+"] success");
 		return longtime;
 	}
 
@@ -490,13 +393,13 @@ public class UtilsAPI {
 	public static String getArrayStr(String[] strs) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
-		for (int i =0 ; i< strs.length ; i++) {
+		for (int i = 0; i < strs.length; i++) {
 			sb.append(strs[i]);
-			if(i != strs.length -1){
+			if (i != strs.length - 1) {
 				sb.append(" ,");
 			}
 		}
-		
+
 		sb.append("]");
 		return sb.toString();
 	}
@@ -518,21 +421,4 @@ public class UtilsAPI {
 		return prefix + item + postfix + "|";
 	}
 
-	// test for each API here
-	public static void main(String[] args) {
-		// System.out.println(getGMTCurrentDay());
-		// String path = "type:";
-		// System.out.println(path.length());
-		// getParentPath(path, "/", 2);
-		// System.out.println("after  trim =[" + getParentPath(path, "/", 2) +
-		// "]");
-
-		String[] s1 = { "aa", "bb", "cc", };
-		String[] s2 = { "as", "aa", "mm" };
-		String[] s3 = { "aa", "as", "LL", "::" };
-		String[] strs = UtilsAPI.unionStringArray(s1, s2, s3);
-		for (String s : strs) {
-			System.out.print(s + "  ,");
-		}
-	}
 }

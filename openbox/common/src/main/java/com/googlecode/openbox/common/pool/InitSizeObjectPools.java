@@ -47,8 +47,9 @@ public class InitSizeObjectPools<K, V> implements ObjectPools<K, V> {
 		initPool(key);
 		BlockingQueue<V> pool = OBJECT_POOLS.get(key);
 		try {
-			if(pool.isEmpty()){
-				List<V> valueList = objectProvider.provideObjects(key, poolSize);
+			if (pool.isEmpty()) {
+				List<V> valueList = objectProvider
+						.provideObjects(key, poolSize);
 				pool.addAll(valueList);
 			}
 			return pool.take();
@@ -62,7 +63,7 @@ public class InitSizeObjectPools<K, V> implements ObjectPools<K, V> {
 
 	@Override
 	public List<V> borrowObjects(K key, int num) {
-		
+
 		List<V> vList = new ArrayList<V>(num);
 		for (int i = 0; i < num; i++) {
 			vList.add(borrowObject(key));
@@ -81,8 +82,10 @@ public class InitSizeObjectPools<K, V> implements ObjectPools<K, V> {
 			}
 			BlockingQueue<V> pool = OBJECT_POOLS.get(key);
 			pool.add(value);
-			logger.info("return object=[" + value + "] to pool_[" + key
-					+ "] success");
+			if (logger.isInfoEnabled()) {
+				logger.info("return object=[" + value + "] to pool_[" + key
+						+ "] success");
+			}
 		}
 	}
 
@@ -105,8 +108,10 @@ public class InitSizeObjectPools<K, V> implements ObjectPools<K, V> {
 			List<V> valueList = objectProvider.provideObjects(key, poolSize);
 			pool.addAll(valueList);
 			OBJECT_POOLS.put(key, pool);
-			logger.info("put totally [" + valueList.size()
-					+ "] object to pool_[" + key + "] success");
+			if (logger.isInfoEnabled()) {
+				logger.info("put totally [" + valueList.size()
+						+ "] object to pool_[" + key + "] success");
+			}
 		}
 	}
 

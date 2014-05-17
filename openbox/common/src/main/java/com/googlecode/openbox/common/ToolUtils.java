@@ -53,7 +53,7 @@ public class ToolUtils {
 			closeInputStream(contentStream);
 		}
 	}
-	
+
 	public static void printUsage() {
 		System.out.println(ToolUtils.getContent("readme"));
 	}

@@ -24,10 +24,4 @@ public class InetAddressUtil {
 					"it can't get local host name error as :", e);
 		}
 	}
-	
-	public static final void main(String ...args){
-		System.out.println(getLocalHostIP());
-		System.out.println(getLocalHostName());
-	}
-
 }

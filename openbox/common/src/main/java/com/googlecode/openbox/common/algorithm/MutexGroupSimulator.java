@@ -41,11 +41,6 @@ public abstract class MutexGroupSimulator {
 		return result;
 	}
 
-	/**
-	 * { {1,3,5,9,0} ==> OK {4,3,5,7} ==> FAIL {2,5,9,8} ==> OK {3,8,3,2,9} ==>
-	 * FAIL }
-	 */
-
 	public void addOkGroup(int okGroupIndex) {
 		okResult[okGroupIndex] = Result.OK;
 		okCounter++;

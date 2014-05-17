@@ -76,12 +76,6 @@ public class IOUtils {
 		return content;
 	}
 
-	/**
-	 * Get single file's MD5 Value
-	 * 
-	 * @param file
-	 * @return
-	 */
 	public static String getFileMD5(File file) {
 		if (!file.isFile()) {
 			logger.error("computer file=[" + file
@@ -92,12 +86,6 @@ public class IOUtils {
 		return getInputStreamMD5(in);
 	}
 
-	/**
-	 * Get the input stream 's MD5
-	 * 
-	 * @param in
-	 * @return
-	 */
 	public static String getInputStreamMD5(InputStream in) {
 		if (null == in) {
 			logger.error("computer file md5 failed as its input stream is null,return null");
@@ -120,14 +108,6 @@ public class IOUtils {
 		return bigInt.toString(16);
 	}
 
-	/**
-	 * Get all file under a folder's MD5 value
-	 * 
-	 * @param directory
-	 * @param listChild
-	 *            ;true recure sub folder md5 .
-	 * @return
-	 */
 	public static Map<String, String> getDirMD5(File directory,
 			boolean listChild) {
 		if (!directory.isDirectory()) {
@@ -154,26 +134,12 @@ public class IOUtils {
 		return map;
 	}
 
-	/**
-	 * Compare the two files whether contain the same content
-	 * 
-	 * @param filePath1
-	 * @param filePath2
-	 * @return
-	 */
 	public static boolean isSameContent(String filePath1, String filePath2) {
 		File file1 = new File(filePath1);
 		File file2 = new File(filePath2);
 		return getFileMD5(file1).equals(getFileMD5(file2));
 	}
 
-	/**
-	 * Compare the two input stream whether is the same content
-	 * 
-	 * @param stream1
-	 * @param stream2
-	 * @return
-	 */
 	public static boolean isSameInputStream(InputStream stream1,
 			InputStream stream2) {
 		return getInputStreamMD5(stream1).equals(getInputStreamMD5(stream2));
@@ -186,13 +152,6 @@ public class IOUtils {
 		parentFolder.setWritable(true);
 	}
 
-	/**
-	 * Create a local file on filePath , and its content is inputStream
-	 * 
-	 * @param filePath
-	 * @param inputStream
-	 * @return
-	 */
 	public static boolean createFile(String filePath, InputStream inputStream) {
 		logger.info("create local file path = [" + filePath + "]");
 		boolean createSuccess = false;
@@ -212,8 +171,10 @@ public class IOUtils {
 				len = bis.read(buffer);
 				if (len == -1) {
 					createSuccess = true;
-					logger.info("Create local file=[" + filePath
-							+ "] successfully ");
+					if (logger.isInfoEnabled()) {
+						logger.info("Create local file=[" + filePath
+								+ "] successfully ");
+					}
 					break;
 				}
 				fos.write(buffer, 0, len);
@@ -247,7 +208,9 @@ public class IOUtils {
 		try {
 			PW.println(info);
 			PW.flush();
-			logger.debug(info);
+			if (logger.isDebugEnabled()) {
+				logger.debug(info);
+			}
 		} catch (Exception ex) {
 			logger.error("Write info:[" + info + "] to file:[" + logFilePath
 					+ "] failed!", ex);
@@ -263,8 +226,10 @@ public class IOUtils {
 		try {
 			writer = new FileWriter(filePath, true);
 			writer.write(content);
-			logger.debug("append content=[" + content + "] to file=["
-					+ filePath + "] success");
+			if (logger.isDebugEnabled()) {
+				logger.debug("append content=[" + content + "] to file=["
+						+ filePath + "] success");
+			}
 		} catch (IOException e) {
 			logger.error("append content=[" + content + "] to file=["
 					+ filePath + "] failed", e);
@@ -294,8 +259,10 @@ public class IOUtils {
 			srcChannel = new FileInputStream(srcPath).getChannel();
 			destChannel = new FileOutputStream(destPath).getChannel();
 			destChannel.transferFrom(srcChannel, 0, srcChannel.size());
-			logger.info("copy file from srcPath=[" + srcPath
-					+ "] to destPath=[" + destPath + "] success !");
+			if (logger.isInfoEnabled()) {
+				logger.info("copy file from srcPath=[" + srcPath
+						+ "] to destPath=[" + destPath + "] success !");
+			}
 			copySuccess = true;
 		} catch (Exception e) {
 			logger.error("copy file from srcPath=[" + srcPath
@@ -326,15 +293,19 @@ public class IOUtils {
 		File srcFolder = new File(srcFolderPath);
 		File destFolder = new File(destFolderPath);
 		if (!srcFolder.isDirectory()) {
-			logger.info("the srcFolderPath=[" + srcFolderPath
-					+ "] is not a directory path , copy file directly");
+			if (logger.isInfoEnabled()) {
+				logger.info("the srcFolderPath=[" + srcFolderPath
+						+ "] is not a directory path , copy file directly");
+			}
 			if (destFolder.exists() && !isOverwrite) {
-				logger.info("the copy file from ["
-						+ srcFolderPath
-						+ "] to ["
-						+ destFolderPath
-						+ "]cancel , since it has alreay existed and overwrite=["
-						+ isOverwrite + "] ");
+				if (logger.isInfoEnabled()) {
+					logger.info("the copy file from ["
+							+ srcFolderPath
+							+ "] to ["
+							+ destFolderPath
+							+ "]cancel , since it has alreay existed and overwrite=["
+							+ isOverwrite + "] ");
+				}
 				return false;
 			}
 			mkdirs(destFolder.getParent());
@@ -349,12 +320,14 @@ public class IOUtils {
 					olderFiles[i].delete();
 				}
 			} else {
-				logger.info("copy folder from["
-						+ srcFolderPath
-						+ "]to["
-						+ srcFolderPath
-						+ "]cancel since it has already existed with overwrite=["
-						+ isOverwrite + "]");
+				if (logger.isInfoEnabled()) {
+					logger.info("copy folder from["
+							+ srcFolderPath
+							+ "]to["
+							+ srcFolderPath
+							+ "]cancel since it has already existed with overwrite=["
+							+ isOverwrite + "]");
+				}
 				return false;
 			}
 		} else {

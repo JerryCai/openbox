@@ -79,7 +79,8 @@ public class XmlUtils {
 
 	public static Document buildXML(InputStream instream) {
 		if (null == instream) {
-			throw new RuntimeException("The input stream for builder xml is NULL , params error");
+			throw new RuntimeException(
+					"The input stream for builder xml is NULL , params error");
 		}
 		Document xml = null;
 		SAXReader xmlBuilder = new SAXReader();
@@ -98,8 +99,10 @@ public class XmlUtils {
 		InputStream instream = null;
 		try {
 			instream = new FileInputStream(xmlPath);
-			logger.info("begin to build xml from the xmlPath=[" + xmlPath
-					+ "]...");
+			if (logger.isInfoEnabled()) {
+				logger.info("begin to build xml from the xmlPath=[" + xmlPath
+						+ "]...");
+			}
 		} catch (FileNotFoundException e) {
 			String message = "build the xml from the xmlPath=[" + xmlPath
 					+ "] failed!!!";
@@ -109,13 +112,6 @@ public class XmlUtils {
 		return buildXML(instream);
 	}
 
-	/**
-	 * export the xml document to local physical file as PrettyPrint format
-	 * 
-	 * @param xml
-	 * @param localFilePath
-	 * @return whether export success
-	 */
 	public static boolean exportXmlToFile(Document xml, String localFilePath) {
 		boolean isSuccess = true;
 		// if local path is not existed , create it automatically
@@ -131,8 +127,10 @@ public class XmlUtils {
 			output = new XMLWriter(new FileWriter(localFilePath), format);
 			output.write(xml);
 			output.close();
-			logger.info("Export xml document to local file:[" + localFilePath
-					+ "] successfully!! ");
+			if (logger.isInfoEnabled()) {
+				logger.info("Export xml document to local file:["
+						+ localFilePath + "] successfully!! ");
+			}
 		} catch (IOException e) {
 			isSuccess = false;
 			logger.error("Export xml document to local file:[" + localFilePath
@@ -158,7 +156,9 @@ public class XmlUtils {
 		if (null != node) {
 			value = node.getText();
 		}
-		logger.debug("xPath=[" + xPath + "] , value=[" + value + "]");
+		if (logger.isDebugEnabled()) {
+			logger.debug("xPath=[" + xPath + "] , value=[" + value + "]");
+		}
 		return value;
 	}
 
@@ -172,7 +172,9 @@ public class XmlUtils {
 		if (null != node) {
 			value = node.getText();
 		}
-		logger.debug("xPath=[" + xPath + "] , value=[" + value + "]");
+		if (logger.isDebugEnabled()) {
+			logger.debug("xPath=[" + xPath + "] , value=[" + value + "]");
+		}
 		return value;
 	}
 
@@ -199,11 +201,13 @@ public class XmlUtils {
 		try {
 			Node node = xml.selectSingleNode(xPath);
 			value = node.getStringValue();
-			logger.debug("xPath=[" + xPath + "] , value=[" + value + "]");
+			if (logger.isDebugEnabled()) {
+				logger.debug("xPath=[" + xPath + "] , value=[" + value + "]");
+			}
 		} catch (Exception e) {
 			String msg = "xPath=[" + xPath + "] can not be found";
 			logger.error(msg, e);
-			throw new RuntimeException(msg,e);
+			throw new RuntimeException(msg, e);
 		}
 		return value;
 	}
@@ -225,8 +229,10 @@ public class XmlUtils {
 				return null;
 			}
 			value = rootElement.elements();
-			logger.debug("select xPath=[" + xPath + "] totally search ["
-					+ value.size() + "] Items");
+			if (logger.isDebugEnabled()) {
+				logger.debug("select xPath=[" + xPath + "] totally search ["
+						+ value.size() + "] Items");
+			}
 		} catch (Exception e) {
 			logger.error("xPath=[" + xPath + "] can not be found", e);
 		}
@@ -249,8 +255,10 @@ public class XmlUtils {
 				return null;
 			}
 			value = rootElement.getTextTrim();
-			logger.debug("select xPath=[" + xPath + "] totally search ["
-					+ value + "] Items");
+			if (logger.isDebugEnabled()) {
+				logger.debug("select xPath=[" + xPath + "] totally search ["
+						+ value + "] Items");
+			}
 		} catch (Exception e) {
 			logger.error("xPath=[" + xPath + "] can not be found", e);
 		}
@@ -274,8 +282,10 @@ public class XmlUtils {
 				return null;
 			}
 			value = rootElement.elements();
-			logger.debug("select xPath=[" + xPath + "] totally search ["
-					+ value.size() + "] Items");
+			if (logger.isDebugEnabled()) {
+				logger.debug("select xPath=[" + xPath + "] totally search ["
+						+ value.size() + "] Items");
+			}
 		} catch (Exception e) {
 			logger.error("xPath=[" + xPath + "] can not be found", e);
 		}
@@ -283,6 +293,8 @@ public class XmlUtils {
 	}
 
 	public static void printXml(Document xml) {
-		logger.info("\n\r" + xml.asXML() + "\n\r");
+		if (logger.isInfoEnabled()) {
+			logger.info("\n\r" + xml.asXML() + "\n\r");
+		}
 	}
 }
