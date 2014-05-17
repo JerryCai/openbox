@@ -26,21 +26,21 @@ public class FooClientException extends RuntimeException {
 
 	public static FooClientException create(
 			String msg, Throwable e) {
-		return new FooClientException("MeetingAPI-["
+		return new FooClientException("FooAPI-["
 				+ Thread.currentThread().getStackTrace()[2].getMethodName()
 				+ "]-ERROR : " + msg, e);
 	}
 
 	public static FooClientException create(
 			String msg) {
-		return new FooClientException("MeetingAPI-["
+		return new FooClientException("FooAPI-["
 				+ Thread.currentThread().getStackTrace()[2].getMethodName()
 				+ "]-ERROR : " + msg);
 	}
 
 	public static FooClientException create(
 			Throwable e) {
-		return new FooClientException("MeetingAPI-["
+		return new FooClientException("FooAPI-["
 				+ Thread.currentThread().getStackTrace()[2].getMethodName()
 				+ "]-ERROR", e);
 	}

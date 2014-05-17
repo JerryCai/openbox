@@ -25,7 +25,6 @@ public abstract class RESTfulTestCase extends AbstractTestCase {
 
 	public void tearDown() {
 		super.tearDown();
-		// releaseHttpClient();
 	}
 
 	@BeforeTest
@@ -57,8 +56,7 @@ public abstract class RESTfulTestCase extends AbstractTestCase {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	private void releaseHttpClient() {
+	public void releaseHttpClient() {
 		if (null != getHttpClient()) {
 			try {
 				getHttpClient().close();

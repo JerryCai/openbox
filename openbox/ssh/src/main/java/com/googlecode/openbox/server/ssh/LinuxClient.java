@@ -60,7 +60,7 @@ public class LinuxClient {
 					+ "],password=[*******]";
 			logger.error(msg, e);
 			throw new RuntimeException(msg, e);
-		} 
+		}
 	}
 
 	private Session getSession() {
@@ -69,7 +69,7 @@ public class LinuxClient {
 			session.requestPTY("dumb");
 			session.startShell();
 			return session;
-			
+
 		} catch (Exception e) {
 			String msg = "\nOpen SSH2 Session Error !";
 			logger.error(msg, e);
@@ -98,17 +98,18 @@ public class LinuxClient {
 			response = task.get();
 			exec.shutdown();
 			exec.awaitTermination(2, TimeUnit.DAYS);
-			logger.info("exit status -->" + session.getExitStatus());
+			if (logger.isInfoEnabled()) {
+				logger.info("exit status -->" + session.getExitStatus());
+			}
 		} catch (Exception e) {
 			String msg = "execute commd=[" + command + "]failed !";
 			throw new RuntimeException(msg, e);
-		}finally{
+		} finally {
 			out.close();
 			session.close();
 		}
 		return response;
 	}
-
 
 	public void close() {
 		if (null != conn) {
@@ -136,7 +137,9 @@ public class LinuxClient {
 									| ChannelCondition.STDOUT_DATA
 									| ChannelCondition.EXIT_STATUS, 600000);
 					if ((conditions & ChannelCondition.TIMEOUT) != 0) {
-						logger.info("wait timeout and exit now !");
+						if (logger.isInfoEnabled()) {
+							logger.info("wait timeout and exit now !");
+						}
 						break;
 					}
 					if ((conditions & ChannelCondition.EXIT_STATUS) != 0) {
@@ -144,14 +147,14 @@ public class LinuxClient {
 					}
 				}
 				int len = -1;
-				do{
-					len =stdoutReader.read(buffer);
+				do {
+					len = stdoutReader.read(buffer);
 					if (len > 0) {
 						sb.append(buffer, 0, len);
 					}
-				}while(-1 != len);
+				} while (-1 != len);
 
-				int errLen= -1;
+				int errLen = -1;
 				while (-1 != (errLen = stderrReader.read(buffer))) {
 					if (errLen > 0) {
 						sb.append(buffer, 0, errLen);
@@ -193,14 +196,5 @@ public class LinuxClient {
 
 	public String getPassword() {
 		return password;
-	}
-	
-	
-	public static void main(String ...args){
-		LinuxClient linuxClient= LinuxClient.newInstance("10.224.57.21", 22, "wbxroot", "wbx@AaR00t");
-		String response = linuxClient.executeCommand("sudo su -\n ls /usr/ -rt");
-		response = linuxClient.executeCommand("ls -lrt");
-		System.out.print("response is -->"+ response);
-		linuxClient.close();
 	}
 }

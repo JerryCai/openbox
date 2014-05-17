@@ -21,7 +21,7 @@ public class MultiThreadDemo {
 		@Override
 		public void run() {
 			HttpBuilder httpBuilder = HttpBuilder.create().setMethod("GET")
-					.setScheme("http").setHost("10.224.64.30").setPort(8999)
+					.setScheme("http").setHost("1.1.1.1").setPort(8999)
 					.addParameter("number", "" + i);
 			httpBuilder.getExecutorMonitorManager().register(cyclicBarrier);
 			httpBuilder.execute();

@@ -16,26 +16,28 @@ import com.googlecode.openbox.common.IOUtils;
 
 public abstract class AbstractSshClient implements SshClient {
 	private static final Logger logger = LogManager.getLogger();
-	
+
 	public static final String TEMP_PATH = "/var";
 	public static final String LATEEST_EXEC_SHELL_DEBUG = "/var/latest_exec_debug.sh";
 
 	public void uploadFile(OutputStream output, String fileName, File file,
 			String serverLocation) {
-		logger.info("sftp upload file [" + file + "] to target location ["
-				+ serverLocation + "] with file name is [" + fileName + "]");
+		if (logger.isInfoEnabled()) {
+			logger.info("sftp upload file [" + file + "] to target location ["
+					+ serverLocation + "] with file name is [" + fileName + "]");
+		}
 		InputStream fileContent = null;
 		try {
 			if (!file.exists()) {
-				logger.error("sftp upload local file ["
-						+ file + "] can't find !");
+				logger.error("sftp upload local file [" + file
+						+ "] can't find !");
 			}
 			fileContent = new FileInputStream(file);
 			uploadFile(output, fileName, fileContent, serverLocation);
 		} catch (FileNotFoundException e) {
 			String message = "[GSSH-FTP] ERROR as: sftp upload local file ["
 					+ file + "] can't find !";
-			logger.error(message,e);
+			logger.error(message, e);
 			throw new SshException(message, e);
 		} catch (Exception e) {
 			String message = "[GSSH-FTP] ERROR as with below errors logs:";
@@ -86,8 +88,10 @@ public abstract class AbstractSshClient implements SshClient {
 
 	public void executeShellByFTP(OutputStream output, String shell) {
 		Random random = new Random();
-		logger.info("execute shell as : ");
-		logger.info(shell);
+		if (logger.isInfoEnabled()) {
+			logger.info("execute shell as : ");
+			logger.info(shell);
+		}
 		String shellName = "tempshell_" + System.currentTimeMillis()
 				+ random.nextInt() + ".sh";
 

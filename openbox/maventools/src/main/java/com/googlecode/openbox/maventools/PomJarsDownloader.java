@@ -120,7 +120,6 @@ public class PomJarsDownloader {
 					String downloadJarPath = downloadLocation + "\\" + jarName;
 					InputStream content = response.getEntity().getContent();
 					IOUtils.createFile(downloadJarPath, content);
-//					installPomJar(dependance, downloadJarPath);
 					response.close();
 				}
 			}
@@ -206,7 +205,6 @@ public class PomJarsDownloader {
 					is.close();
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			p.destroy();
@@ -217,12 +215,6 @@ public class PomJarsDownloader {
 	public static void main(String... args) {
 		String dmsTestPlatformPomFilePath = "D:\\EclipseEE\\workspace\\test_platform\\pom.xml";
 		String dmsTestPlatformDownloadLocation = "D:\\pom_downloads\\test_platform";
-
-		// String dmsqaPomFilePath = "C:\\EclipseEE\\workspace\\dmsqa\\pom.xml";
-		// String dmsqaDownloadLocation = "C:\\pom_downloads\\dmsqa";
-
-		// String pomFilePath = dmsqaPomFilePath;
-		// String downloadLocation = dmsqaDownloadLocation;
 
 		String pomFilePath = dmsTestPlatformPomFilePath;
 		String downloadLocation = dmsTestPlatformDownloadLocation;

@@ -4,16 +4,16 @@ import com.googlecode.openbox.foo.ClientVersion;
 import com.googlecode.openbox.foo.request.AbstractFooGetRequest;
 
 public class GetFooRequest extends AbstractFooGetRequest {
-	public static final String API_PATH = "meeting";
+	public static final String API_PATH = "foo";
 
 	public static final String HADER_NAME_PASSWORD = "password";
 
-	private String meetingId;
+	private String fooid;
 
 	public GetFooRequest(String url, ClientVersion version,
-			String meetingId) {
+			String fooid) {
 		super(url, version);
-		this.meetingId = meetingId;
+		this.fooid = fooid;
 		
 		setApiPath();
 	}
@@ -28,7 +28,7 @@ public class GetFooRequest extends AbstractFooGetRequest {
 
 	@Override
 	public String getRestPath() {
-		return API_PATH + "/" + meetingId;
+		return API_PATH + "/" + fooid;
 	}
 
 }

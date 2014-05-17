@@ -70,18 +70,24 @@ public class ServerValidatorImpl implements ServerValidator {
 		for (String actual : values) {
 			for (String expected : expecteds) {
 				if (checker.check(expected, actual)) {
-					logger.info("[SUCCESS]environment check as [" + seed
-							+ "],exceptedValue=[" + expected
-							+ "],actualValue=[" + actual + "]");
+					if (logger.isInfoEnabled()) {
+						logger.info("[SUCCESS]environment check as [" + seed
+								+ "],exceptedValue=[" + expected
+								+ "],actualValue=[" + actual + "]");
+					}
 				} else {
-					logger.info("[FAIL]environment check as [" + seed
-							+ "],exceptedValue=[" + expected
-							+ "],actualValue=[" + actual + "]");
+					if (logger.isInfoEnabled()) {
+						logger.info("[FAIL]environment check as [" + seed
+								+ "],exceptedValue=[" + expected
+								+ "],actualValue=[" + actual + "]");
+					}
 					result = false;
 				}
 			}
 		}
-		logger.info("above group overall check result is [" + result + "]");
+		if (logger.isInfoEnabled()) {
+			logger.info("above group overall check result is [" + result + "]");
+		}
 		return result;
 	}
 

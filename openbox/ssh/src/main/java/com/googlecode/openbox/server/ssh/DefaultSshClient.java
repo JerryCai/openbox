@@ -48,8 +48,8 @@ public class DefaultSshClient extends AbstractSshClient {
 		this.needSource = true;
 	}
 
-	public static DefaultSshClient newInstance(String ip, int port, String username,
-			String password) {
+	public static DefaultSshClient newInstance(String ip, int port,
+			String username, String password) {
 		return new DefaultSshClient(ip, port, username, password);
 	}
 
@@ -69,12 +69,14 @@ public class DefaultSshClient extends AbstractSshClient {
 			session.setConfig(config);
 			session.setDaemonThread(false);
 			session.connect();
-			logger.info("\nssh login success to ip=[" + ip
-			 + "],port=[" + port + "],username=[" + username
-			 + "],password=[*******]");
+			if (logger.isInfoEnabled()) {
+				logger.info("\nssh login success to ip=[" + ip + "],port=["
+						+ port + "],username=[" + username
+						+ "],password=[*******]");
+			}
 		} catch (Exception e) {
-			throw new SshException("create ssh session failed with ip=["
-					+ ip + "],port=[" + port + "],username=[" + username
+			throw new SshException("create ssh session failed with ip=[" + ip
+					+ "],port=[" + port + "],username=[" + username
 					+ "],password=[" + password + "]", e);
 		}
 		return session;
@@ -103,13 +105,18 @@ public class DefaultSshClient extends AbstractSshClient {
 				out.write(buffer, 0, n);
 			}
 			out.flush();
-			logger.info("upload file [" + fileName + "] to remote ["
-					+ serverLocation + "]success");
+			if (logger.isInfoEnabled()) {
+				logger.info("upload file [" + fileName + "] to remote ["
+						+ serverLocation + "]success");
+			}
 		} catch (Exception e) {
-			throw new SshException("[GSSH - SFTP]  Exception:"
-					+ e.getMessage(), e);
+			throw new SshException(
+					"[GSSH - SFTP]  Exception:" + e.getMessage(), e);
 		} finally {
-			logger.info("[GSSH]-SFTP exit status is " + sftp.getExitStatus());
+			if (logger.isInfoEnabled()) {
+				logger.info("[GSSH]-SFTP exit status is "
+						+ sftp.getExitStatus());
+			}
 			if (null != out) {
 				try {
 					out.close();
@@ -133,12 +140,18 @@ public class DefaultSshClient extends AbstractSshClient {
 			sftp = (ChannelSftp) channel;
 			sftp.setFilenameEncoding("UTF-8");
 			sftp.get(remoteFile, localFolder + "/" + fileName);
-			logger.info("download remote file [" + remoteFile + "] to local ["
-					+ localFolder + "] with file name [" + fileName + "]");
+			if (logger.isInfoEnabled()) {
+				logger.info("download remote file [" + remoteFile
+						+ "] to local [" + localFolder + "] with file name ["
+						+ fileName + "]");
+			}
 		} catch (Exception e) {
 			throw new SshException(e);
 		} finally {
-			logger.info("[GSSH]-SFTP exit status is " + sftp.getExitStatus());
+			if (logger.isInfoEnabled()) {
+				logger.info("[GSSH]-SFTP exit status is "
+						+ sftp.getExitStatus());
+			}
 			if (null != out) {
 				try {
 					out.close();
@@ -180,7 +193,9 @@ public class DefaultSshClient extends AbstractSshClient {
 					}
 				}
 				if (exit) {
-					logger.info("##############STOP###############");
+					if (logger.isInfoEnabled()) {
+						logger.info("##############STOP###############");
+					}
 					closeSession(session, channel);
 					break;
 				}
@@ -188,8 +203,10 @@ public class DefaultSshClient extends AbstractSshClient {
 		} catch (Exception e) {
 			throw new SshException(e);
 		} finally {
-			logger.info("[GSSH]-shell exit status is "
-					+ channel.getExitStatus());
+			if (logger.isInfoEnabled()) {
+				logger.info("[GSSH]-shell exit status is "
+						+ channel.getExitStatus());
+			}
 			closeSession(session, channel);
 		}
 	}
@@ -252,8 +269,10 @@ public class DefaultSshClient extends AbstractSshClient {
 		ChannelExec channel;
 		InputStream in;
 		response = new StringBuilder();
-		logger.info("execute below commands:");
-		logger.info(command);
+		if (logger.isInfoEnabled()) {
+			logger.info("execute below commands:");
+			logger.info(command);
+		}
 		session = null;
 		channel = null;
 		in = null;
@@ -317,7 +336,7 @@ public class DefaultSshClient extends AbstractSshClient {
 	}
 
 	protected String wrapperInput(String input) {
-		if(!needSource){
+		if (!needSource) {
 			return input;
 		}
 		String output = fixIEIssue(input);

@@ -7,9 +7,6 @@ Notes:
   options--needDownload [true | false ] , its default value is [false]
 
 
-you can download jar from link: 
-http://10.224.58.80/xiaolong/maventools.jar
-
 sample as:
 
 java -jar maventools.jar C:\\EclipseEE\\workspace\\dms_test_platform\\pom.xml C:\\pom_downloads\\test_platform 

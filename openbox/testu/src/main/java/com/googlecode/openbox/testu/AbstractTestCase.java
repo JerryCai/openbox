@@ -53,8 +53,10 @@ public abstract class AbstractTestCase extends TestCase {
 
 	public void assertTestResult(TestResult testResult) {
 		if (testResult.isSuccess()) {
-			logger.info("\n\r^^^^^^^---test case [" + getTestClassName() + "~~"
-					+ getCaseName() + "] passed---^^^^^^^^");
+			if (logger.isInfoEnabled()) {
+				logger.info("\n\r^^^^^^^---test case [" + getTestClassName()
+						+ "~~" + getCaseName() + "] passed---^^^^^^^^");
+			}
 		} else {
 			logger.error("\n\r!!!!!!----test case [" + getTestClassName()
 					+ "~~" + getCaseName() + "] failed---!!!!!!!!");

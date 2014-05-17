@@ -22,7 +22,7 @@ public class DefaultFooClient extends AbstractFooClient {
 	private String url;
 	private ClientVersion version;
 
-	public static final String DEFAULT_USER_AGENT = "MeetingClient-"
+	public static final String DEFAULT_USER_AGENT = "DemoClient-"
 			+ ClientVersion.V1;
 
 	private DefaultFooClient(CloseableHttpClient httpClient, String url,

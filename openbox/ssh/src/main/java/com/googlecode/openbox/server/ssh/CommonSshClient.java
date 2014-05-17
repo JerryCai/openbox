@@ -23,8 +23,8 @@ public class CommonSshClient extends DefaultSshClient {
 		super(ip, port, username, password);
 	}
 
-	public static CommonSshClient newInstance(String ip, int port, String username,
-			String password) {
+	public static CommonSshClient newInstance(String ip, int port,
+			String username, String password) {
 		return new CommonSshClient(ip, port, username, password);
 	}
 
@@ -36,9 +36,11 @@ public class CommonSshClient extends DefaultSshClient {
 		if (!isAuthenticated) {
 			throw new IOException("Authentication failed.");
 		}
-		logger.info("\nssh login success to ip=[" + this.getIp() + "],port=["
-				+ this.getPort() + "],username=[" + this.getUsername()
-				+ "],password=[*******]");
+		if (logger.isInfoEnabled()) {
+			logger.info("\nssh login success to ip=[" + this.getIp()
+					+ "],port=[" + this.getPort() + "],username=["
+					+ this.getUsername() + "],password=[*******]");
+		}
 		return conn;
 	}
 
@@ -72,7 +74,9 @@ public class CommonSshClient extends DefaultSshClient {
 			out.close();
 			task.get();
 			exec.shutdown();
-			logger.info("exit status -->" + session.getExitStatus());
+			if (logger.isInfoEnabled()) {
+				logger.info("exit status -->" + session.getExitStatus());
+			}
 		} catch (Exception e) {
 			String msg = "execute commds=[" + wrappedCommand + "]failed !";
 			throw new SshException(msg, e);
@@ -99,7 +103,9 @@ public class CommonSshClient extends DefaultSshClient {
 									| ChannelCondition.STDOUT_DATA
 									| ChannelCondition.EXIT_STATUS, 600000);
 					if ((conditions & ChannelCondition.TIMEOUT) != 0) {
-						logger.info("wait timeout and exit now !");
+						if (logger.isInfoEnabled()) {
+							logger.info("wait timeout and exit now !");
+						}
 						break;
 					}
 					if ((conditions & ChannelCondition.EXIT_STATUS) != 0) {
@@ -119,8 +125,9 @@ public class CommonSshClient extends DefaultSshClient {
 						output.write(buffer, 0, len);
 				}
 			}
-
-			logger.info("####################################");
+			if (logger.isInfoEnabled()) {
+				logger.info("####################################");
+			}
 			return "SUCCESS";
 		}
 

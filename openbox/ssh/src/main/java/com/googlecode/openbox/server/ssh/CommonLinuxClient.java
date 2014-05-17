@@ -158,24 +158,4 @@ public class CommonLinuxClient {
 		return password;
 	}
 
-	public static void main(String... args) {
-		CommonLinuxClient linuxClient = CommonLinuxClient.newInstance(
-				"10.224.57.21", 22, "wbxroot", "wbx@AaR00t");
-		String response = linuxClient.execute("sudo su -");
-		System.out.print("response is -->" + response);
-
-		response = linuxClient.execute("echo 'hello world !!!'");
-		System.out.print("response is -->" + response);
-		
-		response = linuxClient.execute("ls /usr/ -rt");
-		System.out.print("response is -->" + response);
-
-		response = linuxClient.execute("exit 0");
-		System.out.print("response is -->" + response);
-
-		response = linuxClient.execute("exit 0");
-		System.out.print("response is -->" + response);
-
-		linuxClient.close();
-	}
 }

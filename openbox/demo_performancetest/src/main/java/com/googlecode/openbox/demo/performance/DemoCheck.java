@@ -14,7 +14,7 @@ public class DemoCheck {
 		param.setId("jerry-id-0002");
 
 		HttpBuilder.create().setMethod("POST")
-				.setUrl("http://10.79.154.32:8999/proxy/concurrency/meeting")
+				.setUrl("http://1.1.1.1:8999/proxy/concurrency/meeting")
 				.addHeader("DCName", "dc2")
 				.setText(GsonFactory.createGson().toJson(param))
 				.setContentEncoding("UTF-8")
