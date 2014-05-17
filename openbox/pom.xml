@@ -93,4 +93,22 @@
 		<module>demo_restfulclient</module>
 		<module>demo_performancetest</module>
 	</modules>
+	<profiles>
+		<profile>
+			<id>p_release</id>
+			<modules>
+				<module>common</module>
+				<module>http</module>
+				<module>config</module>
+				<module>testu</module>
+				<module>dbclient</module>
+				<module>jsonpool</module>
+				<module>ssh</module>
+				<module>cors</module>
+				<module>webcontainer</module>
+				<module>log</module>
+				<module>maventools</module>
+			</modules>
+		</profile>
+	</profiles>
 </project>
