@@ -1,15 +1,26 @@
 package com.googlecode.openbox.http.page;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import com.googlecode.openbox.common.IOUtils;
+import com.googlecode.openbox.common.UtilsAPI;
 import com.googlecode.openbox.http.HttpClientException;
 import com.googlecode.openbox.http.httpbuilder.HttpBuilder;
 import com.googlecode.openbox.http.httpbuilder.HttpBuilder.Response;
 
 public final class LinkClicker {
+	private static final Logger logger = LogManager.getLogger();
+
 	private LinkClicker parent;
 	private CloseableHttpClient httpClient;
 	private String link;
@@ -43,13 +54,58 @@ public final class LinkClicker {
 
 		try {
 			clicked = true;
-			response = HttpBuilder.create(getHttpClient()).setUrl(link)
-					.setMethod(HttpGet.METHOD_NAME).setRequestConfig(RequestConfig.custom()
-							.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build()).execute();
+			response = HttpBuilder
+					.create(getHttpClient())
+					.setUrl(link)
+					.setMethod(HttpGet.METHOD_NAME)
+					.setRequestConfig(
+							RequestConfig
+									.custom()
+									.setCookieSpec(
+											CookieSpecs.BROWSER_COMPATIBILITY)
+									.build()).execute();
 			return this;
 		} catch (Exception e) {
 			throw HttpClientException.create("click page link [" + link
 					+ "] error !!!", e);
+		}
+	}
+
+	public String download(String localFolder) {
+		HttpGet getRequest = new HttpGet(link);
+		CloseableHttpResponse response = null;
+		InputStream downloadStream = null;
+		try {
+			getRequest.setConfig(RequestConfig.custom()
+					.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build());
+			response = HttpClients.createDefault().execute(getRequest);
+			downloadStream = response.getEntity().getContent();
+			String location = localFolder + IOUtils.PATH_SPLIT
+					+ UtilsAPI.getLastPath(link);
+			IOUtils.createFile(location, downloadStream);
+			return location;
+		} catch (Exception e) {
+			String msg = "download webex meeting client error !";
+			logger.error(msg, e);
+			throw HttpClientException.create(msg, e);
+		} finally {
+			if (null != getRequest) {
+				getRequest.releaseConnection();
+			}
+			if (null != response) {
+				try {
+					response.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (null != downloadStream) {
+				try {
+					downloadStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
