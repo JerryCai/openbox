@@ -7,7 +7,7 @@
 	</parent>
 	<artifactId>testu</artifactId>
 	<name>TestU</name>
-	<description>TestU is for Cisco Webex common RESTful API test framework</description>
+	<description>TestU is for common RESTful API test framework</description>
 	<dependencies>
 		<dependency>
 			<groupId>com.googlecode.openbox</groupId>
