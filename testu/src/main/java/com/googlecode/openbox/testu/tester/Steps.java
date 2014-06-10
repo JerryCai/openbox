@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD })
 @Inherited
 @Documented
-public @interface CaseName {
+public @interface Steps {
 
-	public String value();
+	public String[] value() default {};
 }

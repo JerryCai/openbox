@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD })
 @Inherited
 @Documented
-public @interface CaseName {
+public @interface ParentCaseName {
 
 	public String value();
 }
