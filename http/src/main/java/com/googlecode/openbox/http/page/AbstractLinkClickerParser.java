@@ -17,7 +17,7 @@ public abstract class AbstractLinkClickerParser implements LinkClickerParser {
 			Document html = Jsoup.parse(content);
 			String host = getHost(parent.getLink());
 			String nextLink = parserLink(host, html);
-			return LinkClicker.newInstance(parent, nextLink);
+			return DefaultLinkClicker.newInstance(parent, nextLink);
 		} catch (Exception e) {
 			throw HttpClientException.create(
 					"Parser next link jump error !!!", e);
