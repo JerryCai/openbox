@@ -294,13 +294,13 @@ public class IOUtils {
 		File destFolder = new File(destFolderPath);
 		if (!srcFolder.isDirectory()) {
 			if (logger.isInfoEnabled()) {
-				logger.info("the srcFolderPath=[" + srcFolderPath
+				logger.info("the srcFolderPath=[" + srcFolder
 						+ "] is not a directory path , copy file directly");
 			}
 			if (destFolder.exists() && !isOverwrite) {
 				if (logger.isInfoEnabled()) {
 					logger.info("the copy file from ["
-							+ srcFolderPath
+							+ srcFolder
 							+ "] to ["
 							+ destFolderPath
 							+ "]cancel , since it has alreay existed and overwrite=["
@@ -309,7 +309,7 @@ public class IOUtils {
 				return false;
 			}
 			mkdirs(destFolder.getParent());
-			copyFile(srcFolderPath, destFolderPath);
+			copyFile(srcFolder.getPath(), destFolderPath);
 			return true;
 		}
 		if (destFolder.exists()) {
@@ -322,9 +322,9 @@ public class IOUtils {
 			} else {
 				if (logger.isInfoEnabled()) {
 					logger.info("copy folder from["
-							+ srcFolderPath
+							+ srcFolder
 							+ "]to["
-							+ srcFolderPath
+							+ srcFolder
 							+ "]cancel since it has already existed with overwrite=["
 							+ isOverwrite + "]");
 				}
@@ -337,7 +337,7 @@ public class IOUtils {
 		File[] files = srcFolder.listFiles();
 		for (int i = 0; i < files.length; i++) {
 			String srcSubPath = files[i].getPath();
-			String destSubPath = srcSubPath.replace(srcFolderPath,
+			String destSubPath = srcSubPath.replace(srcFolder.getPath(),
 					destFolderPath);
 			if (files[i].isDirectory()) {
 				copyFolder(srcSubPath, destSubPath, isOverwrite);
