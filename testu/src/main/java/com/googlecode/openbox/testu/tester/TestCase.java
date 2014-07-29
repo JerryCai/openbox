@@ -3,34 +3,56 @@ package com.googlecode.openbox.testu.tester;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gson.annotations.Expose;
 
 public class TestCase {
+	@Expose
 	private String name;
-	private QA owner;
+	@Expose
+	private Tester owner;
+	@Expose(serialize = false, deserialize = false)
+	private QA qa;
+	@Expose
+	private String[] descriptions;
+	@Expose(serialize = false, deserialize = false)
 	private CaseDescriptions caseDescriptions;
+	@Expose(serialize = false, deserialize = false)
 	private TestCase parent;
+	@Expose
 	private List<TestCase> children;
-	private Preconditions preconditions;
-	private Steps steps;
-	private ExpectedResults expectedResults;
-	private TestCaseResults actualResults;
+	@Expose
+	private String[] preconditions;
+	@Expose(serialize = false, deserialize = false)
+	private Preconditions casePreconditions;
+	@Expose
+	private String[] steps;
+	private Steps caseSteps;
+	@Expose(serialize = false, deserialize = false)
+	private String[] expectedResults;
+	@Expose(serialize = false, deserialize = false)
+	private ExpectedResults caseExpectedResults;
+	@Expose(serialize = false, deserialize = false)
+	private Bugs bugLinks;
+	@Expose
+	private TestCaseResults caseActualResults;
+	@Expose
 	private String logs;
-		
-	private TestCase(String name){
+
+	private TestCase(String name) {
 		this.name = name;
 		this.children = new LinkedList<TestCase>();
 	}
-	
-	public static TestCase create(String caseName){
+
+	public static TestCase create(String caseName) {
 		return new TestCase(caseName);
 	}
-		
+
 	public void addChildTestCase(TestCase child) {
 		child.setParent(this);
 		children.add(child);
 	}
-	
-	public void removeChildTestCase(TestCase child){
+
+	public void removeChildTestCase(TestCase child) {
 		child.setParent(null);
 		children.remove(child);
 	}
@@ -51,7 +73,6 @@ public class TestCase {
 		this.name = name;
 	}
 
-
 	public TestCase getParent() {
 		return parent;
 	}
@@ -69,35 +90,44 @@ public class TestCase {
 	}
 
 	public Preconditions getPreconditions() {
-		return preconditions;
+		return casePreconditions;
 	}
 
 	public void setPreconditions(Preconditions preconditions) {
-		this.preconditions = preconditions;
+		this.casePreconditions = preconditions;
+		if (null != preconditions) {
+			this.preconditions = preconditions.value();
+		}
 	}
 
 	public Steps getSteps() {
-		return steps;
+		return caseSteps;
 	}
 
 	public void setSteps(Steps steps) {
-		this.steps = steps;
+		this.caseSteps = steps;
+		if(null != steps){
+			this.steps = steps.value();
+		}
 	}
 
 	public ExpectedResults getExpectedResults() {
-		return expectedResults;
+		return caseExpectedResults;
 	}
 
 	public void setExpectedResults(ExpectedResults expectedResults) {
-		this.expectedResults = expectedResults;
+		this.caseExpectedResults = expectedResults;
+		if (null != expectedResults) {
+			this.expectedResults = expectedResults.value();
+		}
 	}
 
 	public TestCaseResults getActualResults() {
-		return actualResults;
+		return caseActualResults;
 	}
 
 	public void setActualResults(TestCaseResults actualResults) {
-		this.actualResults = actualResults;
+		this.caseActualResults = actualResults;
 	}
 
 	public String getLogs() {
@@ -113,28 +143,45 @@ public class TestCase {
 	}
 
 	public QA getOwner() {
-		if(null != owner){
-			return owner;
+		if (null != qa) {
+			return qa;
 		}
 		TestCase parent = getParent();
-		if(null != parent){
+		if (null != parent) {
 			return parent.getOwner();
 		}
 		return null;
 	}
 
 	public void setOwner(QA owner) {
-		this.owner = owner;
+		this.qa = owner;
+		if(null!= owner){
+			this.owner = new Tester();
+			this.owner.setName(owner.name());
+			this.owner.setEmail(owner.email());
+			this.owner.setId(owner.id());
+		}
+	}
+
+	public Bugs getBugs() {
+		return bugLinks;
+	}
+
+	public void setBugs(Bugs bugs) {
+		this.bugLinks = bugs;
 	}
 
 	public void setCaseDescriptions(CaseDescriptions caseDescriptions) {
 		this.caseDescriptions = caseDescriptions;
+		if(null != caseDescriptions){
+			descriptions = caseDescriptions.value();
+		}
 	}
-	
-	public int getCaseLevel(){
+
+	public int getCaseLevel() {
 		TestCase parent = getParent();
-		if(null != parent){
-			return parent.getCaseLevel()+1;
+		if (null != parent) {
+			return parent.getCaseLevel() + 1;
 		}
 		return 0;
 	}

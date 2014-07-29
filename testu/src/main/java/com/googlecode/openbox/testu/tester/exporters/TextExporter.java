@@ -41,7 +41,7 @@ public class TextExporter implements TestCasesExporter {
 
 		Preconditions preconditions = testCase.getPreconditions();
 		if (null != preconditions) {
-			appendCaseLine(sb, level+1, "Preconditions:");
+			appendCaseLine(sb, level + 1, "Preconditions:");
 			for (String precondition : preconditions.value()) {
 				appendCaseLine(sb, level + 2, precondition);
 			}
@@ -49,7 +49,7 @@ public class TextExporter implements TestCasesExporter {
 
 		Steps steps = testCase.getSteps();
 		if (null != steps) {
-			appendCaseLine(sb, level+1, "Steps:");
+			appendCaseLine(sb, level + 1, "Steps:");
 			for (String step : steps.value()) {
 				appendCaseLine(sb, level + 2, step);
 			}
@@ -57,7 +57,7 @@ public class TextExporter implements TestCasesExporter {
 
 		ExpectedResults expectedResults = testCase.getExpectedResults();
 		if (null != expectedResults) {
-			appendCaseLine(sb, level+1, "ExpectedResults:");
+			appendCaseLine(sb, level + 1, "ExpectedResults:");
 			for (String expectedResult : expectedResults.value()) {
 				appendCaseLine(sb, level + 2, expectedResult);
 			}

@@ -7,9 +7,11 @@ import org.apache.logging.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Listeners;
 
 import com.googlecode.openbox.common.DateHelper;
 
+@Listeners({ com.googlecode.openbox.testu.tester.TestUHtmlReporter.class})
 public abstract class AbstractTestCase extends TestCase {
 	private static final Logger logger = LogManager.getLogger();
 

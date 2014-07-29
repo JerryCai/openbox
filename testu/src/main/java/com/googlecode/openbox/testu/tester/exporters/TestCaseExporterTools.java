@@ -9,7 +9,9 @@ public class TestCaseExporterTools {
 	public static void main(String... args) {
 		TestCasesManager tcm = DefaultTestCasesManager.newInstance();
 		tcm.addTestCasesSelector(new DemoTestCasesSelector());
-		tcm.addTestCasesExporter(TextExporter.newInstance("D:\\TestCases.txt"));
+//		tcm.addTestCasesExporter(JsonTextExporter.newInstance("D:\\JsonTextExporter.json"));		
+//		tcm.addTestCasesExporter(TextExporter.newInstance("D:\\TextExporter.txt"));
+		tcm.addTestCasesExporter(HtmlTextExporter.newInstance("D:\\htmlreporter"));
 		tcm.execute();
 
 	}

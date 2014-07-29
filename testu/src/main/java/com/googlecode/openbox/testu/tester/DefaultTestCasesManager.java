@@ -46,7 +46,7 @@ public class DefaultTestCasesManager implements TestCasesManager {
 		for (TestCasesSelector selector : selectors) {
 			execute(selector);
 		}
-
+		testCasePool.exportCaseTreeRoot();
 		for (TestCasesExporter exporter : exporters) {
 			exporter.export(testCasePool);
 		}
@@ -116,7 +116,7 @@ public class DefaultTestCasesManager implements TestCasesManager {
 		}
 
 		QA moduleLevelQA = clss.getAnnotation(QA.class);
-
+		
 		Method[] methods = clss.getDeclaredMethods();
 		for (Method method : methods) {
 			CaseName caseName = method.getAnnotation(CaseName.class);
@@ -153,12 +153,16 @@ public class DefaultTestCasesManager implements TestCasesManager {
 					.getAnnotation(ExpectedResults.class));
 			ActualResults actualResults = method
 					.getAnnotation(ActualResults.class);
-			if (null == actualResults) {
-				testCase.setActualResults(TestCaseResults.DEFAULT_SUCCESS);
-			} else {
+			if (null != actualResults) {
 				TestCaseResults actualTestResult = TestCaseResults
-						.newInstance(true);
+						.newInstance();
 				actualTestResult.setActualResults(actualResults);
+				testCase.setActualResults(actualTestResult);
+			}
+
+			Bugs bugs = method.getAnnotation(Bugs.class);
+			if (null != bugs) {
+				testCase.setBugs(bugs);
 			}
 		}
 
