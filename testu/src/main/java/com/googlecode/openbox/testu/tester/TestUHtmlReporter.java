@@ -11,6 +11,8 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.internal.IResultListener2;
 
+import com.googlecode.openbox.common.IOUtils;
+import com.googlecode.openbox.common.UtilsAPI;
 import com.googlecode.openbox.testu.tester.TestCaseResults.Result;
 import com.googlecode.openbox.testu.tester.exporters.HtmlTextExporter;
 
@@ -53,8 +55,9 @@ public class TestUHtmlReporter implements IResultListener2 {
 
 	@Override
 	public void onFinish(ITestContext testContext) {
+		String testngOutputPath = testContext.getOutputDirectory();
 		TestCasesExporter htmlTextExporter = HtmlTextExporter
-				.newInstance(testContext.getOutputDirectory());
+				.newInstance(UtilsAPI.getParentPath(testngOutputPath,IOUtils.PATH_SPLIT)+IOUtils.PATH_SPLIT+"testu"+IOUtils.PATH_SPLIT+"testreport");
 		htmlTextExporter.export(testCasePool);
 	}
 
