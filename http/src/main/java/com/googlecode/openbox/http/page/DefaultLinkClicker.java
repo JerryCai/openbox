@@ -87,7 +87,7 @@ public class DefaultLinkClicker implements LinkClicker {
 			IOUtils.createFile(location, downloadStream);
 			return location;
 		} catch (Exception e) {
-			String msg = "download webex meeting client error !";
+			String msg = "download error !";
 			logger.error(msg, e);
 			throw HttpClientException.create(msg, e);
 		} finally {
