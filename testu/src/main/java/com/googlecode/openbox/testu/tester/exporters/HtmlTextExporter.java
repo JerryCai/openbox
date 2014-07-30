@@ -36,23 +36,23 @@ public class HtmlTextExporter implements TestCasesExporter {
 
 	@Override
 	public void export(TestCasePool testCasePool) {
+		String srcFolderPath = getClass().getClassLoader().getResource("reporter/html").getFile();
+		if(StringUtils.isEmpty(exportLocalFile)){
+			exportLocalFile = UtilsAPI.getCurrentWorkingPath()+IOUtils.PATH_SPLIT+"testreport";
+		}
+		IOUtils.copyFolder(srcFolderPath, exportLocalFile);
+		
 		TestCase rootTestCase = testCasePool.exportCaseTreeRoot();
 		TestCaseVO testCaseVO = convertToTestCaseVO(rootTestCase);
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		String content = gson.toJson(testCaseVO);
-		String appJsFile = HtmlTextExporter.class.getClassLoader().getResource("reporter/html/app.js").getFile();
+		String appJsFile = exportLocalFile + IOUtils.PATH_SPLIT+ "app.js";
 		IOUtils.deleteFile(appJsFile);
 		String start = ContentLoader.getContent("reporter/html/start.fm");
 		IOUtils.appendContentToFile(appJsFile, start);
 		IOUtils.appendContentToFile(appJsFile, content.replaceAll("'", "\'"));
 		String end = ContentLoader.getContent("reporter/html/end.fm");
 		IOUtils.appendContentToFile(appJsFile, end);
-		
-		String srcFolderPath = HtmlTextExporter.class.getClassLoader().getResource("reporter/html").getFile();
-		if(StringUtils.isEmpty(exportLocalFile)){
-			exportLocalFile = "testu/testreport";
-		}
-		IOUtils.copyFolder(srcFolderPath, exportLocalFile);
 	}
 
 	private TestCaseVO convertToTestCaseVO(TestCase testCase) {
