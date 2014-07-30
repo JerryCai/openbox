@@ -6,6 +6,7 @@
 		<version>2.0.0</version>
 	</parent>
 	<artifactId>demo_restfulclient</artifactId>
+  <version>2.0.1-SNAPSHOT</version>
 	<name>DemoClient</name>
 	<description>Demo Client</description>
 	<dependencies>

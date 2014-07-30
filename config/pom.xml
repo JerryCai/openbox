@@ -6,6 +6,7 @@
 		<version>2.0.0</version>
 	</parent>
 	<artifactId>config</artifactId>
+  <version>2.0.1-SNAPSHOT</version>
 	<name>ConfigLoader</name>
 	<description>Config Loader for load the common config </description>
 	<dependencies>

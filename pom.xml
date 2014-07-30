@@ -20,9 +20,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:https://openbox.googlecode.com/svn/tags/2.0.0</connection>
-		<developerConnection>scm:svn:https://openbox.googlecode.com/svn/tags/2.0.0</developerConnection>
-		<url>https://openbox.googlecode.com/svn/tags/2.0.0</url>
+		<connection>scm:svn:https://openbox.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://openbox.googlecode.com/svn/trunk/</developerConnection>
+		<url>https://openbox.googlecode.com/svn/trunk/</url>
 	</scm>
 	<developers>
 		<developer>
