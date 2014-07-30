@@ -55,12 +55,7 @@ public class TestngSuiteBuilder {
 		appendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		appendLine("<!DOCTYPE suite SYSTEM \"http://testng.org/testng-1.0.dtd\">");
 		appendLine("<suite name=\"" + suiteName + "\" parallel=\"none\">");
-		appendLine("  <test name=\"" + testModuleName
-				+ "\" preserve-order=\"true\">");
-		appendLine("    <classes>");
 		searchTestngClass(file, startPackage);
-		appendLine("    </classes>");
-		appendLine("  </test> <!-- Test -->");
 		appendLine("</suite> <!-- Suite -->");
 	}
 
@@ -82,7 +77,14 @@ public class TestngSuiteBuilder {
 					int endPP = path.indexOf(CLASS_POSTFIX);
 					String className = path.substring(pp, endPP);
 					className = className.replaceAll("\\\\", ".");
+					appendLine("  <test name=\"" + strName
+							+ "\" preserve-order=\"true\">");
+					appendLine("    <classes>");
 					appendLine("      <class name=\"" + className + "\"/>");
+					appendLine("    </classes>");
+					appendLine("  </test> <!-- Test -->");
+					
+					
 				}
 			}
 		}
