@@ -31,9 +31,10 @@ public final class TestCasePoolImpl implements TestCasePool {
 		String key = caseName;
 		if (!testCasePool.containsKey(key)) {
 			testCasePool.put(key, TestCase.create(key));
-		} else {
-			if (logger.isWarnEnabled()) {
-				logger.warn("The test case with caseName =["
+		} 
+		else {
+			if (logger.isDebugEnabled()) {
+				logger.debug("The test case with caseName =["
 						+ caseName
 						+ "] has already been used , \nIf this case is not parent test case , You should double check your test case name to keep unique , \nIf it is parent test case , you can ignore this warning message !");
 			}

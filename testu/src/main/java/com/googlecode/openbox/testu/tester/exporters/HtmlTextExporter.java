@@ -1,5 +1,9 @@
 package com.googlecode.openbox.testu.tester.exporters;
 
+import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -9,6 +13,7 @@ import com.google.gson.GsonBuilder;
 import com.googlecode.openbox.common.IOUtils;
 import com.googlecode.openbox.common.UtilsAPI;
 import com.googlecode.openbox.config.ContentLoader;
+import com.googlecode.openbox.testu.TestUException;
 import com.googlecode.openbox.testu.tester.ActualResults;
 import com.googlecode.openbox.testu.tester.Bugs;
 import com.googlecode.openbox.testu.tester.CaseDescriptions;
@@ -36,11 +41,27 @@ public class HtmlTextExporter implements TestCasesExporter {
 
 	@Override
 	public void export(TestCasePool testCasePool) {
-		String srcFolderPath = getClass().getClassLoader().getResource("reporter/html").getFile();
 		if(StringUtils.isEmpty(exportLocalFile)){
 			exportLocalFile = UtilsAPI.getCurrentWorkingPath()+IOUtils.PATH_SPLIT+"testreport";
 		}
-		IOUtils.copyFolder(srcFolderPath, exportLocalFile);
+		
+		URL url = getClass().getClassLoader().getResource("reporter/html");
+		URLConnection urlConnection = null;
+		try {
+			urlConnection = url.openConnection();
+		} catch (IOException e) {
+			throw TestUException.create("get reporter/html url from target or jar error !", e);
+		}
+		
+		if(urlConnection instanceof JarURLConnection){
+			try {
+				IOUtils.copyFolderFromJar((JarURLConnection)urlConnection, exportLocalFile);
+			} catch (IOException e) {
+				throw TestUException.create("copy testu html report framework resource from jar error !", e);
+			}
+		}else{
+			IOUtils.copyFolder(url.getFile(), exportLocalFile);
+		}
 		
 		TestCase rootTestCase = testCasePool.exportCaseTreeRoot();
 		TestCaseVO testCaseVO = convertToTestCaseVO(rootTestCase);
