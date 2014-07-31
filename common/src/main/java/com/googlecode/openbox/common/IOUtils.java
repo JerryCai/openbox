@@ -11,10 +11,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.JarURLConnection;
 import java.net.URLDecoder;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
@@ -22,7 +24,10 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -286,6 +291,82 @@ public class IOUtils {
 
 	public static boolean copyFolder(String srcFolderPath, String destFolderPath) {
 		return copyFolder(srcFolderPath, destFolderPath, true);
+	}
+
+	public static boolean copyFolderFromJar(JarURLConnection srcFolderPath,
+			String destFolderPath) throws IOException{
+		return copyFolderFromJar(srcFolderPath, destFolderPath, true);
+	}
+
+	public static boolean copyFolderFromJar(JarURLConnection jarConnection,
+			String destFolderPath, boolean isOverwrite) throws IOException{
+
+		final JarFile jarFile = jarConnection.getJarFile();
+		if(isOverwrite){
+			IOUtils.deleteFile(destFolderPath);
+		}
+
+		for (final Enumeration<JarEntry> e = jarFile.entries(); e
+				.hasMoreElements();) {
+			final JarEntry entry = e.nextElement();
+			if (entry.getName().startsWith(jarConnection.getEntryName())) {
+				String filename = StringUtils.removeStart(
+						entry.getName(), 
+						jarConnection.getEntryName());
+
+				if(filename.endsWith("/")){
+					filename = filename.substring(0, filename.length()-1);
+				}
+				final File f = new File(destFolderPath, filename);
+				if (!entry.isDirectory()) {
+					final InputStream entryInputStream = jarFile
+							.getInputStream(entry);
+					if (!copyStream(entryInputStream, f)) {
+						return false;
+					}
+					entryInputStream.close();
+				} else {
+					if (!ensureDirectoryExists(f)) {
+						throw new IOException("Could not create directory: "
+								+ f.getAbsolutePath());
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	private static boolean copyStream(final InputStream is, final File f) {
+		try {
+			return copyStream(is, new FileOutputStream(f));
+		} catch (final FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	private static boolean copyStream(final InputStream is,
+			final OutputStream os) {
+		try {
+			final byte[] buf = new byte[1024];
+
+			int len = 0;
+			while ((len = is.read(buf)) > 0) {
+				os.write(buf, 0, len);
+			}
+			is.close();
+			os.close();
+			return true;
+		} catch (final IOException e) {
+			logger.error(e);
+		}
+		return false;
+	}
+	
+	
+
+	public static boolean ensureDirectoryExists(final File f) {
+		return f.exists() || f.mkdirs();
 	}
 
 	public static boolean copyFolder(String srcFolderPath,
