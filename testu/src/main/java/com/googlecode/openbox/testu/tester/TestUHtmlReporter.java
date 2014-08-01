@@ -152,12 +152,12 @@ public class TestUHtmlReporter implements IResultListener2 {
 					+ (tr.getEndMillis() - tr.getStartMillis()) + " ms");
 			StringBuilder msgBuilder = new StringBuilder();
 			msgBuilder.append("test class: [").append(className)
-					.append("]<br>").append("test name: [")
-					.append(method.getName()).append("]<br>")
+					.append("]\n").append("test name: [")
+					.append(method.getName()).append("]\n")
 					.append("execute result: [")
-					.append(actualTestResult.getResult()).append("]<br>")
+					.append(actualTestResult.getResult()).append("]\n")
 					.append("message: [").append(tr.getThrowable())
-					.append("]<br>");
+					.append("]\n");
 			actualTestResult.setMsg(msgBuilder.toString());
 			ActualResults actualResults = method
 					.getAnnotation(ActualResults.class);
@@ -170,7 +170,7 @@ public class TestUHtmlReporter implements IResultListener2 {
 			List<String> logs = Reporter.getOutput(tr);
 			StringBuilder logsBuilder = new StringBuilder();
 			for (String log : logs) {
-				logsBuilder.append(log).append("<br>");
+				logsBuilder.append(log).append("\n");
 			}
 			testCase.setLogs(logsBuilder.toString());
 
