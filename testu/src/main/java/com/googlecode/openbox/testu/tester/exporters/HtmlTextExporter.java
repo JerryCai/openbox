@@ -140,9 +140,9 @@ public class HtmlTextExporter implements TestCasesExporter {
 		if(null != testCaseResult){
 			ActualResults actualResults =  testCaseResult.getActualResults();
 			if(null != actualResults){
-				msgBuilder.append("Actual Result:<br>");
+				msgBuilder.append("Actual Result:\n");
 				for(String actualResult:actualResults.value()){
-					msgBuilder.append(actualResult).append("<br>");
+					msgBuilder.append(actualResult).append("\n");
 				}
 			}
 			String msg = testCaseResult.getMsg();
@@ -217,7 +217,7 @@ public class HtmlTextExporter implements TestCasesExporter {
 		if(null == input){
 			return "";
 		}
-		return StringUtils.replaceEach(input,new String[]{"'","\"","\n","\r"},new String[]{"","","<br>","<br>"});
+		return StringUtils.replaceEach(input,new String[]{"'","\"","\n","\r"},new String[]{"","","\\n","\\r"});
 	}
 	public static void main(String ...args){
 		String input = "we can't \nfind it !";
