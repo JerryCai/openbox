@@ -12,12 +12,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.googlecode.openbox.common.IOUtils;
 import com.googlecode.openbox.common.UtilsAPI;
+import com.googlecode.openbox.common.context.CommonContext;
 import com.googlecode.openbox.config.ContentLoader;
 import com.googlecode.openbox.testu.TestUException;
 import com.googlecode.openbox.testu.tester.ActualResults;
 import com.googlecode.openbox.testu.tester.Bugs;
 import com.googlecode.openbox.testu.tester.CaseDescriptions;
 import com.googlecode.openbox.testu.tester.ExpectedResults;
+import com.googlecode.openbox.testu.tester.OverallTestResult;
 import com.googlecode.openbox.testu.tester.Preconditions;
 import com.googlecode.openbox.testu.tester.QA;
 import com.googlecode.openbox.testu.tester.Steps;
@@ -28,7 +30,7 @@ import com.googlecode.openbox.testu.tester.TestCaseResults.Result;
 import com.googlecode.openbox.testu.tester.TestCasesExporter;
 
 public class HtmlTextExporter implements TestCasesExporter {
-
+	public static final String CONTEXT_ID="OverallTestResult";
 	private String exportLocalFile;
 
 	private HtmlTextExporter(String exportLocalFile) {
@@ -40,7 +42,7 @@ public class HtmlTextExporter implements TestCasesExporter {
 	}
 
 	@Override
-	public void export(TestCasePool testCasePool) {
+	public void export(TestCasePool testCasePool,CommonContext context) {
 		if(StringUtils.isEmpty(exportLocalFile)){
 			exportLocalFile = UtilsAPI.getCurrentWorkingPath()+IOUtils.PATH_SPLIT+"testreport";
 		}
@@ -63,15 +65,29 @@ public class HtmlTextExporter implements TestCasesExporter {
 			IOUtils.copyFolder(url.getFile(), exportLocalFile);
 		}
 		
+
+		String appJsFile = exportLocalFile + IOUtils.PATH_SPLIT+ "app.js";
+		IOUtils.deleteFile(appJsFile);
+		
+		String header = ContentLoader.getContent("reporter/html/header.fm");
+		IOUtils.appendContentToFile(appJsFile, header);
+		
+		Object object = context.getAttribute(CONTEXT_ID);
+		if(null ==object){
+			throw TestUException.create("HtmlTextExporter need a context object as ID-- OverallTestResult ,Please check it for your caller ! ");
+		}
+		OverallTestResult overallTestResult = (OverallTestResult)object;
+		IOUtils.appendContentToFile(appJsFile, overallTestResult.getHtmlReport());
+		
+		String start = ContentLoader.getContent("reporter/html/start.fm");
+		IOUtils.appendContentToFile(appJsFile, start);
+		
 		TestCase rootTestCase = testCasePool.exportCaseTreeRoot();
 		TestCaseVO testCaseVO = convertToTestCaseVO(rootTestCase);
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		String content = gson.toJson(testCaseVO);
-		String appJsFile = exportLocalFile + IOUtils.PATH_SPLIT+ "app.js";
-		IOUtils.deleteFile(appJsFile);
-		String start = ContentLoader.getContent("reporter/html/start.fm");
-		IOUtils.appendContentToFile(appJsFile, start);
 		IOUtils.appendContentToFile(appJsFile, content.replaceAll("'", "\'"));
+		
 		String end = ContentLoader.getContent("reporter/html/end.fm");
 		IOUtils.appendContentToFile(appJsFile, end);
 	}

@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.googlecode.openbox.common.IOUtils;
 import com.googlecode.openbox.common.UtilsAPI;
+import com.googlecode.openbox.common.context.CommonContext;
 import com.googlecode.openbox.testu.tester.Bugs;
 import com.googlecode.openbox.testu.tester.CaseDescriptions;
 import com.googlecode.openbox.testu.tester.ExpectedResults;
@@ -31,7 +32,7 @@ public class JsonTextExporter implements TestCasesExporter {
 	}
 
 	@Override
-	public void export(TestCasePool testCasePool) {
+	public void export(TestCasePool testCasePool,CommonContext context) {
 		TestCase rootTestCase = testCasePool.exportCaseTreeRoot();
 		TestCaseVO testCaseVO = convertToTestCaseVO(rootTestCase);
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()

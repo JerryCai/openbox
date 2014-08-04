@@ -48,7 +48,7 @@ public class DefaultTestCasesManager implements TestCasesManager {
 		}
 		testCasePool.exportCaseTreeRoot();
 		for (TestCasesExporter exporter : exporters) {
-			exporter.export(testCasePool);
+			exporter.export(testCasePool,null);
 		}
 	}
 

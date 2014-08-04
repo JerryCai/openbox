@@ -1,6 +1,7 @@
 package com.googlecode.openbox.testu.tester.exporters;
 
 import com.googlecode.openbox.common.IOUtils;
+import com.googlecode.openbox.common.context.CommonContext;
 import com.googlecode.openbox.testu.tester.CaseDescriptions;
 import com.googlecode.openbox.testu.tester.ExpectedResults;
 import com.googlecode.openbox.testu.tester.Preconditions;
@@ -22,7 +23,7 @@ public class TextExporter implements TestCasesExporter {
 	}
 
 	@Override
-	public void export(TestCasePool testCasePool) {
+	public void export(TestCasePool testCasePool,CommonContext context) {
 		TestCase rootTestCase = testCasePool.exportCaseTreeRoot();
 		exportIntern(rootTestCase);
 	}

@@ -5,84 +5,82 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.testng.IReporter;
+import org.testng.IResultMap;
+import org.testng.ISuite;
+import org.testng.ISuiteResult;
 import org.testng.ITestContext;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.Reporter;
-import org.testng.internal.IResultListener2;
+import org.testng.xml.XmlSuite;
+import org.uncommons.reportng.HTMLReporter;
+import org.uncommons.reportng.ReportNGUtils;
 
 import com.googlecode.openbox.common.IOUtils;
 import com.googlecode.openbox.common.UtilsAPI;
+import com.googlecode.openbox.common.context.BasicContext;
+import com.googlecode.openbox.common.context.CommonContext;
+import com.googlecode.openbox.testu.tester.OverallTestResult.ResultRow;
+import com.googlecode.openbox.testu.tester.OverallTestResult.SuiteResult;
 import com.googlecode.openbox.testu.tester.TestCaseResults.Result;
 import com.googlecode.openbox.testu.tester.exporters.HtmlTextExporter;
 
-public class TestUHtmlReporter implements IResultListener2 {
-
+public class TestUHtmlReporter implements IReporter {
+	private static final ReportNGUtils HELPER = new ReportNGUtils();
 	private TestCasePool testCasePool;
 	private Set<String> handledClassNames;
+	private HTMLReporter reportNG = new HTMLReporter();
 
 	public TestUHtmlReporter() {
 		this.testCasePool = TestCasePoolImpl.create();
 		this.handledClassNames = new HashSet<String>();
 	}
 
-	@Override
-	public void onTestSuccess(ITestResult tr) {
-		process(tr);
-
+	public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites,
+			String outputDirectoryName) {
+		// integration with reportNG
+		reportNG.generateReport(xmlSuites, suites, outputDirectoryName);
+		ITestContext textContext = null;
+		OverallTestResult overallTestResult = new OverallTestResult();
+		
+		for (ISuite suite : suites) {
+			SuiteResult suiteResult = overallTestResult.addSuite(suite.getName());
+			for (ISuiteResult result : suite.getResults().values()) {
+				textContext = result.getTestContext();
+				processResults(textContext.getFailedConfigurations());
+				processResults(textContext.getSkippedConfigurations());
+				IResultMap failedTests = textContext.getFailedTests();
+				processResults(failedTests);
+				IResultMap skippedTests = textContext.getSkippedTests();
+				processResults(skippedTests);
+				IResultMap passedTests = textContext.getPassedTests();
+				processResults(passedTests);
+				suiteResult.addRow(ResultRow.create(textContext.getName(), passedTests.size(), skippedTests.size(), failedTests.size(),HELPER.getDuration(textContext)));
+			}
+		}
+		if (null != textContext) {
+			exportHtmlTestReport(textContext,overallTestResult);
+		}
 	}
 
-	@Override
-	public void onTestFailure(ITestResult tr) {
-		process(tr);
-
+	private void processResults(IResultMap resultMap) {
+		for (ITestResult tr : resultMap.getAllResults()) {
+			process(tr);
+		}
 	}
 
-	@Override
-	public void onTestSkipped(ITestResult tr) {
-		process(tr);
-	}
-
-	@Override
-	public void onTestFailedButWithinSuccessPercentage(ITestResult tr) {
-		process(tr);
-	}
-
-	@Override
-	public void onStart(ITestContext testContext) {
-
-	}
-
-	@Override
-	public void onFinish(ITestContext testContext) {
+	public void exportHtmlTestReport(ITestContext testContext,OverallTestResult overallTestResult) {
 		String testngOutputPath = testContext.getOutputDirectory();
 		TestCasesExporter htmlTextExporter = HtmlTextExporter
-				.newInstance(UtilsAPI.getParentPath(testngOutputPath,IOUtils.PATH_SPLIT)+IOUtils.PATH_SPLIT+"testu"+IOUtils.PATH_SPLIT+"testreport");
-		htmlTextExporter.export(testCasePool);
-	}
-
-	@Override
-	public void onTestStart(ITestResult result) {
-	}
-
-	@Override
-	public void onConfigurationSuccess(ITestResult itr) {
-
-	}
-
-	@Override
-	public void onConfigurationFailure(ITestResult itr) {
-
-	}
-
-	@Override
-	public void onConfigurationSkip(ITestResult itr) {
-
-	}
-
-	@Override
-	public void beforeConfiguration(ITestResult tr) {
-
+				.newInstance(UtilsAPI.getParentPath(testngOutputPath,
+						IOUtils.PATH_SPLIT)
+						+ IOUtils.PATH_SPLIT
+						+ "testu"
+						+ IOUtils.PATH_SPLIT + "testreport");
+		CommonContext context = new BasicContext();
+		context.setAttribute(HtmlTextExporter.CONTEXT_ID, overallTestResult);
+		htmlTextExporter.export(testCasePool,context);
 	}
 
 	private void process(ITestResult tr) {
@@ -151,10 +149,9 @@ public class TestUHtmlReporter implements IResultListener2 {
 			actualTestResult.setDuration(""
 					+ (tr.getEndMillis() - tr.getStartMillis()) + " ms");
 			StringBuilder msgBuilder = new StringBuilder();
-			msgBuilder.append("test class: [").append(className)
-					.append("]\n").append("test name: [")
-					.append(method.getName()).append("]\n")
-					.append("execute result: [")
+			msgBuilder.append("test class: [").append(className).append("]\n")
+					.append("test name: [").append(method.getName())
+					.append("]\n").append("execute result: [")
 					.append(actualTestResult.getResult()).append("]\n")
 					.append("message: [").append(tr.getThrowable())
 					.append("]\n");
