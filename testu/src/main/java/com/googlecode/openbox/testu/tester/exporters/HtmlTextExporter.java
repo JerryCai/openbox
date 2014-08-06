@@ -90,6 +90,7 @@ public class HtmlTextExporter implements TestCasesExporter {
 
 		TestCase rootTestCase = testCasePool.exportCaseTreeRoot();
 		TestCaseVO testCaseVO = convertToTestCaseVO(rootTestCase);
+		testCaseVO.setName(testCasePool.getTestCaseTitle());
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
 				.create();
 		String content = gson.toJson(testCaseVO);

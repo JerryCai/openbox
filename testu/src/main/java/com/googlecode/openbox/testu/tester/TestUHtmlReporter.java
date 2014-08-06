@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.IReporter;
@@ -102,6 +103,13 @@ public class TestUHtmlReporter implements IReporter {
 		Class<?> clss = testngMethod.getRealClass();
 		String className = clss.getName();
 		String suiteName = null;
+		TestReportTitle testReportTitle = clss.getAnnotation(TestReportTitle.class);
+		if(null != testReportTitle){
+			String reportTitle = testReportTitle.value();
+			if(!StringUtils.isBlank(reportTitle)){
+				testCasePool.setTestCaseTitle(reportTitle);
+			}
+		}
 		CaseSuite caseSuite = clss.getAnnotation(CaseSuite.class);
 		if (null != caseSuite) {
 			suiteName = caseSuite.name();

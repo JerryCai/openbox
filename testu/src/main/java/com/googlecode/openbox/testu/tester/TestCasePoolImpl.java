@@ -12,7 +12,7 @@ import com.googlecode.openbox.testu.TestUException;
 public final class TestCasePoolImpl implements TestCasePool {
 	private static final Logger logger = LogManager.getLogger();
 	private final TestCase ROOT = TestCase.create("Test Cases");
-
+	private String title;
 	private Map<String, TestCase> testCasePool;
 	private Map<String, Map<String, String>> treeRelations;
 	private boolean _isCaseTreeBuild = false;
@@ -25,6 +25,21 @@ public final class TestCasePoolImpl implements TestCasePool {
 
 	public static TestCasePool create() {
 		return new TestCasePoolImpl();
+	}
+	
+	@Override
+	public String getTestCaseTitle() {
+		if(StringUtils.isBlank(title)){
+			return ROOT.getName();
+		}
+		return title;
+	}
+
+	@Override
+	public void setTestCaseTitle(String poolTitle) {
+		if(null == this.title){
+			this.title = poolTitle;
+		}
 	}
 
 	@Override
