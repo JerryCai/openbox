@@ -52,20 +52,31 @@ public class OverallTestResult {
 		ResultRow total = getTotalRow();
 		int totalNum = total.getTotalPassed() + total.getTotalFailed()
 				+ total.getTotalSkipped();
+		
 		htmlReportBuilder
-				.append("<font size=\\\"4\\\">Test Report&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>Duration: ")
-				.append(total.getDuration())
+				.append("<font size=\\\"4\\\">Test Report&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>"+getPassRateProgressBar(total)).append("&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Pass Rate: ");
+				if (total.getPassRate() != 100) {
+					htmlReportBuilder.append("<font color=red >")
+							.append(total.getPassRate()).append("%").append("</font>");
+				} else {
+					htmlReportBuilder.append("<font color=green >")
+					.append(total.getPassRate()).append("%").append("</font>");
+				}
+				htmlReportBuilder.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
+				.append("Duration: ")
+				.append(HELPER.formatDuration(total.getDuration()))
 				.append("&nbsp;s&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
 				.append("Total: ").append(totalNum)
 				.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
-				.append("Passed: ").append(total.getTotalPassed())
+				.append("Passed: ").append("<font color=green >").append(total.getTotalPassed()).append("</font>")
 				.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
 				.append("Skipped: ");
 		if (total.getTotalSkipped() > 0) {
 			htmlReportBuilder.append("<font color=red >")
 					.append(total.getTotalSkipped()).append("</font>");
 		} else {
-			htmlReportBuilder.append(total.getTotalSkipped());
+			htmlReportBuilder.append("<font color=green >")
+			.append(total.getTotalSkipped()).append("</font>");
 		}
 		htmlReportBuilder
 				.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Failed: ");
@@ -74,18 +85,11 @@ public class OverallTestResult {
 			htmlReportBuilder.append("<font color=red >")
 					.append(total.getTotalFailed()).append("</font>");
 		} else {
-			htmlReportBuilder.append(total.getTotalFailed());
-		}
-		htmlReportBuilder.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
-				.append("Pass Rate: ");
-		if (total.getPassRate() != 100) {
-			htmlReportBuilder.append("<font color=red >")
-					.append(total.getPassRate()).append("%").append("</font>");
-		} else {
-			htmlReportBuilder.append(total.getPassRate()).append("%");
-		}
+			htmlReportBuilder.append("<font color=green >")
+			.append(total.getTotalFailed()).append("</font>");
+		}				
 		htmlReportBuilder
-				.append("&nbsp;&nbsp;&nbsp;&nbsp;<img style=\\\"cursor:pointer;\\\" alt=\\\"view overall test result\\\" src=\\\"resources/images/view_details_button.jpg\\\" onclick=\\\"Ext.Msg.show({title:'Overall Test Result',width:800,height:600,maximizable:true,maxWidth:1000,maxHeight:800,resizable:true,message: '");
+				.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style=\\\"cursor:pointer;\\\" alt=\\\"view overall test result\\\" src=\\\"resources/images/view_details_button.jpg\\\" onclick=\\\"Ext.Msg.show({title:'Overall Test Result',width:800,height:600,maximizable:true,maxWidth:1000,maxHeight:800,resizable:true,message: '");
 		htmlReportBuilder
 				.append("<table id=\\\\'OverallTestResultTable\\\\' style=\\\\\\'display:table\\\\' align=\\\\'center\\\\' class=\\\\'overviewTable\\\\'><tbody><tr><th class=\\\\'header suite\\\\' colspan=\\\\'6\\\\'><div class=\\\\'suiteLinks\\\\'></div>");
 		htmlReportBuilder.append("Overall Summary");
@@ -106,6 +110,10 @@ public class OverallTestResult {
 		htmlReportBuilder.append("'});\\\";/>");
 		return htmlReportBuilder.toString();
 
+	}
+
+	private String getPassRateProgressBar(ResultRow total){
+		return "<progress value="+total.getPassRate()+" max=100></progress>";
 	}
 
 	private void drawRow(StringBuilder htmlReportBuilder, ResultRow row) {
@@ -185,7 +193,10 @@ public class OverallTestResult {
 			instance.setTotalSkipped(totalSkipped);
 			instance.setDuration(duration);
 			int totalTests = totalPassed + totalFailed + totalSkipped;
-			int passRate = (totalPassed * 100) / totalTests;
+			int passRate=100;
+			if(totalTests>0){
+				passRate = (totalPassed * 100) / totalTests;
+			}
 			instance.setPassRate(passRate);
 			return instance;
 

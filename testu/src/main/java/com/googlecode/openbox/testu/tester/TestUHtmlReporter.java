@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.IReporter;
 import org.testng.IResultMap;
 import org.testng.ISuite;
@@ -27,18 +29,26 @@ import com.googlecode.openbox.testu.tester.TestCaseResults.Result;
 import com.googlecode.openbox.testu.tester.exporters.HtmlTextExporter;
 
 public class TestUHtmlReporter implements IReporter {
+	private static final Logger logger = LogManager.getLogger();
+	
 	private static final ReportNGUtils HELPER = new ReportNGUtils();
-	private TestCasePool testCasePool;
-	private Set<String> handledClassNames;
-	private HTMLReporter reportNG = new HTMLReporter();
+	private static final TestCasePool testCasePool= TestCasePoolImpl.create();
+	private static final Set<String> handledClassNames = new HashSet<String>();
+	private static final HTMLReporter reportNG = new HTMLReporter();
+	
+	private static boolean _executed = false;
 
 	public TestUHtmlReporter() {
-		this.testCasePool = TestCasePoolImpl.create();
-		this.handledClassNames = new HashSet<String>();
+
 	}
 
-	public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites,
+	public synchronized void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites,
 			String outputDirectoryName) {
+		if(_executed){
+			// avoid to user multi register the same report to your test freamwork and test cases 
+			return;
+		}
+		_executed = true;
 		// integration with reportNG
 		reportNG.generateReport(xmlSuites, suites, outputDirectoryName);
 		ITestContext textContext = null;
@@ -72,15 +82,19 @@ public class TestUHtmlReporter implements IReporter {
 
 	public void exportHtmlTestReport(ITestContext testContext,OverallTestResult overallTestResult) {
 		String testngOutputPath = testContext.getOutputDirectory();
+		String reportPath = UtilsAPI.getParentPath(testngOutputPath,
+				IOUtils.PATH_SPLIT)
+				+ IOUtils.PATH_SPLIT
+				+ "testu"
+				+ IOUtils.PATH_SPLIT + "testreport";
 		TestCasesExporter htmlTextExporter = HtmlTextExporter
-				.newInstance(UtilsAPI.getParentPath(testngOutputPath,
-						IOUtils.PATH_SPLIT)
-						+ IOUtils.PATH_SPLIT
-						+ "testu"
-						+ IOUtils.PATH_SPLIT + "testreport");
+				.newInstance(reportPath);
 		CommonContext context = new BasicContext();
 		context.setAttribute(HtmlTextExporter.CONTEXT_ID, overallTestResult);
 		htmlTextExporter.export(testCasePool,context);
+		if(logger.isInfoEnabled()){
+			logger.info("TestU Report done , report location is ["+reportPath+"]");
+		}
 	}
 
 	private void process(ITestResult tr) {

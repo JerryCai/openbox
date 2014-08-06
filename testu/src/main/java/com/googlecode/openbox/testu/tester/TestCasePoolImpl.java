@@ -3,6 +3,7 @@ package com.googlecode.openbox.testu.tester;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,7 +11,7 @@ import com.googlecode.openbox.testu.TestUException;
 
 public final class TestCasePoolImpl implements TestCasePool {
 	private static final Logger logger = LogManager.getLogger();
-	private static final TestCase ROOT = TestCase.create("Test Cases");
+	private final TestCase ROOT = TestCase.create("Test Cases");
 
 	private Map<String, TestCase> testCasePool;
 	private Map<String, Map<String, String>> treeRelations;
@@ -28,30 +29,31 @@ public final class TestCasePoolImpl implements TestCasePool {
 
 	@Override
 	public TestCase createTestCase(String caseName) {
-		String key = caseName;
-		if (!testCasePool.containsKey(key)) {
-			testCasePool.put(key, TestCase.create(key));
-		} 
-		else {
+		if (!testCasePool.containsKey(caseName)) {
+			testCasePool.put(caseName, TestCase.create(caseName));
+		} else {
 			if (logger.isDebugEnabled()) {
 				logger.debug("The test case with caseName =["
 						+ caseName
 						+ "] has already been used , \nIf this case is not parent test case , You should double check your test case name to keep unique , \nIf it is parent test case , you can ignore this warning message !");
 			}
 		}
-		return testCasePool.get(key);
+		return testCasePool.get(caseName);
 	}
 
 	public void addCaseTreeRelationship(String parentCaseName,
 			String childCaseName) {
-		if (null == parentCaseName || "".equals(parentCaseName.trim())) {
-			parentCaseName = ROOT.getName();
+		String parent = parentCaseName;
+		if (StringUtils.isBlank(parent)) {
+			parent = ROOT.getName();
 		}
-		if (!treeRelations.containsKey(parentCaseName)) {
-			treeRelations.put(parentCaseName, new HashMap<String, String>());
+		if (!treeRelations.containsKey(parent)) {
+			treeRelations.put(parent, new HashMap<String, String>());
 		}
-		Map<String, String> children = treeRelations.get(parentCaseName);
-		children.put(childCaseName, "");
+		Map<String, String> children = treeRelations.get(parent);
+		if(!children.containsKey(childCaseName)){
+			children.put(childCaseName, "");
+		}
 	}
 
 	@Override

@@ -34,3 +34,7 @@
 .tests                   {display: table-row-group;}
 .header.suite            {cursor: pointer; clear: right; height: 1.214em; margin-top: 1px;}
 div.test                 {margin-top: 0.1em; clear: right; font-size: 1.3em;}
+progress {    
+    height: 15px; 
+    width:350px; 
+} 
