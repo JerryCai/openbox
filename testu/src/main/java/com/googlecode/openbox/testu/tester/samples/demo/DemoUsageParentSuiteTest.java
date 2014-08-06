@@ -14,7 +14,8 @@ import com.googlecode.openbox.testu.tester.ExpectedResults;
 import com.googlecode.openbox.testu.tester.ParentCaseName;
 import com.googlecode.openbox.testu.tester.Preconditions;
 import com.googlecode.openbox.testu.tester.Steps;
-
+import com.googlecode.openbox.testu.tester.TestReportTitle;
+@TestReportTitle("Test Demo Foo")
 @CaseSuite(name="Foo")
 public class DemoUsageParentSuiteTest extends AbstractTestCase{
 	private static final Logger logger = LogManager.getLogger();
