@@ -158,7 +158,9 @@ public class IOUtils {
 	}
 
 	public static boolean createFile(String filePath, InputStream inputStream) {
-		logger.info("create local file path = [" + filePath + "]");
+		if(logger.isDebugEnabled()){
+			logger.debug("create local file path = [" + filePath + "]");
+		}
 		boolean createSuccess = false;
 		File file = new File(filePath);
 		autoCreateParentDirectory(file);
@@ -176,8 +178,8 @@ public class IOUtils {
 				len = bis.read(buffer);
 				if (len == -1) {
 					createSuccess = true;
-					if (logger.isInfoEnabled()) {
-						logger.info("Create local file=[" + filePath
+					if (logger.isDebugEnabled()) {
+						logger.debug("Create local file=[" + filePath
 								+ "] successfully ");
 					}
 					break;
@@ -188,6 +190,7 @@ public class IOUtils {
 		} catch (IOException e) {
 			logger.error("Create local file=[" + filePath
 					+ "]failed !!! error as:", e);
+			throw new RuntimeException(e);
 		} finally {
 			try {
 				if (fos != null) {
@@ -209,6 +212,7 @@ public class IOUtils {
 			PW = new PrintWriter(new FileWriter(logFilePath), true);
 		} catch (IOException e) {
 			logger.error("local file :[" + logFilePath + "]can not be found", e);
+			throw new RuntimeException(e);
 		}
 		try {
 			PW.println(info);
@@ -238,6 +242,7 @@ public class IOUtils {
 		} catch (IOException e) {
 			logger.error("append content=[" + content + "] to file=["
 					+ filePath + "] failed", e);
+			throw new RuntimeException(e);
 		} finally {
 			if (null != writer) {
 				try {
@@ -264,14 +269,15 @@ public class IOUtils {
 			srcChannel = new FileInputStream(srcPath).getChannel();
 			destChannel = new FileOutputStream(destPath).getChannel();
 			destChannel.transferFrom(srcChannel, 0, srcChannel.size());
-			if (logger.isInfoEnabled()) {
-				logger.info("copy file from srcPath=[" + srcPath
+			if (logger.isDebugEnabled()) {
+				logger.debug("copy file from srcPath=[" + srcPath
 						+ "] to destPath=[" + destPath + "] success !");
 			}
 			copySuccess = true;
 		} catch (Exception e) {
 			logger.error("copy file from srcPath=[" + srcPath
 					+ "] to destPath=[" + destPath + "] failed !", e);
+			throw new RuntimeException(e);
 		} finally {
 			closeFileChannel(srcChannel);
 			closeFileChannel(destChannel);
@@ -285,6 +291,7 @@ public class IOUtils {
 				fileChannel.close();
 			} catch (IOException e) {
 				logger.error("close file channel failed!!!", e);
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -374,13 +381,13 @@ public class IOUtils {
 		File srcFolder = new File(srcFolderPath);
 		File destFolder = new File(destFolderPath);
 		if (!srcFolder.isDirectory()) {
-			if (logger.isInfoEnabled()) {
-				logger.info("the srcFolderPath=[" + srcFolder
+			if (logger.isDebugEnabled()) {
+				logger.debug("the srcFolderPath=[" + srcFolder
 						+ "] is not a directory path , copy file directly");
 			}
 			if (destFolder.exists() && !isOverwrite) {
-				if (logger.isInfoEnabled()) {
-					logger.info("the copy file from ["
+				if (logger.isDebugEnabled()) {
+					logger.debug("the copy file from ["
 							+ srcFolder
 							+ "] to ["
 							+ destFolderPath
@@ -401,8 +408,8 @@ public class IOUtils {
 					olderFiles[i].delete();
 				}
 			} else {
-				if (logger.isInfoEnabled()) {
-					logger.info("copy folder from["
+				if (logger.isDebugEnabled()) {
+					logger.debug("copy folder from["
 							+ srcFolder
 							+ "]to["
 							+ srcFolder
@@ -435,6 +442,7 @@ public class IOUtils {
 				instream.close();
 			} catch (IOException e) {
 				logger.error("close input stream failed!!!", e);
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -451,6 +459,7 @@ public class IOUtils {
 		} catch (FileNotFoundException e) {
 			logger.error("getStringFromFile from localFilePath=["
 					+ localFilePath + "] failed as below:", e);
+			throw new RuntimeException(e);
 		}
 		return getStringFromStream(is);
 	}
@@ -475,6 +484,7 @@ public class IOUtils {
 		} catch (FileNotFoundException e) {
 			logger.error("get input stream from file=[" + filePath
 					+ "] failed!!!", e);
+			throw new RuntimeException(e);
 		}
 		return fis;
 	}
@@ -545,8 +555,8 @@ public class IOUtils {
 		File file = new File(filePath);
 		if (file.exists()) {
 			file.delete();
-			if (logger.isInfoEnabled())
-				logger.info("delete file [" + filePath + "] success");
+			if (logger.isDebugEnabled())
+				logger.debug("delete file [" + filePath + "] success");
 		}
 
 	}
