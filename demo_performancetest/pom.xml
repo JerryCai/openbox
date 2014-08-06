@@ -3,17 +3,17 @@
 	<parent>
 		<groupId>com.googlecode.openbox</groupId>
 		<artifactId>openbox</artifactId>
-		<version>2.0.2</version>
+		<version>2.0.3-SNAPSHOT</version>
 	</parent>
 	<artifactId>demo_performancetest</artifactId>
-  <version>2.0.2</version>
+  <version>2.0.3-SNAPSHOT</version>
 	<name>Demo Performance</name>
 	<description>Request Performance  Test</description>
 	<dependencies>
 		<dependency>
 			<groupId>com.googlecode.openbox</groupId>
 			<artifactId>http</artifactId>
-			<version>2.0.2</version>
+			<version>2.0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jfree</groupId>
