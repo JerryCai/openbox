@@ -70,7 +70,4 @@ public abstract class AbstractTestCase extends TestCase {
 		return DateHelper.getTimeString();
 	}
 
-	public static final String TESTRESULT_SUCCESS_LOG = "\n=======test resut=======>[OKOKOK] , detail infos :\n";
-	public static final String TESTRESULT_FAILED_LOG = "\n=======test resut=======>[NONONO] , detail infos :\n";
-	public static final String TESTRESULT_CASEERROR_LOG = "\n=======test resut=======>[ERROR ] , detail infos :\n";
 }
