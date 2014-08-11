@@ -2,7 +2,7 @@
 .overviewTable           {width: 80%; margin-top: 1.8em; line-height: 1.7em; border-spacing: 0.1em;}
 .overviewTable td        {padding: 0 1em;}
 .overviewTable th        {padding: 0 .5em;}
-.overviewTable .duration {width: 6em;}
+.overviewTable .duration {width: 8em;}
 .overviewTable .passRate {width: 6em;}
 .overviewTable .number   {width: 5em;}
 .overviewTable tr        {height: 1.6em;}
