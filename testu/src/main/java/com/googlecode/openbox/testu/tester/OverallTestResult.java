@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.uncommons.reportng.ReportNGUtils;
 
-import com.googlecode.openbox.common.IOUtils;
 import com.googlecode.openbox.common.UtilsAPI;
 import com.googlecode.openbox.testu.tester.exporters.BugListVO;
 import com.googlecode.openbox.testu.tester.exporters.BugListVO.BugStatus;
