@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
+import com.googlecode.openbox.testu.tester.exporters.BugListVO;
+import com.googlecode.openbox.testu.tester.exporters.BugListVO.BugStatus;
 
 public class TestCase {
 	@Expose
@@ -106,7 +108,7 @@ public class TestCase {
 
 	public void setSteps(Steps steps) {
 		this.caseSteps = steps;
-		if(null != steps){
+		if (null != steps) {
 			this.steps = steps.value();
 		}
 	}
@@ -155,7 +157,7 @@ public class TestCase {
 
 	public void setOwner(QA owner) {
 		this.qa = owner;
-		if(null!= owner){
+		if (null != owner) {
 			this.owner = new Tester();
 			this.owner.setName(owner.name());
 			this.owner.setEmail(owner.email());
@@ -173,9 +175,41 @@ public class TestCase {
 
 	public void setCaseDescriptions(CaseDescriptions caseDescriptions) {
 		this.caseDescriptions = caseDescriptions;
-		if(null != caseDescriptions){
+		if (null != caseDescriptions) {
 			descriptions = caseDescriptions.value();
 		}
+	}
+
+	public List<BugListVO> getBugList() {
+		List<BugListVO> bugList = new LinkedList<BugListVO>();
+		Bugs bugs = getBugs();
+		if (null == bugs) {
+			return bugList;
+		}
+		for (String bugLink : bugs.value()) {
+			BugListVO bugListVO = new BugListVO();
+			bugListVO.setBugLink(bugLink);
+			if (null != getOwner()) {
+				bugListVO.setOwner(getOwner().name());
+			} else {
+				bugListVO.setOwner("");
+			}
+			if (null != getActualResults()) {
+				switch (getActualResults().getResult()) {
+				case SUCCESS:
+					bugListVO.setBugStatus(BugStatus.Fixed);
+					break;
+				case FAILURE:
+					bugListVO.setBugStatus(BugStatus.Open);
+					break;
+				default:
+					bugListVO.setBugStatus(BugStatus.Skiped);
+				}
+			}
+			bugList.add(bugListVO);
+
+		}
+		return bugList;
 	}
 
 	public int getCaseLevel() {

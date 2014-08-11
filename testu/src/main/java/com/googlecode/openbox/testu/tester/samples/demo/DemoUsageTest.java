@@ -17,7 +17,6 @@ import com.googlecode.openbox.testu.tester.Preconditions;
 import com.googlecode.openbox.testu.tester.QA;
 import com.googlecode.openbox.testu.tester.Steps;
 @CaseSuite(name="AddFooModule",parent="Foo")
-@QA(name = "Jerry Cai", id = "jerrycai", email = "jerrycai.cn@gmail.com")
 public class DemoUsageTest extends AbstractTestCase{
 	private static final Logger logger = LogManager.getLogger();
 
@@ -37,6 +36,7 @@ public class DemoUsageTest extends AbstractTestCase{
 			"3. If success , Check its return ID whether can get Foo By this ID .",
 			"Expected Result: ", "1. Admin User can add Foo success .",
 			"2. Get Foo by return ID can success ." })
+	@QA(name = "Jerry Cai", id = "jerrycai", email = "jerrycai.cn@gmail.com")
 	@Bugs({"http://bug.com/view/bug004","http://bug.com/view/bug003"})
 	public void testAddFooByAdmin() {
 		logger.info("Step 1 :  login with admin user .");

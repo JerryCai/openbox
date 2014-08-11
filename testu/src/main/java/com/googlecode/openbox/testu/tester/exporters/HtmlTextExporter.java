@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,9 +33,11 @@ import com.googlecode.openbox.testu.tester.TestCasesExporter;
 public class HtmlTextExporter implements TestCasesExporter {
 	public static final String CONTEXT_ID = "OverallTestResult";
 	private String exportLocalFile;
-
+	private List<BugListVO> bugList;
+	
 	private HtmlTextExporter(String exportLocalFile) {
 		this.exportLocalFile = exportLocalFile;
+		this.bugList=new LinkedList<BugListVO>();
 	}
 
 	public static HtmlTextExporter newInstance(String location) {
@@ -81,15 +84,16 @@ public class HtmlTextExporter implements TestCasesExporter {
 			throw TestUException
 					.create("HtmlTextExporter need a context object as ID-- OverallTestResult ,Please check it for your caller ! ");
 		}
+		TestCase rootTestCase = testCasePool.exportCaseTreeRoot();
+		TestCaseVO testCaseVO = convertToTestCaseVO(rootTestCase);
+
 		OverallTestResult overallTestResult = (OverallTestResult) object;
-		IOUtils.appendContentToFile(appJsFile,
-				overallTestResult.getHtmlReport());
+		overallTestResult.setBugList(bugList);
+		IOUtils.appendContentToFile(appJsFile,overallTestResult.getHtmlReport());
 
 		String start = ContentLoader.getContent("reporter/html/start.fm");
 		IOUtils.appendContentToFile(appJsFile, start);
 
-		TestCase rootTestCase = testCasePool.exportCaseTreeRoot();
-		TestCaseVO testCaseVO = convertToTestCaseVO(rootTestCase);
 		testCaseVO.setName(testCasePool.getTestCaseTitle());
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
 				.create();
@@ -115,6 +119,7 @@ public class HtmlTextExporter implements TestCasesExporter {
 		testCaseVO.setLogs(handleSpecialCharacters(testCase.getLogs()));
 		testCaseVO.setOwner(getOwner(testCase));
 		testCaseVO.setBugs(getBugs(testCase));
+		bugList.addAll(testCase.getBugList());
 		List<TestCase> children = testCase.getChildren();
 		if (null != children && children.size() > 0) {
 			testCaseVO.setExpanded(true);

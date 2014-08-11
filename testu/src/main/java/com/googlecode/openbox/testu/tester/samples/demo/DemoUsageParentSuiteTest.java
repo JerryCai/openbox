@@ -7,16 +7,19 @@ import org.apache.logging.log4j.Logger;
 import org.testng.annotations.Test;
 
 import com.googlecode.openbox.testu.AbstractTestCase;
+import com.googlecode.openbox.testu.tester.Bugs;
 import com.googlecode.openbox.testu.tester.CaseDescriptions;
 import com.googlecode.openbox.testu.tester.CaseName;
 import com.googlecode.openbox.testu.tester.CaseSuite;
 import com.googlecode.openbox.testu.tester.ExpectedResults;
 import com.googlecode.openbox.testu.tester.ParentCaseName;
 import com.googlecode.openbox.testu.tester.Preconditions;
+import com.googlecode.openbox.testu.tester.QA;
 import com.googlecode.openbox.testu.tester.Steps;
 import com.googlecode.openbox.testu.tester.TestReportTitle;
 @TestReportTitle("Test Demo Foo")
 @CaseSuite(name="Foo")
+@QA(name = "Jerry Cai", id = "jerrycai", email = "jerrycai.cn@gmail.com")
 public class DemoUsageParentSuiteTest extends AbstractTestCase{
 	private static final Logger logger = LogManager.getLogger();
 
@@ -37,6 +40,7 @@ public class DemoUsageParentSuiteTest extends AbstractTestCase{
 			"3. If success , Check its return ID whether can get Foo By this ID .",
 			"Expected Result: ", "1. Admin User can Add Foo 1 success .",
 			"2. Get Foo by return ID can success ." })
+	@Bugs({"http://bug.com/view/bug004","http://bug.com/view/bug003"})
 	public void testAddFooByAdmin1() {
 		logger.info("Step 1 :  login with admin user .");
 		logger.info("Step 2 : Try to add the user jerry1 .");

@@ -2,6 +2,7 @@ package com.googlecode.openbox.testu.tester.exporters;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.annotations.Expose;
 
@@ -29,6 +30,8 @@ public class TestCaseVO {
 	private boolean expanded;
 	@Expose
 	private boolean leaf;
+	
+	private Map<String,BugListVO> bugList;
 	
 	public void addChild(TestCaseVO child){
 		if(null == this.children){
@@ -108,6 +111,14 @@ public class TestCaseVO {
 
 	public void setLeaf(boolean leaf) {
 		this.leaf = leaf;
+	}
+
+	public Map<String, BugListVO> getBugList() {
+		return bugList;
+	}
+
+	public void setBugList(Map<String, BugListVO> bugList) {
+		this.bugList = bugList;
 	}
 	
 	

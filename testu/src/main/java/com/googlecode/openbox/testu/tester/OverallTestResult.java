@@ -1,9 +1,16 @@
 package com.googlecode.openbox.testu.tester;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.uncommons.reportng.ReportNGUtils;
+
+import com.googlecode.openbox.common.IOUtils;
+import com.googlecode.openbox.common.UtilsAPI;
+import com.googlecode.openbox.testu.tester.exporters.BugListVO;
+import com.googlecode.openbox.testu.tester.exporters.BugListVO.BugStatus;
 
 public class OverallTestResult {
 	private static final ReportNGUtils HELPER = new ReportNGUtils();
@@ -11,6 +18,7 @@ public class OverallTestResult {
 	private String reportTitle = "Default Test Report";
 	private List<SuiteResult> suites;
 	private ResultRow overallRow;
+	private List<BugListVO> bugList;
 
 	public OverallTestResult() {
 		this.suites = new LinkedList<SuiteResult>();
@@ -52,23 +60,26 @@ public class OverallTestResult {
 		ResultRow total = getTotalRow();
 		int totalNum = total.getTotalPassed() + total.getTotalFailed()
 				+ total.getTotalSkipped();
-		
+
 		htmlReportBuilder
-				.append("<font size=\\\"4\\\">Test Report&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>"+getPassRateProgressBar(total)).append("&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Pass Rate: ");
-				if (total.getPassRate() != 100) {
-					htmlReportBuilder.append("<font color=red >")
-							.append(total.getPassRate()).append("%").append("</font>");
-				} else {
-					htmlReportBuilder.append("<font color=green >")
+				.append("<font size=\\\"4\\\">Test Report&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>"
+						+ getPassRateProgressBar(total))
+				.append("&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Pass Rate: ");
+		if (total.getPassRate() != 100) {
+			htmlReportBuilder.append("<font color=red >")
 					.append(total.getPassRate()).append("%").append("</font>");
-				}
-				htmlReportBuilder.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
+		} else {
+			htmlReportBuilder.append("<font color=green >")
+					.append(total.getPassRate()).append("%").append("</font>");
+		}
+		htmlReportBuilder.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
 				.append("Duration: ")
 				.append(HELPER.formatDuration(total.getDuration()))
 				.append("&nbsp;s&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
 				.append("Total: ").append(totalNum)
 				.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
-				.append("Passed: ").append("<font color=green >").append(total.getTotalPassed()).append("</font>")
+				.append("Passed: ").append("<font color=green >")
+				.append(total.getTotalPassed()).append("</font>")
 				.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
 				.append("Skipped: ");
 		if (total.getTotalSkipped() > 0) {
@@ -76,7 +87,7 @@ public class OverallTestResult {
 					.append(total.getTotalSkipped()).append("</font>");
 		} else {
 			htmlReportBuilder.append("<font color=green >")
-			.append(total.getTotalSkipped()).append("</font>");
+					.append(total.getTotalSkipped()).append("</font>");
 		}
 		htmlReportBuilder
 				.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Failed: ");
@@ -86,16 +97,22 @@ public class OverallTestResult {
 					.append(total.getTotalFailed()).append("</font>");
 		} else {
 			htmlReportBuilder.append("<font color=green >")
-			.append(total.getTotalFailed()).append("</font>");
-		}				
+					.append(total.getTotalFailed()).append("</font>");
+		}
+		addViewResultDetailsButton(htmlReportBuilder);
+		addViewBugListButton(htmlReportBuilder);
+		return htmlReportBuilder.toString();
+	}
+
+	private void addViewResultDetailsButton(StringBuilder htmlReportBuilder) {
 		htmlReportBuilder
-				.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style=\\\"cursor:pointer;\\\" alt=\\\"view overall test result\\\" src=\\\"resources/images/view_details_button.jpg\\\" onclick=\\\"Ext.Msg.show({title:'Overall Test Result',width:800,height:600,maximizable:true,maxWidth:1000,maxHeight:800,resizable:true,message: '");
+				.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style=\\\"cursor:pointer;\\\" alt=\\\"view overall test result\\\" src=\\\"resources/images/view_details_button.jpg\\\" onclick=\\\"Ext.Msg.show({title:'Overall Test Result',width:800,height:600,maximizable:true,maxWidth:1000,maxHeight:800,resizable:true,message: '");
 		htmlReportBuilder
 				.append("<table id=\\\\'OverallTestResultTable\\\\' style=\\\\\\'display:table\\\\' align=\\\\'center\\\\' class=\\\\'overviewTable\\\\'><tbody><tr><th class=\\\\'header suite\\\\' colspan=\\\\'6\\\\'><div class=\\\\'suiteLinks\\\\'></div>");
 		htmlReportBuilder.append("Overall Summary");
 		htmlReportBuilder
 				.append("</th></tr><tr class=\\\\'columnHeadings\\\\'><td>&nbsp;</td><th>Duration</th><th>Passed</th><th>Skipped</th><th>Failed</th><th>Pass Rate</th></tr>");
-		drawRow(htmlReportBuilder, total);
+		drawRow(htmlReportBuilder, getTotalRow());
 
 		for (SuiteResult suite : suites) {
 			htmlReportBuilder
@@ -107,13 +124,30 @@ public class OverallTestResult {
 				drawRow(htmlReportBuilder, row);
 			}
 		}
-		htmlReportBuilder.append("'});\\\";/>");
-		return htmlReportBuilder.toString();
+		htmlReportBuilder.append("</table>'});\\\" />");
 
 	}
 
-	private String getPassRateProgressBar(ResultRow total){
-		return "<progress value="+total.getPassRate()+" max=100></progress>";
+	private void addViewBugListButton(StringBuilder htmlReportBuilder) {
+		htmlReportBuilder
+				.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style=\\\"cursor:pointer;\\\" alt=\\\"view all bug list\\\" src=\\\"resources/images/view_bugs.png\\\" onclick=\\\"Ext.Msg.show({title:'Bug List',width:800,height:600,maximizable:true,maxWidth:1000,maxHeight:800,resizable:true,message: '");
+		htmlReportBuilder
+				.append("<table id=\\\\'BugListTable\\\\' style=\\\\\\'display:table\\\\' align=\\\\'center\\\\' class=\\\\'overviewTable\\\\'><tbody><tr><th class=\\\\'header suite\\\\' colspan=\\\\'6\\\\'><div class=\\\\'suiteLinks\\\\'></div>");
+		htmlReportBuilder.append("Bug Report");
+		htmlReportBuilder
+				.append("</th></tr><tr class=\\\\'columnHeadings\\\\'><th>Bug Link</th><th>Status</th><th>Owner</th></tr>");
+		if (null != bugList) {
+			for (BugListVO bugListVO : getMergedBugList().values()) {
+				drawBugRow(htmlReportBuilder, bugListVO);
+			}
+		}
+		htmlReportBuilder.append("</table>'});\\\" />");
+
+	}
+
+	private String getPassRateProgressBar(ResultRow total) {
+		return "<progress value=" + total.getPassRate()
+				+ " max=100></progress>";
 	}
 
 	private void drawRow(StringBuilder htmlReportBuilder, ResultRow row) {
@@ -139,6 +173,35 @@ public class OverallTestResult {
 		htmlReportBuilder.append(row.getTotalFailed())
 				.append("</td><td class=\\\\'passRate\\\\'>")
 				.append(row.getPassRate()).append("%</td></tr>");
+	}
+
+	private void drawBugRow(StringBuilder htmlReportBuilder, BugListVO bugListVO) {
+		String bugLink = bugListVO.getBugLink();
+
+		htmlReportBuilder
+				.append("<tr class=\\\\'test\\\\'><td class=\\\\'test\\\\'>")
+				.append("<a href=\\\\'").append(bugLink)
+				.append("\\\\' target=\\\\'_blank\\\\'>")
+				.append(UtilsAPI.getLastPath(bugLink)).append("</a></td>");
+
+		BugStatus bugStatus = bugListVO.getBugStatus();
+		switch (bugStatus) {
+		case Fixed:
+			htmlReportBuilder.append("<td class=\\\\'passed number\\\\'>");
+			break;
+		case Open:
+			htmlReportBuilder.append("<td class=\\\\'failed number\\\\'>");
+			break;
+		default:
+			htmlReportBuilder.append("<td class=\\\\'skipped number\\\\'>");
+
+		}
+
+		htmlReportBuilder.append(bugStatus.name()).append("</td>");
+
+		htmlReportBuilder.append("<td class=\\\\'duration\\\\'>")
+				.append(bugListVO.getOwner()).append("</td></tr>");
+
 	}
 
 	public String getReportTitle() {
@@ -193,8 +256,8 @@ public class OverallTestResult {
 			instance.setTotalSkipped(totalSkipped);
 			instance.setDuration(duration);
 			int totalTests = totalPassed + totalFailed + totalSkipped;
-			int passRate=100;
-			if(totalTests>0){
+			int passRate = 100;
+			if (totalTests > 0) {
 				passRate = (totalPassed * 100) / totalTests;
 			}
 			instance.setPassRate(passRate);
@@ -249,5 +312,34 @@ public class OverallTestResult {
 		public void setPassRate(int passRate) {
 			this.passRate = passRate;
 		}
+	}
+
+	public List<BugListVO> getBugList() {
+		return bugList;
+	}
+
+	public void setBugList(List<BugListVO> bugList) {
+		this.bugList = bugList;
+	}
+	
+	public Map<String,BugListVO> getMergedBugList(){
+		Map<String,BugListVO> mergedBugList = new LinkedHashMap<String,BugListVO>();
+		for(BugListVO bugVO : bugList){
+			String key = bugVO.getBugLink();
+			if(!mergedBugList.containsKey(key) ){
+				mergedBugList.put(key, bugVO);
+			}else if(bugVO.getBugStatus() != BugStatus.Fixed){
+				switch(mergedBugList.get(key).getBugStatus() ){
+					case Fixed :
+					case Skiped:
+						mergedBugList.put(key, bugVO);
+						break;
+				default:
+					break;
+							
+				}
+			}
+		}
+		return mergedBugList;
 	}
 }
