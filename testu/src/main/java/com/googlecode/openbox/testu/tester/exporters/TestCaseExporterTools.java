@@ -11,7 +11,7 @@ public class TestCaseExporterTools {
 		tcm.addTestCasesSelector(new DemoTestCasesSelector());
 		tcm.addTestCasesExporter(JsonTextExporter.newInstance("D:\\JsonTextExporter.json"));		
 		tcm.addTestCasesExporter(TextExporter.newInstance("D:\\TextExporter.txt"));
-		tcm.addTestCasesExporter(HtmlTextExporter.newInstance("D:\\htmlreporter"));
+		tcm.addTestCasesExporter(InternHtmlExporter.newInstance("D:\\htmlreporter"));
 		tcm.execute();
 
 	}

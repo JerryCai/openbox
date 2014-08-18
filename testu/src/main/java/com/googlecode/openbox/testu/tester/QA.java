@@ -14,6 +14,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface QA {
 	public String name();
-	public String email() default"";
-	public String id() default "";
+	public String email();
+	public String id();
 }

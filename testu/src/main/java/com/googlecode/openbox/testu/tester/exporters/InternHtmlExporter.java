@@ -20,32 +20,31 @@ import com.googlecode.openbox.testu.tester.ActualResults;
 import com.googlecode.openbox.testu.tester.Bugs;
 import com.googlecode.openbox.testu.tester.CaseDescriptions;
 import com.googlecode.openbox.testu.tester.ExpectedResults;
+import com.googlecode.openbox.testu.tester.InternTestCasesExporter;
 import com.googlecode.openbox.testu.tester.OverallTestResult;
 import com.googlecode.openbox.testu.tester.Preconditions;
 import com.googlecode.openbox.testu.tester.QA;
 import com.googlecode.openbox.testu.tester.Steps;
 import com.googlecode.openbox.testu.tester.TestCase;
-import com.googlecode.openbox.testu.tester.TestCasePool;
 import com.googlecode.openbox.testu.tester.TestCaseResults;
 import com.googlecode.openbox.testu.tester.TestCaseResults.Result;
-import com.googlecode.openbox.testu.tester.TestCasesExporter;
 
-public class HtmlTextExporter implements TestCasesExporter {
+public class InternHtmlExporter implements InternTestCasesExporter {
 	public static final String CONTEXT_ID = "OverallTestResult";
 	private String exportLocalFile;
 	private List<BugListVO> bugList;
 	
-	private HtmlTextExporter(String exportLocalFile) {
+	private InternHtmlExporter(String exportLocalFile) {
 		this.exportLocalFile = exportLocalFile;
 		this.bugList=new LinkedList<BugListVO>();
 	}
 
-	public static HtmlTextExporter newInstance(String location) {
-		return new HtmlTextExporter(location);
+	public static InternHtmlExporter newInstance(String location) {
+		return new InternHtmlExporter(location);
 	}
 
 	@Override
-	public void export(TestCasePool testCasePool, CommonContext context) {
+	public void export(TestCase root, CommonContext context) {
 		if (StringUtils.isEmpty(exportLocalFile)) {
 			exportLocalFile = UtilsAPI.getCurrentWorkingPath()
 					+ IOUtils.PATH_SPLIT + "testreport";
@@ -84,8 +83,7 @@ public class HtmlTextExporter implements TestCasesExporter {
 			throw TestUException
 					.create("HtmlTextExporter need a context object as ID-- OverallTestResult ,Please check it for your caller ! ");
 		}
-		TestCase rootTestCase = testCasePool.exportCaseTreeRoot();
-		TestCaseVO testCaseVO = convertToTestCaseVO(rootTestCase);
+		TestCaseVO testCaseVO = convertToTestCaseVO(root);
 
 		OverallTestResult overallTestResult = (OverallTestResult) object;
 		overallTestResult.setBugList(bugList);
@@ -94,7 +92,7 @@ public class HtmlTextExporter implements TestCasesExporter {
 		String start = ContentLoader.getContent("reporter/html/start.fm");
 		IOUtils.appendContentToFile(appJsFile, start);
 
-		testCaseVO.setName(testCasePool.getTestCaseTitle());
+		testCaseVO.setName(root.getDisplayName());
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
 				.create();
 		String content = gson.toJson(testCaseVO);
@@ -111,7 +109,7 @@ public class HtmlTextExporter implements TestCasesExporter {
 		}
 
 		TestCaseVO testCaseVO = new TestCaseVO();
-		testCaseVO.setName(testCase.getName());
+		testCaseVO.setName(testCase.getDisplayName());
 		testCaseVO.setDescriptions(getCaseDescriptions(testCase));
 		testCaseVO.setResult(getResult(testCase));
 		testCaseVO.setMsg(getMessage(testCase));
@@ -148,7 +146,7 @@ public class HtmlTextExporter implements TestCasesExporter {
 		}
 		return "<a href=\"mailto:" + email
 				+ "?Subject=Test Report Feedback - Test Case - "
-				+ testCase.getName() + "&body=" + generateEmailBody(testCase)
+				+ testCase.getDisplayName() + "&body=" + generateEmailBody(testCase)
 				+ " \" target=\"_top\">" + display + "</a>";
 	}
 
@@ -156,7 +154,7 @@ public class HtmlTextExporter implements TestCasesExporter {
 		String split = "\n\n";
 		StringBuilder sb = new StringBuilder();
 		sb.append("Hello ,").append(split).append("Case Name : [ ")
-				.append(testCase.getName()).append(" ]").append(split)
+				.append(testCase.getDisplayName()).append(" ]").append(split)
 				.append(getCaseDescriptions(testCase)).append(split)
 				.append(split).append(split).append("Best regards!")
 				.append(split).append("TestU Report");

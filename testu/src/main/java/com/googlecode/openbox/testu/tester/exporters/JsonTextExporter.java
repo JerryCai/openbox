@@ -10,16 +10,15 @@ import com.googlecode.openbox.common.context.CommonContext;
 import com.googlecode.openbox.testu.tester.Bugs;
 import com.googlecode.openbox.testu.tester.CaseDescriptions;
 import com.googlecode.openbox.testu.tester.ExpectedResults;
+import com.googlecode.openbox.testu.tester.InternTestCasesExporter;
 import com.googlecode.openbox.testu.tester.Preconditions;
 import com.googlecode.openbox.testu.tester.QA;
 import com.googlecode.openbox.testu.tester.Steps;
 import com.googlecode.openbox.testu.tester.TestCase;
-import com.googlecode.openbox.testu.tester.TestCasePool;
 import com.googlecode.openbox.testu.tester.TestCaseResults;
 import com.googlecode.openbox.testu.tester.TestCaseResults.Result;
-import com.googlecode.openbox.testu.tester.TestCasesExporter;
 
-public class JsonTextExporter implements TestCasesExporter {
+public class JsonTextExporter implements InternTestCasesExporter {
 
 	private String exportLocalFile;
 
@@ -32,9 +31,8 @@ public class JsonTextExporter implements TestCasesExporter {
 	}
 
 	@Override
-	public void export(TestCasePool testCasePool,CommonContext context) {
-		TestCase rootTestCase = testCasePool.exportCaseTreeRoot();
-		TestCaseVO testCaseVO = convertToTestCaseVO(rootTestCase);
+	public void export(TestCase root, CommonContext context) {
+		TestCaseVO testCaseVO = convertToTestCaseVO(root);
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
 				.setPrettyPrinting().create();
 		String content = gson.toJson(testCaseVO);
@@ -49,7 +47,7 @@ public class JsonTextExporter implements TestCasesExporter {
 		}
 
 		TestCaseVO testCaseVO = new TestCaseVO();
-		testCaseVO.setName(testCase.getName());
+		testCaseVO.setName(testCase.getDisplayName());
 		testCaseVO.setDescriptions(getCaseDescriptions(testCase));
 		testCaseVO.setResult(getResult(testCase));
 		testCaseVO.setDuration(getDuration(testCase));
@@ -79,24 +77,29 @@ public class JsonTextExporter implements TestCasesExporter {
 		return "";
 	}
 
-	private String getResult(TestCase testCase){
+	private String getResult(TestCase testCase) {
 		TestCaseResults testCaseResult = testCase.getActualResults();
-		if(null != testCaseResult){
+		if (null != testCaseResult) {
 			Result result = testCaseResult.getResult();
-			if(null == result){
+			if (null == result) {
 				result = Result.SKIP;
 			}
-			
-			switch(result){
-				case SKIP : return "<font color='yellow'>"+result.name()+"</font>";
-				case SUCCESS: return "<font color='green'>"+result.name()+"</font>";
-				case FAILURE: return "<font color='red'>"+result.name()+"</font>";
-				case SUCCESS_PERCENTAGE_FAILURE: return "<font color='green'>"+result.name()+"</font>";
-				case STARTED: return "<font color='yellow'>"+result.name()+"</font>";
+
+			switch (result) {
+			case SKIP:
+				return "<font color='yellow'>" + result.name() + "</font>";
+			case SUCCESS:
+				return "<font color='green'>" + result.name() + "</font>";
+			case FAILURE:
+				return "<font color='red'>" + result.name() + "</font>";
+			case SUCCESS_PERCENTAGE_FAILURE:
+				return "<font color='green'>" + result.name() + "</font>";
+			case STARTED:
+				return "<font color='yellow'>" + result.name() + "</font>";
 
 			}
 		}
-		return  "<font color='yellow'>Pending</font>";
+		return "<font color='yellow'>Pending</font>";
 	}
 
 	private String getDuration(TestCase testCase) {

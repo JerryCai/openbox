@@ -18,13 +18,13 @@ public class DefaultTestCasesManager implements TestCasesManager {
 	public static final String CLASS_POSTFIX = ".class";
 
 	private List<TestCasesSelector> selectors;
-	private List<TestCasesExporter> exporters;
-	private TestCasePool testCasePool;
+	private List<InternTestCasesExporter> exporters;
+	private static final TestCaseAnalyzer testCaseAnalyzer = TestCaseAnalyzer
+			.newInstance();
 
 	private DefaultTestCasesManager() {
 		this.selectors = new LinkedList<TestCasesSelector>();
-		this.exporters = new LinkedList<TestCasesExporter>();
-		this.testCasePool = TestCasePoolImpl.create();
+		this.exporters = new LinkedList<InternTestCasesExporter>();
 	}
 
 	public static DefaultTestCasesManager newInstance() {
@@ -37,7 +37,7 @@ public class DefaultTestCasesManager implements TestCasesManager {
 	}
 
 	@Override
-	public void addTestCasesExporter(TestCasesExporter exporter) {
+	public void addTestCasesExporter(InternTestCasesExporter exporter) {
 		exporters.add(exporter);
 	}
 
@@ -46,9 +46,8 @@ public class DefaultTestCasesManager implements TestCasesManager {
 		for (TestCasesSelector selector : selectors) {
 			execute(selector);
 		}
-		testCasePool.exportCaseTreeRoot();
-		for (TestCasesExporter exporter : exporters) {
-			exporter.export(testCasePool,null);
+		for (InternTestCasesExporter exporter : exporters) {
+			exporter.export(testCaseAnalyzer.getTestCaseRoot(), null);
 		}
 	}
 
@@ -103,67 +102,10 @@ public class DefaultTestCasesManager implements TestCasesManager {
 			logger.error(msg, e);
 			throw TestUException.create(msg, e);
 		}
-		String suiteName = null;
-		CaseSuite caseSuite = clss.getAnnotation(CaseSuite.class);
-		if (null != caseSuite) {
-			suiteName = caseSuite.name();
-			testCasePool.createTestCase(suiteName);
-			String parentModuleName = caseSuite.parent();
-			if (null != parentModuleName) {
-				testCasePool.createTestCase(parentModuleName);
-			}
-			testCasePool.addCaseTreeRelationship(parentModuleName, suiteName);
-		}
 
-		QA moduleLevelQA = clss.getAnnotation(QA.class);
-		
 		Method[] methods = clss.getDeclaredMethods();
 		for (Method method : methods) {
-			CaseName caseName = method.getAnnotation(CaseName.class);
-			if (null == caseName) {
-				// skip this method
-				continue;
-			}
-
-			ParentCaseName parentCaseName = method
-					.getAnnotation(ParentCaseName.class);
-			String parentName = null;
-			String testCaseName = caseName.value();
-			if (null != parentCaseName) {
-				testCasePool.createTestCase(parentCaseName.value());
-				parentName = parentCaseName.value();
-				testCasePool.addCaseTreeRelationship(suiteName, parentName);
-			} else {
-				parentName = suiteName;
-			}
-
-			TestCase testCase = testCasePool.createTestCase(testCaseName);
-			testCasePool.addCaseTreeRelationship(parentName, testCaseName);
-			QA caseLevelQA = method.getAnnotation(QA.class);
-			if (null != caseLevelQA) {
-				testCase.setOwner(caseLevelQA);
-			} else if (null != moduleLevelQA) {
-				testCase.setOwner(moduleLevelQA);
-			}
-			testCase.setCaseDescriptions(method
-					.getAnnotation(CaseDescriptions.class));
-			testCase.setPreconditions(method.getAnnotation(Preconditions.class));
-			testCase.setSteps(method.getAnnotation(Steps.class));
-			testCase.setExpectedResults(method
-					.getAnnotation(ExpectedResults.class));
-			ActualResults actualResults = method
-					.getAnnotation(ActualResults.class);
-			if (null != actualResults) {
-				TestCaseResults actualTestResult = TestCaseResults
-						.newInstance();
-				actualTestResult.setActualResults(actualResults);
-				testCase.setActualResults(actualTestResult);
-			}
-
-			Bugs bugs = method.getAnnotation(Bugs.class);
-			if (null != bugs) {
-				testCase.setBugs(bugs);
-			}
+			testCaseAnalyzer.analysis(method);
 		}
 
 	}

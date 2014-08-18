@@ -4,7 +4,7 @@ public interface TestCasesManager {
 	
 	void addTestCasesSelector(TestCasesSelector testCasesSelector);
 	
-	void addTestCasesExporter(TestCasesExporter exporter);
+	void addTestCasesExporter(InternTestCasesExporter exporter);
 	
 	void execute();
 

@@ -1,15 +1,26 @@
 package com.googlecode.openbox.testu.tester;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.gson.annotations.Expose;
 import com.googlecode.openbox.testu.tester.exporters.BugListVO;
 import com.googlecode.openbox.testu.tester.exporters.BugListVO.BugStatus;
 
 public class TestCase {
+	private static final Map<String, TestCase> NODE_POOL = new HashMap<String, TestCase>();
 	@Expose
 	private String name;
+	private boolean isFolder;
+	private String displayName;
+	private int level;
+	private TestCase parent;
+	@Expose
+	private List<TestCase> children;
 	@Expose
 	private Tester owner;
 	@Expose(serialize = false, deserialize = false)
@@ -18,10 +29,6 @@ public class TestCase {
 	private String[] descriptions;
 	@Expose(serialize = false, deserialize = false)
 	private CaseDescriptions caseDescriptions;
-	@Expose(serialize = false, deserialize = false)
-	private TestCase parent;
-	@Expose
-	private List<TestCase> children;
 	@Expose
 	private String[] preconditions;
 	@Expose(serialize = false, deserialize = false)
@@ -40,46 +47,85 @@ public class TestCase {
 	@Expose
 	private String logs;
 
-	private TestCase(String name) {
+	private TestCase(String name, boolean isFolder) {
 		this.name = name;
-		this.children = new LinkedList<TestCase>();
+		this.isFolder = isFolder;
+		this.level = 0;
+		this.parent = null;
+		this.children = new ArrayList<TestCase>();
 	}
 
-	public static TestCase create(String caseName) {
-		return new TestCase(caseName);
+	public static TestCase create(String name, boolean isFolder) {
+		return new TestCase(name, isFolder);
 	}
 
-	public void addChildTestCase(TestCase child) {
-		child.setParent(this);
-		children.add(child);
-	}
-
-	public void removeChildTestCase(TestCase child) {
-		child.setParent(null);
-		children.remove(child);
-	}
-
-	public String getCaseTreePath() {
-		String parentPath = "";
-		if (null != parent) {
-			parentPath = parent.getCaseTreePath();
+	public static TestCase createTestCaseFromPool(String name, boolean isFolder) {
+		TestCase tree = create(name, isFolder);
+		String key = tree.getKey();
+		if (!NODE_POOL.containsKey(key)) {
+			NODE_POOL.put(key, tree);
 		}
-		return parentPath + "->" + getName();
+		return NODE_POOL.get(key);
+	}
+
+	public void addChild(TestCase child) {
+		if (children.contains(child)) {
+			return;
+		}
+		if (child.getParent() != null) {
+			child.getParent().getChildren().remove(child);
+		}
+		child.setParent(this);
+		child.grow();
+		this.children.add(child);
+	}
+
+	public String getPath() {
+		if (null != parent) {
+			return parent.getPath() + "/" + getName();
+		}
+		return "/" + getName();
+	}
+
+	public String getKey() {
+		return name + "_" + isFolder;
+	}
+
+	private void grow() {
+		int increase = 1;
+		if (null != parent) {
+			increase = increase + parent.getLevel();
+		}
+		this.level = this.level + increase;
+		for (TestCase child : children) {
+			child.grow();
+		}
+	}
+
+	public void collectKeys(Set<String> keys) {
+		if (null == keys) {
+			throw new RuntimeException(
+					"collect keys error as your keys is null , Please new a instance for it! ");
+		}
+		keys.add(getKey());
+		for (TestCase child : children) {
+			child.collectKeys(keys);
+		}
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public int getLevel() {
+		return level;
 	}
 
 	public TestCase getParent() {
 		return parent;
 	}
 
-	public void setParent(TestCase parent) {
+	private void setParent(TestCase parent) {
 		this.parent = parent;
 	}
 
@@ -87,8 +133,8 @@ public class TestCase {
 		return children;
 	}
 
-	public void setChildren(List<TestCase> children) {
-		this.children = children;
+	public String getCaseTreePath() {
+		return this.getPath();
 	}
 
 	public Preconditions getPreconditions() {
@@ -180,6 +226,44 @@ public class TestCase {
 		}
 	}
 
+	public String getTextDescriptions() {
+		StringBuilder descriptionsBuilder = new StringBuilder();
+		CaseDescriptions caseDescriptions = getCaseDescriptions();
+		if (null != caseDescriptions) {
+			for (String description : caseDescriptions.value()) {
+				descriptionsBuilder.append(description).append("\n");
+			}
+			descriptionsBuilder.append("\n");
+		}
+		Preconditions preconditions = getPreconditions();
+		if (null != preconditions) {
+			descriptionsBuilder.append("\nPreconditions : \n");
+			for (String precondition : preconditions.value()) {
+				descriptionsBuilder.append(precondition).append("\n");
+			}
+			descriptionsBuilder.append("\n");
+		}
+
+		Steps steps = getSteps();
+		if (null != steps) {
+			descriptionsBuilder.append("\nSteps : \n");
+			for (String step : steps.value()) {
+				descriptionsBuilder.append(step).append("\n");
+			}
+			descriptionsBuilder.append("\n");
+		}
+
+		ExpectedResults expectedResults = getExpectedResults();
+		if (null != expectedResults) {
+			descriptionsBuilder.append("<br>Expected Results : \n");
+			for (String expectedResult : expectedResults.value()) {
+				descriptionsBuilder.append(expectedResult).append("\n");
+			}
+			descriptionsBuilder.append("\n");
+		}
+		return descriptionsBuilder.toString();
+	}
+
 	public List<BugListVO> getBugList() {
 		List<BugListVO> bugList = new LinkedList<BugListVO>();
 		Bugs bugs = getBugs();
@@ -218,6 +302,19 @@ public class TestCase {
 			return parent.getCaseLevel() + 1;
 		}
 		return 0;
+	}
+
+	public String getDisplayName() {
+		return displayName == null ? getName() : displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public String toString() {
+		return "\n" + getCaseTreePath() + "\n[\n" + this.getName() + "\n"
+				+ this.getTextDescriptions() + "\n]\n";
 	}
 
 }

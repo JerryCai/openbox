@@ -4,13 +4,12 @@ import com.googlecode.openbox.common.IOUtils;
 import com.googlecode.openbox.common.context.CommonContext;
 import com.googlecode.openbox.testu.tester.CaseDescriptions;
 import com.googlecode.openbox.testu.tester.ExpectedResults;
+import com.googlecode.openbox.testu.tester.InternTestCasesExporter;
 import com.googlecode.openbox.testu.tester.Preconditions;
 import com.googlecode.openbox.testu.tester.Steps;
 import com.googlecode.openbox.testu.tester.TestCase;
-import com.googlecode.openbox.testu.tester.TestCasePool;
-import com.googlecode.openbox.testu.tester.TestCasesExporter;
 
-public class TextExporter implements TestCasesExporter {
+public class TextExporter implements InternTestCasesExporter {
 
 	private String exportLocalFile;
 
@@ -23,15 +22,14 @@ public class TextExporter implements TestCasesExporter {
 	}
 
 	@Override
-	public void export(TestCasePool testCasePool,CommonContext context) {
-		TestCase rootTestCase = testCasePool.exportCaseTreeRoot();
-		exportIntern(rootTestCase);
+	public void export(TestCase root, CommonContext context) {
+		exportIntern(root);
 	}
 
 	private void exportIntern(TestCase testCase) {
 		StringBuilder sb = new StringBuilder();
 		int level = testCase.getCaseLevel();
-		String caseName = testCase.getName();
+		String caseName = testCase.getDisplayName();
 		appendCaseLine(sb, level, caseName);
 		CaseDescriptions caseDescriptions = testCase.getCaseDescriptions();
 		if (null != caseDescriptions) {
