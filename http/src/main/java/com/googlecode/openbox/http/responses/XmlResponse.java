@@ -1,39 +1,43 @@
 package com.googlecode.openbox.http.responses;
 
+import java.io.StringReader;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.protocol.HttpContext;
-import org.dom4j.Document;
 
-import com.googlecode.openbox.common.XmlUtils;
 import com.googlecode.openbox.http.AbstractResponse;
 import com.googlecode.openbox.http.ExecutorMonitorManager;
+import com.googlecode.openbox.http.HttpClientException;
 
-public class XmlResponse extends AbstractResponse {
+public class XmlResponse<T> extends AbstractResponse {
+	private T t;
 
-	private Document doc;
-
+	@SuppressWarnings("unchecked")
 	public XmlResponse(HttpResponse httpResponse, HttpContext httpContext,
-			ExecutorMonitorManager executorMonitorManager) {
+			ExecutorMonitorManager executorMonitorManager, Class<T> classT) {
 		super(httpResponse, httpContext, executorMonitorManager);
-
-		if (null != getContent()) {
-			this.doc = XmlUtils.buildXMLFromStringContent(getContent());
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(classT);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			this.t = (T) unmarshaller.unmarshal(new StringReader(getContent()));
+		} catch (JAXBException e) {
+			throw HttpClientException.create(
+					"It can't parse response content to response object", e);
 		}
 	}
 
-	public Document getDocument() {
-		return doc;
+	public T getResponseObject() {
+		return t;
 	}
 
 	@Override
 	public ContentType[] getSupportedContentTypes() {
-		return new ContentType[] { getUtf8ContentType(ContentType.TEXT_XML),
-				getUtf8ContentType(ContentType.APPLICATION_XML),
-				getUtf8ContentType(ContentType.APPLICATION_ATOM_XML),
-				getUtf8ContentType(ContentType.APPLICATION_SVG_XML),
-				getUtf8ContentType(ContentType.APPLICATION_XHTML_XML),
-				getUtf8ContentType(ContentType.TEXT_PLAIN) };
+		return null;
 	}
 
 }

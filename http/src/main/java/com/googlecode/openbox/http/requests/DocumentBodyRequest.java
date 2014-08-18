@@ -7,15 +7,13 @@ import org.dom4j.Document;
 
 import com.googlecode.openbox.http.Request;
 
-public abstract class XmlBodyRequest extends Request {
+public abstract class DocumentBodyRequest extends Request {
 
-	Document xmlBody;
-
-	public XmlBodyRequest(String url) {
+	public DocumentBodyRequest(String url) {
 		super(url);
 	}
 
-	public XmlBodyRequest(String scheme, String host, int port, String path) {
+	public DocumentBodyRequest(String scheme, String host, int port, String path) {
 		super(scheme, host, port, path);
 	}
 

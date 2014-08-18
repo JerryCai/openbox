@@ -91,6 +91,10 @@ public class IOUtils {
 		return getInputStreamMD5(in);
 	}
 
+	public static String getStringMD5(String input) {
+		return getInputStreamMD5(getInputStreamFromString(input));
+	}
+
 	public static String getInputStreamMD5(InputStream in) {
 		if (null == in) {
 			logger.error("computer file md5 failed as its input stream is null,return null");
@@ -104,10 +108,16 @@ public class IOUtils {
 			while ((len = in.read(buffer, 0, 1024)) != -1) {
 				digest.update(buffer, 0, len);
 			}
-			in.close();
+
 		} catch (Exception e) {
 			logger.error("computer file MD5 encounter error", e);
 			return null;
+		} finally {
+			try {
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		BigInteger bigInt = new BigInteger(1, digest.digest());
 		return bigInt.toString(16);
@@ -158,7 +168,7 @@ public class IOUtils {
 	}
 
 	public static boolean createFile(String filePath, InputStream inputStream) {
-		if(logger.isDebugEnabled()){
+		if (logger.isDebugEnabled()) {
 			logger.debug("create local file path = [" + filePath + "]");
 		}
 		boolean createSuccess = false;
@@ -301,15 +311,15 @@ public class IOUtils {
 	}
 
 	public static boolean copyFolderFromJar(JarURLConnection srcFolderPath,
-			String destFolderPath) throws IOException{
+			String destFolderPath) throws IOException {
 		return copyFolderFromJar(srcFolderPath, destFolderPath, true);
 	}
 
 	public static boolean copyFolderFromJar(JarURLConnection jarConnection,
-			String destFolderPath, boolean isOverwrite) throws IOException{
+			String destFolderPath, boolean isOverwrite) throws IOException {
 
 		final JarFile jarFile = jarConnection.getJarFile();
-		if(isOverwrite){
+		if (isOverwrite) {
 			IOUtils.deleteFile(destFolderPath);
 		}
 
@@ -317,12 +327,11 @@ public class IOUtils {
 				.hasMoreElements();) {
 			final JarEntry entry = e.nextElement();
 			if (entry.getName().startsWith(jarConnection.getEntryName())) {
-				String filename = StringUtils.removeStart(
-						entry.getName(), 
+				String filename = StringUtils.removeStart(entry.getName(),
 						jarConnection.getEntryName());
 
-				if(filename.endsWith("/")){
-					filename = filename.substring(0, filename.length()-1);
+				if (filename.endsWith("/")) {
+					filename = filename.substring(0, filename.length() - 1);
 				}
 				final File f = new File(destFolderPath, filename);
 				if (!entry.isDirectory()) {
@@ -369,8 +378,6 @@ public class IOUtils {
 		}
 		return false;
 	}
-	
-	
 
 	public static boolean ensureDirectoryExists(final File f) {
 		return f.exists() || f.mkdirs();

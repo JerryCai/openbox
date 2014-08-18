@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.googlecode.openbox.common.IOUtils;
 
-public class ContentLoader {
+public final class ContentLoader {
 
 	private static final Map<String, String> SMALL_CONTENT_CACHE = new HashMap<String, String>();
 

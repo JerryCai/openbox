@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.googlecode.openbox.common.IOUtils;
 
-public class ConfigLoader {
+public final class ConfigLoader {
 	private static final Logger logger = LogManager.getLogger();
 
 	private String path = null;
@@ -19,14 +19,7 @@ public class ConfigLoader {
 	private ConfigLoader(String path) {
 		this.path = path;
 		this.PROP = loadConfig(this.path);
-		doBak();
 
-	}
-
-	private void doBak() {
-		String configAbsPath = getClass().getClassLoader()
-				.getResource(getConfigPath()).getFile();
-		IOUtils.copyFile(configAbsPath, configAbsPath + ".bak_ConfigLoader");
 	}
 
 	public String getConfigPath() {
@@ -37,6 +30,14 @@ public class ConfigLoader {
 		return new ConfigLoader(path);
 	}
 
+	public String getConfigItem(final String key , final String defaultValue){
+		String value = getConfigItem(key);
+		if(null == value || value.trim().length() <=0){
+			return defaultValue;
+		}
+		return value;
+	}
+	
 	public String getConfigItem(final String key) {
 		String item = null;
 		try {
@@ -60,13 +61,23 @@ public class ConfigLoader {
 		return item;
 	}
 
-	public void writeConfigItem(final String key, final String value) {
+	public void setConfigItem(final String key, final String value) {
 		PROP.setProperty(key, value);
+	}
+
+	public void saveConfig(){
+		doBak();
 		String file = getClass().getClassLoader().getResource(getConfigPath())
 				.getFile();
 		IOUtils.outputProperties(PROP, file);
 	}
-
+	
+	private void doBak() {
+		String configAbsPath = getClass().getClassLoader()
+				.getResource(getConfigPath()).getFile();
+		IOUtils.copyFile(configAbsPath, configAbsPath + ".bak_ConfigLoader");
+	}
+	
 	private Properties loadConfig(String path) {
 		InputStream is = null;
 		try {
