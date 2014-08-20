@@ -104,6 +104,7 @@
 		<module>maventools</module>
 		<module>demo_restfulclient</module>
 		<module>demo_performancetest</module>
+		<module>webui</module>
 	</modules>
 	<profiles>
 		<profile>
