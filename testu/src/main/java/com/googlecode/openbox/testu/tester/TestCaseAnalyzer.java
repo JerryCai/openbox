@@ -55,7 +55,7 @@ public class TestCaseAnalyzer {
 				root.addChild(suiteTestFolder);
 			}
 		}
-		QA moduleLevelQA = clss.getAnnotation(QA.class);
+		Owner moduleLevelQA = clss.getAnnotation(Owner.class);
 
 		CaseName caseName = method.getAnnotation(CaseName.class);
 		if (null != caseName && StringUtils.isNoneBlank(caseName.value())) {
@@ -74,7 +74,7 @@ public class TestCaseAnalyzer {
 				suiteTestFolder.addChild(testCase);
 			}
 
-			QA caseLevelQA = method.getAnnotation(QA.class);
+			Owner caseLevelQA = method.getAnnotation(Owner.class);
 			if (null != caseLevelQA) {
 				testCase.setOwner(caseLevelQA);
 			} else if (null != moduleLevelQA) {

@@ -12,14 +12,14 @@ import com.googlecode.openbox.testu.tester.CaseDescriptions;
 import com.googlecode.openbox.testu.tester.CaseName;
 import com.googlecode.openbox.testu.tester.CaseSuite;
 import com.googlecode.openbox.testu.tester.ExpectedResults;
+import com.googlecode.openbox.testu.tester.Owner;
 import com.googlecode.openbox.testu.tester.ParentCaseName;
 import com.googlecode.openbox.testu.tester.Preconditions;
-import com.googlecode.openbox.testu.tester.QA;
 import com.googlecode.openbox.testu.tester.Steps;
 import com.googlecode.openbox.testu.tester.TestReportTitle;
 @TestReportTitle("Test Demo Foo")
 @CaseSuite(name="Foo")
-@QA(name = "Jerry Cai", id = "jerrycai", email = "jerrycai.cn@gmail.com")
+@Owner(name = "Jerry Cai", id = "jerrycai", email = "jerrycai.cn@gmail.com")
 public class DemoUsageParentSuiteTest extends AbstractTestCase{
 	private static final Logger logger = LogManager.getLogger();
 

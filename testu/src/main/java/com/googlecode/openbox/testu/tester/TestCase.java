@@ -24,7 +24,7 @@ public class TestCase {
 	@Expose
 	private Tester owner;
 	@Expose(serialize = false, deserialize = false)
-	private QA qa;
+	private Owner qa;
 	@Expose
 	private String[] descriptions;
 	@Expose(serialize = false, deserialize = false)
@@ -190,7 +190,7 @@ public class TestCase {
 		return caseDescriptions;
 	}
 
-	public QA getOwner() {
+	public Owner getOwner() {
 		if (null != qa) {
 			return qa;
 		}
@@ -201,7 +201,7 @@ public class TestCase {
 		return null;
 	}
 
-	public void setOwner(QA owner) {
+	public void setOwner(Owner owner) {
 		this.qa = owner;
 		if (null != owner) {
 			this.owner = new Tester();

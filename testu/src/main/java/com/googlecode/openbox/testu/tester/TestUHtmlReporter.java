@@ -194,7 +194,7 @@ public class TestUHtmlReporter implements IReporter {
 			}
 			collectExtendedExporters(clss);
 		}
-		QA moduleLevelQA = clss.getAnnotation(QA.class);
+		Owner moduleLevelQA = clss.getAnnotation(Owner.class);
 
 		Method method = testngMethod.getConstructorOrMethod().getMethod();
 
@@ -214,7 +214,7 @@ public class TestUHtmlReporter implements IReporter {
 				suiteTestFolder.addChild(testCase);
 			}
 			
-			QA caseLevelQA = method.getAnnotation(QA.class);
+			Owner caseLevelQA = method.getAnnotation(Owner.class);
 			if (null != caseLevelQA) {
 				testCase.setOwner(caseLevelQA);
 			} else if (null != moduleLevelQA) {

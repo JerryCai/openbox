@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD,ElementType.TYPE,ElementType.PACKAGE})
 @Inherited
 @Documented
-public @interface QA {
+public @interface Owner {
 	public String name();
 	public String email();
 	public String id();

@@ -23,7 +23,7 @@ import com.googlecode.openbox.testu.tester.ExpectedResults;
 import com.googlecode.openbox.testu.tester.InternTestCasesExporter;
 import com.googlecode.openbox.testu.tester.OverallTestResult;
 import com.googlecode.openbox.testu.tester.Preconditions;
-import com.googlecode.openbox.testu.tester.QA;
+import com.googlecode.openbox.testu.tester.Owner;
 import com.googlecode.openbox.testu.tester.Steps;
 import com.googlecode.openbox.testu.tester.TestCase;
 import com.googlecode.openbox.testu.tester.TestCaseResults;
@@ -134,7 +134,7 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 	}
 
 	private String getOwner(TestCase testCase) {
-		QA owner = testCase.getOwner();
+		Owner owner = testCase.getOwner();
 		String display = "E-mailer";
 		String email = "";
 		if (null != owner) {
