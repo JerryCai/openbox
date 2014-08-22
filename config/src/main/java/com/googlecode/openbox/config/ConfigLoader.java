@@ -52,8 +52,9 @@ public final class ConfigLoader {
 		if (null == item || "".equals(item.trim())) {
 			String message = "config item [" + key
 					+ "] is not configed in config file [" + path + "]";
-			logger.error(message);
-			throw new RuntimeException(message);
+			if(logger.isWarnEnabled()){
+				logger.warn(message);
+			}
 		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("load config item [" + key + "]=[" + item + "]");
