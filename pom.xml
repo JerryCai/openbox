@@ -8,7 +8,7 @@
 	<groupId>com.googlecode.openbox</groupId>
 	<artifactId>openbox</artifactId>
 	<packaging>pom</packaging>
-	<version>2.0.7</version>
+	<version>2.0.8-SNAPSHOT</version>
 	<name>OpenBox</name>
 	<description>This is common test framework and toolkit name as OpenBox</description>
 	<url>http://code.google.com/p/openbox/</url>
@@ -20,9 +20,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:https://openbox.googlecode.com/svn/tags/openbox-2.0.7</connection>
-		<developerConnection>scm:svn:https://openbox.googlecode.com/svn/tags/openbox-2.0.7</developerConnection>
-		<url>https://openbox.googlecode.com/svn/tags/openbox-2.0.7</url>
+		<connection>scm:svn:https://openbox.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://openbox.googlecode.com/svn/trunk/</developerConnection>
+		<url>https://openbox.googlecode.com/svn/trunk/</url>
 	</scm>
 	<developers>
 		<developer>
