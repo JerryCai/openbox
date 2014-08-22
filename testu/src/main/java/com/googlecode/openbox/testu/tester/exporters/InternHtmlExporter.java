@@ -22,21 +22,22 @@ import com.googlecode.openbox.testu.tester.CaseDescriptions;
 import com.googlecode.openbox.testu.tester.ExpectedResults;
 import com.googlecode.openbox.testu.tester.InternTestCasesExporter;
 import com.googlecode.openbox.testu.tester.OverallTestResult;
-import com.googlecode.openbox.testu.tester.Preconditions;
 import com.googlecode.openbox.testu.tester.Owner;
+import com.googlecode.openbox.testu.tester.Preconditions;
 import com.googlecode.openbox.testu.tester.Steps;
 import com.googlecode.openbox.testu.tester.TestCase;
 import com.googlecode.openbox.testu.tester.TestCaseResults;
 import com.googlecode.openbox.testu.tester.TestCaseResults.Result;
 
 public class InternHtmlExporter implements InternTestCasesExporter {
+
 	public static final String CONTEXT_ID = "OverallTestResult";
 	private String exportLocalFile;
 	private List<BugListVO> bugList;
-	
+
 	private InternHtmlExporter(String exportLocalFile) {
 		this.exportLocalFile = exportLocalFile;
-		this.bugList=new LinkedList<BugListVO>();
+		this.bugList = new LinkedList<BugListVO>();
 	}
 
 	public static InternHtmlExporter newInstance(String location) {
@@ -87,7 +88,8 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 
 		OverallTestResult overallTestResult = (OverallTestResult) object;
 		overallTestResult.setBugList(bugList);
-		IOUtils.appendContentToFile(appJsFile,overallTestResult.getHtmlReport());
+		IOUtils.appendContentToFile(appJsFile,
+				overallTestResult.getHtmlReport());
 
 		String start = ContentLoader.getContent("reporter/html/start.fm");
 		IOUtils.appendContentToFile(appJsFile, start);
@@ -144,10 +146,16 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 				email = "";
 			}
 		}
-		return "<a href=\"mailto:" + email
-				+ "?Subject=Test Report Feedback - Test Case - "
-				+ testCase.getDisplayName() + "&body=" + generateEmailBody(testCase)
-				+ " \" target=\"_top\">" + display + "</a>";
+		String emailAddr = email.replace("+", "%2B");
+		String subject = getEncodeStr(testCase.getDisplayName());
+		String body = getEncodeStr(generateEmailBody(testCase));
+		return String
+				.format("<a href=\"mailto:%s?Content-Type=text/html&Subject=Test Report Feedback - Test Case - %s&body=%s \" target=\"_top\">%s</a>",
+						emailAddr, subject, body, display);
+	}
+
+	private static String getEncodeStr(String orignal) {
+		return orignal;
 	}
 
 	private String generateEmailBody(TestCase testCase) {
@@ -156,10 +164,11 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 		sb.append("Hello ,").append(split).append("Case Name : [ ")
 				.append(testCase.getDisplayName()).append(" ]").append(split)
 				.append(getCaseDescriptions(testCase)).append(split)
-				.append(split).append(split).append("Best regards!")
-				.append(split).append("TestU Report");
+				.append(split).append("Best regards!")
+				.append(split).append("--TestU Report");
 		return StringUtils.replaceEach(sb.toString(), new String[] { "<br>",
-				"\n" }, new String[] { "%0D%0A", "%0D%0A" });
+				"\n", "&", "@" }, new String[] { "%0D%0A", "%0D%0A", "%26",
+				"%40" });
 	}
 
 	private String getResult(TestCase testCase) {
@@ -240,7 +249,7 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 		}
 		Preconditions preconditions = testCase.getPreconditions();
 		if (null != preconditions) {
-			descriptionsBuilder.append("<br>Preconditions : <br>");
+			descriptionsBuilder.append("Preconditions : <br>");
 			for (String precondition : preconditions.value()) {
 				descriptionsBuilder.append(precondition).append("<br>");
 			}
@@ -249,7 +258,7 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 
 		Steps steps = testCase.getSteps();
 		if (null != steps) {
-			descriptionsBuilder.append("<br>Steps : <br>");
+			descriptionsBuilder.append("Steps : <br>");
 			for (String step : steps.value()) {
 				descriptionsBuilder.append(step).append("<br>");
 			}
@@ -258,7 +267,7 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 
 		ExpectedResults expectedResults = testCase.getExpectedResults();
 		if (null != expectedResults) {
-			descriptionsBuilder.append("<br>Expected Results : <br>");
+			descriptionsBuilder.append("Expected Results : <br>");
 			for (String expectedResult : expectedResults.value()) {
 				descriptionsBuilder.append(expectedResult).append("<br>");
 			}
@@ -273,11 +282,5 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 		}
 		return StringUtils.replaceEach(input, new String[] { "'", "\"", "\n",
 				"\r" }, new String[] { "", "", "\\n", "\\r" });
-	}
-
-	public static void main(String... args) {
-		String input = "we can't \nfind it !";
-		System.out.println(handleSpecialCharacters(input));
-
 	}
 }

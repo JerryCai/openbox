@@ -10,8 +10,6 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
 import com.googlecode.openbox.common.DateHelper;
-import com.googlecode.openbox.testu.tester.TestCasesExporters;
-@TestCasesExporters({com.googlecode.openbox.testu.tester.samples.DemoExtendedExporter.class})
 @Listeners({ com.googlecode.openbox.testu.tester.TestUHtmlReporter.class})
 public abstract class AbstractTestCase extends TestCase {
 	private static final Logger logger = LogManager.getLogger();

@@ -12,7 +12,7 @@ public class TestCaseAnalyzer {
 	private TestCase root;
 
 	private TestCaseAnalyzer() {
-		this.root = TestCase.createTestCaseFromPool(REPORT_TITLE,true);
+		this.root = TestCase.createTestCaseFromPool(REPORT_TITLE,true,"");
 	}
 
 	public static TestCaseAnalyzer newInstance() {
@@ -39,7 +39,7 @@ public class TestCaseAnalyzer {
 		if (null != caseSuite) {
 			suiteName = caseSuite.name();
 			if (StringUtils.isNotBlank(suiteName)) {
-				suiteTestFolder = TestCase.createTestCaseFromPool(suiteName,true);
+				suiteTestFolder = TestCase.createTestCaseFromPool(suiteName,true,"");
 			}
 		}
 
@@ -48,7 +48,7 @@ public class TestCaseAnalyzer {
 			String parentModuleName = caseSuite.parent();
 			if (StringUtils.isNotBlank(parentModuleName)) {
 				TestCase parentModuleNameFolder = TestCase
-						.createTestCaseFromPool(parentModuleName,true);
+						.createTestCaseFromPool(parentModuleName,true,"");
 				root.addChild(parentModuleNameFolder);
 				parentModuleNameFolder.addChild(suiteTestFolder);
 			} else {
@@ -56,7 +56,7 @@ public class TestCaseAnalyzer {
 			}
 		}
 		Owner moduleLevelQA = clss.getAnnotation(Owner.class);
-
+		String keySeed=className;
 		CaseName caseName = method.getAnnotation(CaseName.class);
 		if (null != caseName && StringUtils.isNoneBlank(caseName.value())) {
 			ParentCaseName parentCaseName = method
@@ -64,10 +64,10 @@ public class TestCaseAnalyzer {
 			TestCase parentTestCase = null;
 			if (null != parentCaseName
 					&& StringUtils.isNotBlank(parentCaseName.value())) {
-				parentTestCase = TestCase.createTestCaseFromPool(parentCaseName.value(),false);
+				parentTestCase = TestCase.createTestCaseFromPool(parentCaseName.value(),false,keySeed);
 				suiteTestFolder.addChild(parentTestCase);
 			}
-			TestCase testCase = TestCase.createTestCaseFromPool(caseName.value(),false);
+			TestCase testCase = TestCase.createTestCaseFromPool(caseName.value(),false,keySeed);
 			if (null != parentTestCase) {
 				parentTestCase.addChild(testCase);
 			} else {

@@ -15,6 +15,7 @@ public class TestCase {
 	private static final Map<String, TestCase> NODE_POOL = new HashMap<String, TestCase>();
 	@Expose
 	private String name;
+	private String keySeed;
 	private boolean isFolder;
 	private String displayName;
 	private int level;
@@ -47,20 +48,21 @@ public class TestCase {
 	@Expose
 	private String logs;
 
-	private TestCase(String name, boolean isFolder) {
+	private TestCase(String name, boolean isFolder,String keySeed) {
 		this.name = name;
+		this.keySeed=keySeed;
 		this.isFolder = isFolder;
 		this.level = 0;
 		this.parent = null;
 		this.children = new ArrayList<TestCase>();
 	}
 
-	public static TestCase create(String name, boolean isFolder) {
-		return new TestCase(name, isFolder);
+	public static TestCase create(String name, boolean isFolder,String keySeed) {
+		return new TestCase(name, isFolder,keySeed);
 	}
 
-	public static TestCase createTestCaseFromPool(String name, boolean isFolder) {
-		TestCase tree = create(name, isFolder);
+	public static TestCase createTestCaseFromPool(String name, boolean isFolder,String keySeed) {
+		TestCase tree = create(name, isFolder,keySeed);
 		String key = tree.getKey();
 		if (!NODE_POOL.containsKey(key)) {
 			NODE_POOL.put(key, tree);
@@ -88,7 +90,7 @@ public class TestCase {
 	}
 
 	public String getKey() {
-		return name + "_" + isFolder;
+		return keySeed+"!"+name + "@" + isFolder;
 	}
 
 	private void grow() {
@@ -246,7 +248,7 @@ public class TestCase {
 
 		Steps steps = getSteps();
 		if (null != steps) {
-			descriptionsBuilder.append("\nSteps : \n");
+			descriptionsBuilder.append("Steps : \n");
 			for (String step : steps.value()) {
 				descriptionsBuilder.append(step).append("\n");
 			}
@@ -255,7 +257,7 @@ public class TestCase {
 
 		ExpectedResults expectedResults = getExpectedResults();
 		if (null != expectedResults) {
-			descriptionsBuilder.append("<br>Expected Results : \n");
+			descriptionsBuilder.append("Expected Results : \n");
 			for (String expectedResult : expectedResults.value()) {
 				descriptionsBuilder.append(expectedResult).append("\n");
 			}

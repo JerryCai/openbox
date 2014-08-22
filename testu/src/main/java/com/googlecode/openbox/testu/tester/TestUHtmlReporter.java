@@ -40,8 +40,10 @@ public class TestUHtmlReporter implements IReporter {
 	private static final Map<String, TestCasesExporter> EXPORTERS = new HashMap<String, TestCasesExporter>();
 	private static boolean _executed = false;
 	private static final Set<String> ERROR_EXPORTER_RECORDS = new HashSet<String>();
-	private static final String REPORT_TITLE="Test Cases";
-	private static final TestCase 	ROOT = TestCase.createTestCaseFromPool(REPORT_TITLE,true);
+	private static final String REPORT_TITLE = "Test Cases";
+	private static final TestCase ROOT = TestCase.createTestCaseFromPool(
+			REPORT_TITLE, true, TestUHtmlReporter.class.getName());
+	private static TempForceAllTestResult TEMP_FORCE_ALL_TEST_RESULT = null;
 
 	public TestUHtmlReporter() {
 
@@ -56,7 +58,8 @@ public class TestUHtmlReporter implements IReporter {
 		}
 		_executed = true;
 		// integration with reportNG,that means , if you add this listerner,
-		//by default , reportNG is auto registed too , This is more easy to use.
+		// by default , reportNG is auto registed too , This is more easy to
+		// use.
 		REPORTNG.generateReport(xmlSuites, suites, outputDirectoryName);
 		ITestContext textContext = null;
 		OverallTestResult overallTestResult = new OverallTestResult();
@@ -117,28 +120,34 @@ public class TestUHtmlReporter implements IReporter {
 				exporter.export(ROOT);
 				if (logger.isInfoEnabled()) {
 					logger.info("your registed TestCaseExporter-["
-							+ exporter.getClass().getName() + "] is executed success !");
+							+ exporter.getClass().getName()
+							+ "] is executed success !");
 				}
 			} catch (Exception e) {
-				logger.error("your registed TestCaseExporter-["
-						+ exporter.getClass().getName() + "] execute error , please check its implementation !", e);
+				logger.error(
+						"your registed TestCaseExporter-["
+								+ exporter.getClass().getName()
+								+ "] execute error , please check its implementation !",
+						e);
 			}
 		}
 	}
 
 	private void collectExtendedExporters(Class<?> clss) {
-		TestCasesExporters extendedTestCasesExporters = clss.getDeclaredAnnotation(TestCasesExporters.class);
-		if(null == extendedTestCasesExporters){
+		TestCasesExporters extendedTestCasesExporters = clss
+				.getDeclaredAnnotation(TestCasesExporters.class);
+		if (null == extendedTestCasesExporters) {
 			Class<?> superClass = clss.getSuperclass();
-			if(null != superClass ){
+			if (null != superClass) {
 				collectExtendedExporters(superClass);
 			}
-		
-		}else{
+
+		} else {
 			for (Class<? extends TestCasesExporter> exporterClass : extendedTestCasesExporters
 					.value()) {
 				String className = exporterClass.getName();
-				if (EXPORTERS.containsKey(className)|| ERROR_EXPORTER_RECORDS.contains(className)) {
+				if (EXPORTERS.containsKey(className)
+						|| ERROR_EXPORTER_RECORDS.contains(className)) {
 					continue;
 				}
 				try {
@@ -174,11 +183,25 @@ public class TestUHtmlReporter implements IReporter {
 				ROOT.setDisplayName(reportTitle);
 			}
 		}
+
+		if (null == TEMP_FORCE_ALL_TEST_RESULT) {
+			TEMP_FORCE_ALL_TEST_RESULT = clss
+					.getAnnotation(TempForceAllTestResult.class);
+			if (null != TEMP_FORCE_ALL_TEST_RESULT) {
+				if (logger.isWarnEnabled()) {
+					logger.warn("\nPlease Notice : You mark all test result by annotation [@TempForceAllTestResult(Result."
+							+ TEMP_FORCE_ALL_TEST_RESULT
+							+ ")] ! \nIf you need to get actual test result , Please remove this Annotation");
+				}
+			}
+		}
+
 		CaseSuite caseSuite = clss.getAnnotation(CaseSuite.class);
 		if (null != caseSuite) {
 			suiteName = caseSuite.name();
 			if (StringUtils.isNotBlank(suiteName)) {
-				suiteTestFolder = TestCase.createTestCaseFromPool(suiteName,true);
+				suiteTestFolder = TestCase.createTestCaseFromPool(suiteName,
+						true, TestUHtmlReporter.class.getName());
 			}
 		}
 
@@ -186,10 +209,12 @@ public class TestUHtmlReporter implements IReporter {
 			HANDLED_CLASS_NAMES.add(className);
 			String parentModuleName = caseSuite.parent();
 			if (StringUtils.isNotBlank(parentModuleName)) {
-				TestCase parentModuleNameFolder = TestCase.createTestCaseFromPool(parentModuleName,true);
+				TestCase parentModuleNameFolder = TestCase
+						.createTestCaseFromPool(parentModuleName, true,
+								TestUHtmlReporter.class.getName());
 				ROOT.addChild(parentModuleNameFolder);
 				parentModuleNameFolder.addChild(suiteTestFolder);
-			}else{
+			} else {
 				ROOT.addChild(suiteTestFolder);
 			}
 			collectExtendedExporters(clss);
@@ -197,23 +222,26 @@ public class TestUHtmlReporter implements IReporter {
 		Owner moduleLevelQA = clss.getAnnotation(Owner.class);
 
 		Method method = testngMethod.getConstructorOrMethod().getMethod();
-
+		String keySeed = className;
 		CaseName caseName = method.getAnnotation(CaseName.class);
 		if (null != caseName && StringUtils.isNoneBlank(caseName.value())) {
 			ParentCaseName parentCaseName = method
 					.getAnnotation(ParentCaseName.class);
 			TestCase parentTestCase = null;
-			if (null != parentCaseName && StringUtils.isNotBlank(parentCaseName.value())) {
-				parentTestCase = TestCase.createTestCaseFromPool(parentCaseName.value(),false);
+			if (null != parentCaseName
+					&& StringUtils.isNotBlank(parentCaseName.value())) {
+				parentTestCase = TestCase.createTestCaseFromPool(
+						parentCaseName.value(), false, keySeed);
 				suiteTestFolder.addChild(parentTestCase);
 			}
-			TestCase testCase = TestCase.createTestCaseFromPool(caseName.value(),false);
-			if(null != parentTestCase){
+			TestCase testCase = TestCase.createTestCaseFromPool(
+					caseName.value(), false, keySeed);
+			if (null != parentTestCase) {
 				parentTestCase.addChild(testCase);
-			}else{
+			} else {
 				suiteTestFolder.addChild(testCase);
 			}
-			
+
 			Owner caseLevelQA = method.getAnnotation(Owner.class);
 			if (null != caseLevelQA) {
 				testCase.setOwner(caseLevelQA);
@@ -224,7 +252,8 @@ public class TestUHtmlReporter implements IReporter {
 					.getAnnotation(CaseDescriptions.class));
 			testCase.setPreconditions(method.getAnnotation(Preconditions.class));
 			testCase.setSteps(method.getAnnotation(Steps.class));
-			testCase.setExpectedResults(method.getAnnotation(ExpectedResults.class));
+			testCase.setExpectedResults(method
+					.getAnnotation(ExpectedResults.class));
 
 			Bugs bugs = method.getAnnotation(Bugs.class);
 			if (null != bugs) {
@@ -232,7 +261,13 @@ public class TestUHtmlReporter implements IReporter {
 			}
 			// record test result
 			TestCaseResults actualTestResult = TestCaseResults.newInstance();
-			actualTestResult.setResult(Result.valueOf(tr.getStatus()));
+
+			if (null == TEMP_FORCE_ALL_TEST_RESULT) {
+				actualTestResult.setResult(Result.valueOf(tr.getStatus()));
+			} else {
+				actualTestResult.setResult(TEMP_FORCE_ALL_TEST_RESULT.value());
+			}
+
 			actualTestResult.setDuration(""
 					+ (tr.getEndMillis() - tr.getStartMillis()) + " ms");
 			StringBuilder msgBuilder = new StringBuilder();
