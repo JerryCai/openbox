@@ -1,0 +1,25 @@
+@TestCasesExporters({com.yyy.XXXXX.class})
+
+@TestReportTitle("Test Demo Foo")
+
+@TempForceAllTestResult(Result.SKIP)
+
+@CaseSuite(name = "Foo")
+
+@Owner(name = "", id = "", email = "")
+
+@ParentCaseName("Add Foo 1")
+
+@CaseName("Add Foo 1 By Normal User")
+
+@CaseDescriptions({ })
+
+@ParentCaseName("Add Foo 1")
+
+@CaseName("Add Foo 1 By Anonymous User")
+
+@Preconditions({})
+
+@Steps({})
+
+@ExpectedResults({})
