@@ -35,7 +35,6 @@ public class WebUI {
 
 	private final AtomicInteger _frameDepth = new AtomicInteger(0);
 	private final Stack<String> _frameStack = new Stack<String>();
-	public static final String MEETINGCLIENTNAME = "atmgr.exe";
 
 	public static final ExpectedCondition<Boolean> WAIT_LOADED = new ExpectedCondition<Boolean>() {
 		public Boolean apply(WebDriver driver) {
@@ -44,13 +43,19 @@ public class WebUI {
 		}
 	};
 
-
-
-	private WebUI(WebDriver driver) {
+	private WebUI(WebDriver driver, int timeout) {
 		this.driver = driver;
 		this.driver.manage().deleteAllCookies();
 		this.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-		this.wait = new WebDriverWait(driver, DEFAULT_TIMEOUT);
+		this.wait = new WebDriverWait(driver, timeout);
+	}
+
+	private WebUI(WebDriver driver) {
+		this(driver, DEFAULT_TIMEOUT);
+	}
+
+	public static WebUI newInstance(WebDriver driver, int timeout) {
+		return new WebUI(driver, timeout);
 	}
 
 	public static WebUI newInstance(WebDriver driver) {
@@ -188,8 +193,8 @@ public class WebUI {
 	public WebUI inputById(final String id, final String value) {
 		WebElement element = getWebElementById(id);
 		if (logger.isInfoEnabled()) {
-			logger.info("input : " + getDesc(element)
-					+ "<==input value=[" + value + "]");
+			logger.info("input : " + getDesc(element) + "<==input value=["
+					+ value + "]");
 		}
 		element.clear();
 		element.sendKeys(value);
@@ -199,8 +204,8 @@ public class WebUI {
 	public WebUI inputByTag(final Tag tag, final String value) {
 		WebElement element = getWebElementByTag(tag);
 		if (logger.isInfoEnabled()) {
-			logger.info("input : " + getDesc(element)
-					+ "<==input value=[" + value + "]");
+			logger.info("input : " + getDesc(element) + "<==input value=["
+					+ value + "]");
 		}
 		element.clear();
 		element.sendKeys(value);
