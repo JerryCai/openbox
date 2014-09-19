@@ -197,7 +197,9 @@ public class TestUHtmlReporter implements IReporter {
 		}
 
 		CaseSuite caseSuite = clss.getAnnotation(CaseSuite.class);
+		String parentModuleName = null;
 		if (null != caseSuite) {
+			parentModuleName = caseSuite.parent();
 			suiteName = caseSuite.name();
 			if (StringUtils.isNotBlank(suiteName)) {
 				suiteTestFolder = TestCase.createTestCaseFromPool(suiteName,
@@ -207,7 +209,6 @@ public class TestUHtmlReporter implements IReporter {
 
 		if (!HANDLED_CLASS_NAMES.contains(className)) {
 			HANDLED_CLASS_NAMES.add(className);
-			String parentModuleName = caseSuite.parent();
 			if (StringUtils.isNotBlank(parentModuleName)) {
 				TestCase parentModuleNameFolder = TestCase
 						.createTestCaseFromPool(parentModuleName, true,
