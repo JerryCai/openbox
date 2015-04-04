@@ -19,11 +19,19 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	<!-- previous googlecode svn , now migrate to github
 	<scm>
 		<connection>scm:svn:https://openbox.googlecode.com/svn/trunk/</connection>
 		<developerConnection>scm:svn:https://openbox.googlecode.com/svn/trunk/</developerConnection>
 		<url>https://openbox.googlecode.com/svn/trunk/</url>
 	</scm>
+	 -->
+	<scm>
+	  <connection>scm:git:git@github.com:jerrycai/openbox.git</connection>
+	  <developerConnection>scm:git:git@github.com:jerrycai/openbox.git</developerConnection>
+	  <url>git@github.com:jerrycai/openbox.git</url>
+	</scm>
+	
 	<developers>
 		<developer>
 			<id>jerrycai</id>
