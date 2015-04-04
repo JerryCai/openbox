@@ -48,21 +48,22 @@ public class TestCase {
 	@Expose
 	private String logs;
 
-	private TestCase(String name, boolean isFolder,String keySeed) {
+	private TestCase(String name, boolean isFolder, String keySeed) {
 		this.name = name;
-		this.keySeed=keySeed;
+		this.keySeed = keySeed;
 		this.isFolder = isFolder;
 		this.level = 0;
 		this.parent = null;
 		this.children = new ArrayList<TestCase>();
 	}
 
-	public static TestCase create(String name, boolean isFolder,String keySeed) {
-		return new TestCase(name, isFolder,keySeed);
+	public static TestCase create(String name, boolean isFolder, String keySeed) {
+		return new TestCase(name, isFolder, keySeed);
 	}
 
-	public static TestCase createTestCaseFromPool(String name, boolean isFolder,String keySeed) {
-		TestCase tree = create(name, isFolder,keySeed);
+	public static TestCase createTestCaseFromPool(String name,
+			boolean isFolder, String keySeed) {
+		TestCase tree = create(name, isFolder, keySeed);
 		String key = tree.getKey();
 		if (!NODE_POOL.containsKey(key)) {
 			NODE_POOL.put(key, tree);
@@ -71,6 +72,9 @@ public class TestCase {
 	}
 
 	public void addChild(TestCase child) {
+		if (null == child) {
+			return;
+		}
 		if (children.contains(child)) {
 			return;
 		}
@@ -90,7 +94,7 @@ public class TestCase {
 	}
 
 	public String getKey() {
-		return keySeed+"!"+name + "@" + isFolder;
+		return keySeed + "!" + name + "@" + isFolder;
 	}
 
 	private void grow() {
