@@ -38,6 +38,7 @@ import com.googlecode.openbox.http.ExecutorMonitorManager;
 import com.googlecode.openbox.http.ExecutorMonitorManagerImpl;
 import com.googlecode.openbox.http.HttpClientException;
 import com.googlecode.openbox.http.HttpRequestFactory;
+import com.googlecode.openbox.http.RequestConverter;
 import com.googlecode.openbox.http.TimeLine;
 import com.googlecode.openbox.http.monitors.TimeLineMonitor;
 
@@ -61,8 +62,7 @@ public class HttpBuilder {
 	private Response response;
 	private ExecutorMonitorManager executorMonitorManager;
 	private CloseableHttpClient customHttpClient;
-	
-	
+
 	private HttpBuilder() {
 		this.uriBuilder = new URIBuilder();
 		this.entityBuilder = EntityBuilder.create();
@@ -324,9 +324,10 @@ public class HttpBuilder {
 			if (null != requestConfig) {
 				request.setConfig(requestConfig);
 			}
-			
+
 			if (logger.isInfoEnabled()) {
-				logger.info(getRequestLog());
+				logger.info(RequestConverter.getHttpRequestLog(request,
+						requestEntity));
 			}
 			registerDefaultMonitors();
 			executorMonitorManager.startMonitors();
@@ -418,32 +419,6 @@ public class HttpBuilder {
 				list.remove(index);
 				break;
 			}
-		}
-	}
-
-	private String getRequestLog() {
-		try {
-			StringBuilder sb = new StringBuilder();
-			sb.append("\n\n===================================== [T-"
-					+ Thread.currentThread().getId()
-					+ " Request ]==============================================\n");
-			sb.append(method).append("\n").append(uri).append("\n");
-			sb.append("------------------------headers--------------------------\n");
-			if (null != headers) {
-				for (NameValuePair header : headers) {
-					sb.append(header.getName()).append(":")
-							.append(header.getValue()).append("\n");
-				}
-			}
-			sb.append("------------------------ body --------------------------\n");
-			if (null != requestEntity) {
-				sb.append(EntityUtils.toString(requestEntity, "UTF-8"));
-			}
-			sb.append("\n===================================================================================================\n");
-			return sb.toString();
-		} catch (Exception e) {
-			logger.error(e);
-			throw new RuntimeException(e);
 		}
 	}
 

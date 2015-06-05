@@ -3,10 +3,13 @@ package com.googlecode.openbox.http;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,6 +29,35 @@ public final class RequestConverter {
 
 		return internBuild(httpRequestBase, request);
 
+	}
+
+	public static String getHttpRequestLog(HttpRequestBase request,
+			HttpEntity requestEntity) {
+		try {
+			StringBuilder sb = new StringBuilder();
+			sb.append("\n\n===================================== [T-"
+					+ Thread.currentThread().getId()
+					+ " Request ]===============================================\n");
+			sb.append(request.getMethod()).append("\n")
+					.append(request.getURI().toString()).append("\n");
+			sb.append("------------------------headers--------------------------\n");
+			Header[] headers = request.getAllHeaders();
+			if (null != headers) {
+				for (Header header : headers) {
+					sb.append(header.getName()).append(":")
+							.append(header.getValue()).append("\n");
+				}
+			}
+			sb.append("------------------------ body --------------------------\n");
+			if (null != requestEntity) {
+				sb.append(EntityUtils.toString(requestEntity, "UTF-8"));
+			}
+			sb.append("\n===================================================================================================\n");
+			return sb.toString();
+		} catch (Exception e) {
+			logger.error(e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	private static HttpRequestBase getHasBodyRequest(

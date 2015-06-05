@@ -2,13 +2,11 @@ package com.googlecode.openbox.http;
 
 import java.io.IOException;
 
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,10 +47,12 @@ public class DefaultHttpExecutor<T extends Response> implements HttpExecutor<T> 
 
 	@Override
 	public int execute() throws ClientProtocolException, IOException {
-		if (logger.isInfoEnabled()) {
-			logger.info(getRequestLog());
-		}
+
 		HttpRequestBase httpRequest = request.toRequest();
+		if (logger.isInfoEnabled()) {
+			logger.info(RequestConverter.getHttpRequestLog(httpRequest,
+					request.getEntity()));
+		}
 		registerDefaultMonitors();
 		executorMonitorManager.startMonitors();
 		try {
@@ -83,34 +83,6 @@ public class DefaultHttpExecutor<T extends Response> implements HttpExecutor<T> 
 	@Override
 	public void setContext(HttpContext context) {
 		this.context = context;
-	}
-
-	private String getRequestLog() {
-		try {
-			StringBuilder sb = new StringBuilder();
-			sb.append("\n\n===================================== [T-"
-					+ Thread.currentThread().getId()
-					+ " Request ]===============================================\n");
-			sb.append(request.getMethod()).append("\n")
-					.append(request.getURIBuilder().build()).append("\n");
-			sb.append("------------------------headers--------------------------\n");
-			if (null != request.getHeaders()) {
-				for (NameValuePair header : request.getHeaders()) {
-					sb.append(header.getName()).append(":")
-							.append(header.getValue()).append("\n");
-				}
-			}
-			sb.append("------------------------ body --------------------------\n");
-			if (null != request.getEntity()) {
-				sb.append(EntityUtils.toString(request.getEntity()));
-			}
-			sb.append("\n==================================================================================================\n");
-			return sb.toString();
-		} catch (Exception e) {
-			logger.error(e);
-			throw new RuntimeException(e);
-		}
-
 	}
 
 }
