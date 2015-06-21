@@ -134,8 +134,7 @@ public class TestUHtmlReporter implements IReporter {
 	}
 
 	private void collectExtendedExporters(Class<?> clss) {
-		TestCasesExporters extendedTestCasesExporters = clss
-				.getDeclaredAnnotation(TestCasesExporters.class);
+		TestCasesExporters extendedTestCasesExporters = clss.getAnnotation(TestCasesExporters.class);
 		if (null == extendedTestCasesExporters) {
 			Class<?> superClass = clss.getSuperclass();
 			if (null != superClass) {

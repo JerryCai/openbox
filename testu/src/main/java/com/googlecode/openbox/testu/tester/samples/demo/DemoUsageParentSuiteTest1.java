@@ -13,7 +13,9 @@ import com.googlecode.openbox.testu.tester.CaseName;
 import com.googlecode.openbox.testu.tester.CaseSuite;
 import com.googlecode.openbox.testu.tester.Owner;
 import com.googlecode.openbox.testu.tester.ParentCaseName;
+import com.googlecode.openbox.testu.tester.TestCasesExporters;
 
+@TestCasesExporters({com.googlecode.openbox.testu.tester.samples.DemoExtendedExporter.class})
 @CaseSuite(name="Foo1",parent="Foo")
 public class DemoUsageParentSuiteTest1 extends AbstractTestCase{
 	private static final Logger logger = LogManager.getLogger();
