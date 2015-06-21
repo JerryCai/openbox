@@ -1,11 +1,8 @@
 package com.googlecode.openbox.testu;
 
-import java.io.IOException;
-
+import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
 
 public abstract class RESTfulTestCase extends AbstractTestCase {
 
@@ -17,24 +14,6 @@ public abstract class RESTfulTestCase extends AbstractTestCase {
 	public RESTfulTestCase(String name) {
 		super(name);
 		initHttpClient();
-	}
-
-	public void setUp() {
-		super.setUp();
-	}
-
-	public void tearDown() {
-		super.tearDown();
-	}
-
-	@BeforeTest
-	public void beforeTest() {
-		super.beforeTest();
-	}
-
-	@AfterTest
-	public void afterTest() {
-		super.afterTest();
 	}
 
 	private void initHttpClient() {
@@ -56,14 +35,8 @@ public abstract class RESTfulTestCase extends AbstractTestCase {
 		}
 	}
 
-	public void releaseHttpClient() {
-		if (null != getHttpClient()) {
-			try {
-				getHttpClient().close();
-			} catch (IOException e) {
-				throw new RuntimeException("close http client error !", e);
-			}
-		}
+	public void closeHttpClient() {
+		HttpClientUtils.closeQuietly(getHttpClient());
 	}
 
 	/**

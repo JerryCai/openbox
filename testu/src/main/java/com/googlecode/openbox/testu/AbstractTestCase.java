@@ -5,12 +5,21 @@ import junit.framework.TestCase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterGroups;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeGroups;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
 import com.googlecode.openbox.common.DateHelper;
-@Listeners({ com.googlecode.openbox.testu.tester.TestUHtmlReporter.class})
+
+@Listeners({ com.googlecode.openbox.testu.tester.TestUHtmlReporter.class })
 public abstract class AbstractTestCase extends TestCase {
 	private static final Logger logger = LogManager.getLogger();
 
@@ -18,20 +27,40 @@ public abstract class AbstractTestCase extends TestCase {
 		super(name);
 	}
 
-	public void setUp() {
-		try {
-			super.setUp();
-		} catch (Exception e) {
-			throw TestUException.create("setup failed !!!", e);
-		}
+	public void setUp() throws Exception {
+		super.setUp();
+		this.beforeSuite();
+		this.beforeGroups();
+		this.beforeTest();
+		this.beforeClass();
+		this.beforeMethod();
 	}
 
-	public void tearDown() {
-		try {
-			super.tearDown();
-		} catch (Exception e) {
-			throw TestUException.create("tear down failed !!!", e);
-		}
+	public void tearDown() throws Exception {
+		super.tearDown();
+		this.afterMethod();
+		this.afterClass();
+		this.afterTest();
+		this.afterGroups();
+		this.afterSuite();
+	}
+
+	@BeforeSuite
+	public void beforeSuite() {
+	}
+
+	@AfterSuite
+	public void afterSuite() {
+	}
+
+	@BeforeGroups
+	public void beforeGroups() {
+
+	}
+
+	@AfterGroups
+	public void afterGroups() {
+
 	}
 
 	@BeforeTest
@@ -40,6 +69,24 @@ public abstract class AbstractTestCase extends TestCase {
 
 	@AfterTest
 	public void afterTest() {
+	}
+
+	@BeforeClass
+	public void beforeClass() {
+
+	}
+
+	@AfterClass
+	public void afterClass() {
+
+	}
+
+	@BeforeMethod
+	public void beforeMethod() {
+	}
+
+	@AfterMethod
+	public void afterMethod() {
 	}
 
 	private String getTestClassName() {

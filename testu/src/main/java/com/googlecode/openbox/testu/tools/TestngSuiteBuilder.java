@@ -10,15 +10,16 @@ public class TestngSuiteBuilder {
 	public static final String CLASS_POSTFIX = ".class";
 
 	private StringBuilder builder;
-	private String suiteName = "Default Suite";
-	private String testModuleName = "Default Test";
-	private String testPrefixName = "";
-	private String testPostfixName = "Test";
+	private String suiteName;
+	private String testModuleName;
+	private String testPrefixName;
+	private String testPostfixName;
 	private Class<?> suiteClass;
-	private String testngXmlLocation = "src/test/resources/suites/testng_default.xml";
+	private String testngXmlLocation;
 
 	private TestngSuiteBuilder(String suiteName, String testModuleName,
-			String testPrefixName, String testPostfixName, Class<?> suiteClass, String testngXmlLocation) {
+			String testPrefixName, String testPostfixName, Class<?> suiteClass,
+			String testngXmlLocation) {
 		this.builder = new StringBuilder();
 		this.suiteName = suiteName;
 		this.testModuleName = testModuleName;
@@ -29,16 +30,17 @@ public class TestngSuiteBuilder {
 	}
 
 	public static TestngSuiteBuilder create(String suiteName,
-			String testModuleName, String testPrefixName, String testPostfixName, Class<?> suiteClass,
+			String testModuleName, String testPrefixName,
+			String testPostfixName, Class<?> suiteClass,
 			String testngXmlLocation) {
 		return new TestngSuiteBuilder(suiteName, testModuleName,
-				testPrefixName, testPostfixName,suiteClass, testngXmlLocation);
+				testPrefixName, testPostfixName, suiteClass, testngXmlLocation);
 	}
 
 	public static TestngSuiteBuilder create(TestngSuite suite) {
 		return create(suite.getSuiteName(), suite.getTestModuleName(),
-				suite.getTestPrefixName(), suite.getTestPostfixName(),suite.getSuiteClass(),
-				suite.getTestngXmlLocation());
+				suite.getTestPrefixName(), suite.getTestPostfixName(),
+				suite.getSuiteClass(), suite.getTestngXmlLocation());
 
 	}
 
@@ -48,7 +50,10 @@ public class TestngSuiteBuilder {
 
 	private void build() throws Exception {
 		String startPackage = suiteClass.getPackage().getName();
-		startPackage = startPackage.replaceAll("\\.", "\\\\");
+		System.out.println(startPackage);
+		startPackage = startPackage.replaceAll("\\.", "\\" + File.separator);
+		// startPackage = startPackage.replaceAll("\\.", "\\\\");
+		System.out.println(startPackage);
 		URL url = suiteClass.getResource(".");
 		File file = new File(url.toURI());
 		builder.delete(0, builder.length());
@@ -71,7 +76,8 @@ public class TestngSuiteBuilder {
 			if (name.indexOf("$") < 0) {
 				int op = name.lastIndexOf(".");
 				String strName = name.substring(0, op);
-				if (strName.startsWith(testPrefixName) && strName.endsWith(testPostfixName)) {
+				if (strName.startsWith(testPrefixName)
+						&& strName.endsWith(testPostfixName)) {
 					String path = file.getPath();
 					int pp = path.indexOf(startPackage);
 					int endPP = path.indexOf(CLASS_POSTFIX);
@@ -83,8 +89,7 @@ public class TestngSuiteBuilder {
 					appendLine("      <class name=\"" + className + "\"/>");
 					appendLine("    </classes>");
 					appendLine("  </test> <!-- Test -->");
-					
-					
+
 				}
 			}
 		}
@@ -138,4 +143,5 @@ public class TestngSuiteBuilder {
 	public void setTestngXmlLocation(String testngXmlLocation) {
 		this.testngXmlLocation = testngXmlLocation;
 	}
+
 }

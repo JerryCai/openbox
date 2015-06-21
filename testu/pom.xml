@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>6.8.7</version>
+			<version>6.9.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.openbox</groupId>
@@ -99,23 +99,22 @@
 				<configuration>
 					<suiteXmlFiles>
 						<suiteXmlFile>
-							target/classes/testng_suites/${testNG.file}
+							${basedir}/target/classes/testng_suites/${testNG.file}
 						</suiteXmlFile>
 					</suiteXmlFiles>
 					<properties>
 						<property>
 							<name>usedefaultlisteners</name>
-							<value>false</value>
+							<value>true</value>
 						</property>
 						<property>
 							<name>listener</name>
-							<value>org.uncommons.reportng.JUnitXMLReporter,com.googlecode.openbox.testu.tester.TestUHtmlReporter
-							</value>
+							<value>com.googlecode.openbox.testu.tester.TestUHtmlReporter</value>
 						</property>
 					</properties>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-	 -->
+	 --> 
 </project>

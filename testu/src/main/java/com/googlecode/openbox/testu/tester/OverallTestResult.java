@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.uncommons.reportng.ReportNGUtils;
 
+import com.googlecode.openbox.common.DateHelper;
 import com.googlecode.openbox.common.UtilsAPI;
 import com.googlecode.openbox.testu.tester.exporters.BugListVO;
 import com.googlecode.openbox.testu.tester.exporters.BugListVO.BugStatus;
@@ -61,9 +62,9 @@ public class OverallTestResult {
 				+ total.getTotalSkipped();
 
 		htmlReportBuilder
-				.append("<font size=\\\"4\\\">Test Report&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>"
+				.append("<font size=\\\"4\\\">Test Report&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>"
 						+ getPassRateProgressBar(total))
-				.append("&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Pass Rate: ");
+				.append("&nbsp;&nbsp;&nbsp|&nbsp;&nbsp;&nbsp;Pass Rate: ");
 		if (total.getPassRate() != 100) {
 			htmlReportBuilder.append("<font color=red >")
 					.append(total.getPassRate()).append("%").append("</font>");
@@ -74,7 +75,7 @@ public class OverallTestResult {
 		htmlReportBuilder.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
 				.append("Duration: ")
 				.append(HELPER.formatDuration(total.getDuration()))
-				.append("&nbsp;s&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
+				.append("&nbsp;s&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
 				.append("Total: ").append(totalNum)
 				.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
 				.append("Passed: ").append("<font color=green >")
@@ -98,6 +99,8 @@ public class OverallTestResult {
 			htmlReportBuilder.append("<font color=green >")
 					.append(total.getTotalFailed()).append("</font>");
 		}
+		htmlReportBuilder.append("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;")
+		.append(DateHelper.getTimeString("MM/dd/yyyy HH:mm:ss"));
 		addViewResultDetailsButton(htmlReportBuilder);
 		addViewBugListButton(htmlReportBuilder);
 		return htmlReportBuilder.toString();
