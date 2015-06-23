@@ -19,3 +19,9 @@
 		</root>
 	</loggers>
 </configuration>
+<!--log4j.properties
+log4j.appender.TestngReportAppender=com.googlecode.openbox.log.TestngReportAppender
+log4j.appender.TestngReportAppender.layout=org.apache.log4j.PatternLayout
+log4j.appender.TestngReportAppender.justContent=true
+log4j.appender.TestngReportAppender.ConversionPattern=%d %-5p %c{2} - %m%n
+-->
