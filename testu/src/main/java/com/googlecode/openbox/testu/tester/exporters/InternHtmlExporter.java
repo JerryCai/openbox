@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.uncommons.reportng.ReportNGUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,6 +32,8 @@ import com.googlecode.openbox.testu.tester.TestCaseResults;
 import com.googlecode.openbox.testu.tester.TestCaseResults.Result;
 
 public class InternHtmlExporter implements InternTestCasesExporter {
+	private static final ReportNGUtils HELPER = new ReportNGUtils();
+	private static final DecimalFormat RATE_FORMAT = new DecimalFormat("#0");
 
 	public static final String CONTEXT_ID = "OverallTestResult";
 	private String exportLocalFile;
@@ -45,7 +49,7 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 	}
 
 	@Override
-	public void export(TestCase root, CommonContext context) {
+	public String export(TestCase root, CommonContext context) {
 		if (StringUtils.isEmpty(exportLocalFile)) {
 			exportLocalFile = UtilsAPI.getCurrentWorkingPath()
 					+ IOUtils.PATH_SPLIT + "testreport";
@@ -102,6 +106,7 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 
 		String end = ContentLoader.getContent("reporter/html/end.fm");
 		IOUtils.appendContentToFile(appJsFile, end);
+		return getExportIndexFile();
 	}
 
 	private TestCaseVO convertToTestCaseVO(TestCase testCase) {
@@ -172,28 +177,43 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 	}
 
 	private String getResult(TestCase testCase) {
+		if(testCase.isSuite()){
+			return _getSuiteResult(testCase);
+		}
 		TestCaseResults testCaseResult = testCase.getActualResults();
 		if (null != testCaseResult) {
-			Result result = testCaseResult.getResult();
-			if (null == result) {
-				result = Result.SKIP;
-			}
-
-			switch (result) {
-			case SKIP:
-				return "<font color='yellow'>" + result.name() + "</font>";
-			case SUCCESS:
-				return "<font color='green'>" + result.name() + "</font>";
-			case FAILURE:
-				return "<font color='red'>" + result.name() + "</font>";
-			case SUCCESS_PERCENTAGE_FAILURE:
-				return "<font color='green'>" + result.name() + "</font>";
-			case STARTED:
-				return "<font color='yellow'>" + result.name() + "</font>";
-
-			}
+			return _getTestCaseResult(testCaseResult.getResult());
+		}
+		if(testCase.getChildren().size()>0){
+			return _getSuiteResult(testCase);
 		}
 		return "";
+	}
+	
+	private String _getSuiteResult(TestCase testCase){
+		double passRate = testCase.getTotalPassed()*100/testCase.getTotalTested();
+		return "<font color='"+(testCase.getTotalPassed() == testCase.getTotalTested() ? "green" : "red")+"'>"+RATE_FORMAT.format(passRate)+"%</font>"+
+		   "[<font color='green'>"+testCase.getTotalPassed()+"</font>"+
+		   "|<font color='"+(testCase.getTotalFailed() ==0 ? "green" : "red")+"'>"+testCase.getTotalFailed()+"</font>"+
+		   "|<font color='"+(testCase.getTotalSkiped() ==0 ? "green" : "yellow")+"'>"+testCase.getTotalSkiped()+"</font>]";
+	}
+	
+	private String _getTestCaseResult(Result result){
+		switch (result) {
+		case SKIP:
+			return "<font color='yellow'>" + result.name() + "</font>";
+		case SUCCESS:
+			return "<font color='green'>" + result.name() + "</font>";
+		case FAILURE:
+			return "<font color='red'>" + result.name() + "</font>";
+		case SUCCESS_PERCENTAGE_FAILURE:
+			return "<font color='green'>" + result.name() + "</font>";
+		case STARTED:
+			return "<font color='yellow'>" + result.name() + "</font>";
+		default:
+			return "<font color='yellow'>" + result.name() + "</font>";
+		}
+	
 	}
 
 	private String getMessage(TestCase testCase) {
@@ -217,11 +237,10 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 	}
 
 	private String getDuration(TestCase testCase) {
-		TestCaseResults testCaseResult = testCase.getActualResults();
-		if (null != testCaseResult) {
-			return testCase.getActualResults().getDuration();
+		if(testCase.isSuite()){
+			return HELPER.formatDuration(testCase.getTotalDuration()) +" s";
 		}
-		return "";
+		return testCase.getTotalDuration() +" ms";
 	}
 
 	private String getBugs(TestCase testCase) {
@@ -282,5 +301,9 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 		}
 		return StringUtils.replaceEach(input, new String[] { "'", "\"", "\n",
 				"\r" }, new String[] { "", "", "\\n", "\\r" });
+	}
+
+	public String getExportIndexFile() {
+		return exportLocalFile+IOUtils.PATH_SPLIT+"index.html";
 	}
 }

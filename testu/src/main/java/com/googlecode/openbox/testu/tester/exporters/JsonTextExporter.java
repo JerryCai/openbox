@@ -31,13 +31,13 @@ public class JsonTextExporter implements InternTestCasesExporter {
 	}
 
 	@Override
-	public void export(TestCase root, CommonContext context) {
+	public String export(TestCase root, CommonContext context) {
 		TestCaseVO testCaseVO = convertToTestCaseVO(root);
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
 				.setPrettyPrinting().create();
 		String content = gson.toJson(testCaseVO);
 		IOUtils.appendContentToFile(exportLocalFile, content);
-
+		return exportLocalFile;
 	}
 
 	private TestCaseVO convertToTestCaseVO(TestCase testCase) {
@@ -103,11 +103,7 @@ public class JsonTextExporter implements InternTestCasesExporter {
 	}
 
 	private String getDuration(TestCase testCase) {
-		TestCaseResults testCaseResult = testCase.getActualResults();
-		if (null != testCaseResult) {
-			return testCase.getActualResults().getDuration();
-		}
-		return "";
+		return testCase.getTotalDuration()+" ms";
 	}
 
 	private String getBugs(TestCase testCase) {

@@ -82,6 +82,7 @@ public class TestUHtmlReporter implements IReporter {
 						failedTests.size(), HELPER.getDuration(textContext)));
 			}
 		}
+		ROOT.analysisOverallTestStatus();
 		if (null != textContext) {
 			exportHtmlTestReport(textContext, overallTestResult);
 		}
@@ -106,9 +107,9 @@ public class TestUHtmlReporter implements IReporter {
 				.newInstance(reportPath);
 		CommonContext context = new BasicContext();
 		context.setAttribute(InternHtmlExporter.CONTEXT_ID, overallTestResult);
-		htmlTextExporter.export(ROOT, context);
+		String reportIndexFile = htmlTextExporter.export(ROOT, context);
 		if (logger.isInfoEnabled()) {
-			logger.info("TestU Report done , report location is [" + reportPath
+			logger.info("TestU Report done , report location is [" + reportIndexFile
 					+ "]");
 		}
 
@@ -232,14 +233,20 @@ public class TestUHtmlReporter implements IReporter {
 					&& StringUtils.isNotBlank(parentCaseName.value())) {
 				parentTestCase = TestCase.createTestCaseFromPool(
 						parentCaseName.value(), false, keySeed);
-				suiteTestFolder.addChild(parentTestCase);
+				if(null != suiteTestFolder){
+					suiteTestFolder.addChild(parentTestCase);
+				}else{
+					ROOT.addChild(parentTestCase);
+				}
 			}
 			TestCase testCase = TestCase.createTestCaseFromPool(
 					caseName.value(), false, keySeed);
 			if (null != parentTestCase) {
 				parentTestCase.addChild(testCase);
-			} else {
+			} else if(null != suiteTestFolder){
 				suiteTestFolder.addChild(testCase);
+			}else{
+				ROOT.addChild(testCase);
 			}
 
 			Owner caseLevelQA = method.getAnnotation(Owner.class);
@@ -267,9 +274,7 @@ public class TestUHtmlReporter implements IReporter {
 			} else {
 				actualTestResult.setResult(TEMP_FORCE_ALL_TEST_RESULT.value());
 			}
-
-			actualTestResult.setDuration(""
-					+ (tr.getEndMillis() - tr.getStartMillis()) + " ms");
+			testCase.setTotalDuration(tr.getEndMillis() - tr.getStartMillis());
 			StringBuilder msgBuilder = new StringBuilder();
 			msgBuilder.append("test class: [").append(className).append("]\n")
 					.append("test name: [").append(method.getName())

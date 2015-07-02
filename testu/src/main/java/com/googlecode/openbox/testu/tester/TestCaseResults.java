@@ -37,7 +37,6 @@ public class TestCaseResults {
 	private String[] actualResults;
 	@Expose
 	private Result result;
-	private String duration;
 	private String msg;
 
 	public ActualResults getActualResults() {
@@ -59,14 +58,6 @@ public class TestCaseResults {
 
 	public void setResult(Result result) {
 		this.result = result;
-	}
-
-	public String getDuration() {
-		return duration;
-	}
-
-	public void setDuration(String duration) {
-		this.duration = duration;
 	}
 
 	public String getMsg() {

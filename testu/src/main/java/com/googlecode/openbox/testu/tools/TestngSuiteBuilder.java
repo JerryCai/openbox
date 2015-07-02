@@ -52,7 +52,6 @@ public class TestngSuiteBuilder {
 		String startPackage = suiteClass.getPackage().getName();
 		System.out.println(startPackage);
 		startPackage = startPackage.replaceAll("\\.", "\\" + File.separator);
-		// startPackage = startPackage.replaceAll("\\.", "\\\\");
 		System.out.println(startPackage);
 		URL url = suiteClass.getResource(".");
 		File file = new File(url.toURI());

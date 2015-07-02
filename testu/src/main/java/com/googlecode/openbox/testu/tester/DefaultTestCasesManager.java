@@ -53,7 +53,7 @@ public class DefaultTestCasesManager implements TestCasesManager {
 
 	private void execute(TestCasesSelector selector) {
 		String startPackage = selector.getClass().getPackage().getName();
-		startPackage = startPackage.replaceAll("\\.", "\\\\");
+		startPackage = startPackage.replaceAll("\\.", "\\" + File.separator);
 		URL url = selector.getClass().getResource(".");
 		File file = null;
 		try {

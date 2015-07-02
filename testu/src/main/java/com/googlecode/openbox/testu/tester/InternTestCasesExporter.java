@@ -5,6 +5,6 @@ import com.googlecode.openbox.common.context.CommonContext;
 
 public interface InternTestCasesExporter {
 	
-	void export(TestCase root,CommonContext context);
+	String export(TestCase root,CommonContext context);
 
 }

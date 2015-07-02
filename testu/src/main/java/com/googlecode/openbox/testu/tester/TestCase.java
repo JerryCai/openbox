@@ -16,7 +16,7 @@ public class TestCase {
 	@Expose
 	private String name;
 	private String keySeed;
-	private boolean isFolder;
+	private boolean isSuite;
 	private String displayName;
 	private int level;
 	private TestCase parent;
@@ -47,11 +47,18 @@ public class TestCase {
 	private TestCaseResults caseActualResults;
 	@Expose
 	private String logs;
+	
+	private int totalTested;
+	private int totalPassed;
+	private int totalFailed;
+	private int totalSkiped;
+	private long totalDuration;
+	
 
 	private TestCase(String name, boolean isFolder, String keySeed) {
 		this.name = name;
 		this.keySeed = keySeed;
-		this.isFolder = isFolder;
+		this.isSuite = isFolder;
 		this.level = 0;
 		this.parent = null;
 		this.children = new ArrayList<TestCase>();
@@ -69,6 +76,48 @@ public class TestCase {
 			NODE_POOL.put(key, tree);
 		}
 		return NODE_POOL.get(key);
+	}
+	void analysisOverallTestStatus(){
+		if(isSuite()){
+			_analysisChildren();
+		}else{
+			_analysisCurrent();
+			if(getChildren().size() > 0 ){
+				_analysisChildren();
+			}
+		}
+	}
+	
+	private void _analysisChildren(){
+		for(TestCase child : getChildren()){
+			child.analysisOverallTestStatus();
+			this.totalDuration += child.getTotalDuration();
+			this.totalTested += child.getTotalTested();
+			this.totalPassed += child.getTotalPassed();
+			this.totalFailed += child.getTotalFailed();
+			this.totalSkiped += child.getTotalSkiped();
+		}
+	}
+	
+	private void _analysisCurrent(){
+		this.totalTested = 0;		
+		this.totalPassed = 0;
+		this.totalFailed = 0;
+		this.totalSkiped=0;
+		if(null == getActualResults()){
+			return;
+		}
+		this.totalTested = 1;
+		switch(getActualResults().getResult()){
+		case SUCCESS : 
+				this.totalPassed = 1;
+				break;
+		case SKIP:
+			this.totalSkiped = 1;
+			break;
+		default:
+			this.totalFailed =1;
+		}
 	}
 
 	public void addChild(TestCase child) {
@@ -94,7 +143,7 @@ public class TestCase {
 	}
 
 	public String getKey() {
-		return keySeed + "!" + name + "@" + isFolder;
+		return keySeed + "!" + name + "@" + isSuite;
 	}
 
 	private void grow() {
@@ -316,6 +365,34 @@ public class TestCase {
 
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
+	}
+
+	public boolean isSuite() {
+		return isSuite;
+	}
+	
+	public int getTotalTested() {
+		return totalTested;
+	}
+
+	public int getTotalPassed() {
+		return totalPassed;
+	}
+
+	public int getTotalFailed() {
+		return totalFailed;
+	}
+
+	public int getTotalSkiped() {
+		return totalSkiped;
+	}
+
+	public long getTotalDuration() {
+		return totalDuration;
+	}
+
+	void setTotalDuration(long totalDuration) {
+		this.totalDuration = totalDuration;
 	}
 
 	public String toString() {

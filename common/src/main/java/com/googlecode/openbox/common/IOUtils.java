@@ -227,9 +227,6 @@ public class IOUtils {
 		try {
 			PW.println(info);
 			PW.flush();
-			if (logger.isDebugEnabled()) {
-				logger.debug(info);
-			}
 		} catch (Exception ex) {
 			logger.error("Write info:[" + info + "] to file:[" + logFilePath
 					+ "] failed!", ex);
@@ -245,10 +242,6 @@ public class IOUtils {
 		try {
 			writer = new FileWriter(filePath, true);
 			writer.write(content);
-			if (logger.isDebugEnabled()) {
-				logger.debug("append content=[" + content + "] to file=["
-						+ filePath + "] success");
-			}
 		} catch (IOException e) {
 			logger.error("append content=[" + content + "] to file=["
 					+ filePath + "] failed", e);

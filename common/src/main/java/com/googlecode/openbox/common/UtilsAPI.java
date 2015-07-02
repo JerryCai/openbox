@@ -316,9 +316,11 @@ public class UtilsAPI {
 
 	public static String getFixLenthString(int strLength) {
 		Random rm = new Random();
-		double pross = (1 + rm.nextDouble()) * Math.pow(10, strLength);
-		String fixLenthString = String.valueOf(pross);
-		return fixLenthString.substring(1, strLength + 1);
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i<strLength; i++){
+			sb.append(rm.nextInt(9));
+		}
+		return sb.toString();
 	}
 
 	public static String getCallApiName(int level) {

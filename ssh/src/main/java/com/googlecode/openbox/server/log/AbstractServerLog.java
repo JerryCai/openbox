@@ -22,8 +22,11 @@ public abstract class AbstractServerLog implements ServerLog {
 		return getHome() + PATH_SPLIT + getName();
 	}
 
+	public String getContentWithFullCommand(String fullCommand){
+		return getSshClient().executeSingleCommand(System.out, fullCommand);
+	}
 	public String getContentByCommand(String command) {
-		return getSshClient().executeSingleCommand(System.out, command+" "+getPath());
+		return getContentWithFullCommand(command+" "+getPath());
 	}
 
 	public int getCurrentLineNum() {
@@ -62,20 +65,20 @@ public abstract class AbstractServerLog implements ServerLog {
 		String command = "";
 		for (int i = 0; i < keys.length; i++) {
 			if (i == 0) {
-				command = command + "grep " + keys[i] + " ";
+				command ="grep " + keys[i] +" "+ getPath();
 			} else {
 				command = command + " | grep " + keys[i];
 			}
 		}
-		return getContentByCommand(command);
+		return getContentWithFullCommand(command);
 	}
 
 	public String grepContentByKeysFrom(int beginLineNum, String... keys) {
-		String command = "sed -n '" + beginLineNum + ",$p' ";
+		String command = "sed -n '" + beginLineNum + ",$p' " +getPath();
 		for (int i = 0; i < keys.length; i++) {
 			command = command + " | grep " + keys[i];
 		}
-		return getContentByCommand(command);
+		return getContentWithFullCommand(command);
 	}
 
 	public void deleteLog() {

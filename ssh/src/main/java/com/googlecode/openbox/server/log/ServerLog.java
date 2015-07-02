@@ -20,6 +20,8 @@ public interface ServerLog {
 
 	int getCurrentLineNum();
 
+	String getContentWithFullCommand(String fullCommand);
+	
 	String getContentByCommand(String command);
 
 	String getLastestContent(int fromLineNum);

@@ -22,8 +22,9 @@ public class TextExporter implements InternTestCasesExporter {
 	}
 
 	@Override
-	public void export(TestCase root, CommonContext context) {
+	public String export(TestCase root, CommonContext context) {
 		exportIntern(root);
+		return exportLocalFile;
 	}
 
 	private void exportIntern(TestCase testCase) {
