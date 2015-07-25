@@ -1,6 +1,5 @@
 package com.googlecode.openbox.testu.tester;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,7 +52,8 @@ public class TestCase {
 	private int totalFailed;
 	private int totalSkiped;
 	private long totalDuration;
-	
+	private boolean expand;
+	private Boolean testCaseAutomated;
 
 	private TestCase(String name, boolean isFolder, String keySeed) {
 		this.name = name;
@@ -61,7 +61,9 @@ public class TestCase {
 		this.isSuite = isFolder;
 		this.level = 0;
 		this.parent = null;
-		this.children = new ArrayList<TestCase>();
+		this.children = new LinkedList<TestCase>();
+		this.expand = false;
+		this.testCaseAutomated = Boolean.TRUE;
 	}
 
 	public static TestCase create(String name, boolean isFolder, String keySeed) {
@@ -393,6 +395,22 @@ public class TestCase {
 
 	void setTotalDuration(long totalDuration) {
 		this.totalDuration = totalDuration;
+	}
+
+	public boolean isExpand() {
+		return expand;
+	}
+
+	public void setExpand(boolean expand) {
+		this.expand = expand;
+	}
+
+	public Boolean isTestCaseAutomated() {
+		return testCaseAutomated;
+	}
+
+	public void setTestCaseAutomated(Boolean testCaseAutomated) {
+		this.testCaseAutomated = testCaseAutomated;
 	}
 
 	public String toString() {

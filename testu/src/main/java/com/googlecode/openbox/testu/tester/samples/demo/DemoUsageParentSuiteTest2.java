@@ -4,6 +4,7 @@ import junit.framework.Assert;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.googlecode.openbox.testu.AbstractTestCase;
@@ -16,15 +17,19 @@ import com.googlecode.openbox.testu.tester.Owner;
 import com.googlecode.openbox.testu.tester.ParentCaseName;
 import com.googlecode.openbox.testu.tester.Preconditions;
 import com.googlecode.openbox.testu.tester.Steps;
-import com.googlecode.openbox.testu.tester.TestReport;
-@TestReport(title = "Test Demo Foo Report")
-@CaseSuite(name="Foo")
-@Owner(name = "Jerry Cai", id = "jerrycai", email = "jerrycai.cn@gmail.com")
-public class DemoUsageParentSuiteTest extends AbstractTestCase{
+import com.googlecode.openbox.testu.tester.TestCaseAutomated;
+@CaseSuite(name="Foo2")
+@Owner(name = "Xiaolong Cai", id = "xiaolong", email = "xiaolongcai@gmail.com")
+@TestCaseAutomated(false)
+public class DemoUsageParentSuiteTest2 extends AbstractTestCase{
 	private static final Logger logger = LogManager.getLogger();
 
-	
-	public DemoUsageParentSuiteTest(String name) {
+	@BeforeTest
+	public void beforeTest() {
+		super.beforeTest();
+		throw new RuntimeException("skip these test cases");
+	}	
+	public DemoUsageParentSuiteTest2(String name) {
 		super(name);
 	}
 
@@ -62,6 +67,8 @@ public class DemoUsageParentSuiteTest extends AbstractTestCase{
 			"3. If success , Check its return ID whether can get Foo By this ID .",
 			"Expected Result: ", "1. Normal User can Add Foo 1 success .",
 			"2. Get Foo by return ID can success ." })
+	@Owner(name = "Jerry Cai", id = "jerrycai", email = "xiaolongcai@gmail.com")
+	@TestCaseAutomated(true)
 	public void testAddFooByNormalUser1() {
 		logger.info("Step 1 :  login with admin user .");
 		logger.info("Step 2 : Try to add the user jerry1 .");

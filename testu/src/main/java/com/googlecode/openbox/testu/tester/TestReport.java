@@ -11,12 +11,8 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE})
 @Inherited
 @Documented
-@Deprecated
-/**
- *Use the @TestReport replace it 
- *
- */
-public @interface TestReportTitle {
+public @interface TestReport {
 
-	public String value();
+	public String title();
+	public boolean expand() default false;
 }

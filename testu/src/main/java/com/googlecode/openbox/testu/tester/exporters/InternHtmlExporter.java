@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +32,6 @@ import com.googlecode.openbox.testu.tester.TestCaseResults.Result;
 
 public class InternHtmlExporter implements InternTestCasesExporter {
 	private static final ReportNGUtils HELPER = new ReportNGUtils();
-	private static final DecimalFormat RATE_FORMAT = new DecimalFormat("#0");
 
 	public static final String CONTEXT_ID = "OverallTestResult";
 	private String exportLocalFile;
@@ -124,17 +122,16 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 		testCaseVO.setLogs(handleSpecialCharacters(testCase.getLogs()));
 		testCaseVO.setOwner(getOwner(testCase));
 		testCaseVO.setBugs(getBugs(testCase));
+		testCaseVO.setExpanded(testCase.isExpand());
 		bugList.addAll(testCase.getBugList());
 		List<TestCase> children = testCase.getChildren();
 		if (null != children && children.size() > 0) {
-			testCaseVO.setExpanded(true);
 			testCaseVO.setLeaf(false);
 			for (TestCase child : children) {
 				TestCaseVO childTestCaseVO = convertToTestCaseVO(child);
 				testCaseVO.addChild(childTestCaseVO);
 			}
 		} else {
-			testCaseVO.setExpanded(true);
 			testCaseVO.setLeaf(true);
 		}
 		return testCaseVO;
@@ -150,6 +147,8 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 			if (StringUtils.isBlank(email)) {
 				email = "";
 			}
+		}else if(testCase.isSuite()){
+			return "";
 		}
 		String emailAddr = email.replace("+", "%2B");
 		String subject = getEncodeStr(testCase.getDisplayName());
@@ -190,18 +189,26 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 		return "";
 	}
 	
+	private String formatTestStatus(int number){
+		return String.format("%3d", number).replaceAll(" ", "&nbsp;&nbsp;");
+	}
 	private String _getSuiteResult(TestCase testCase){
-		double passRate = testCase.getTotalPassed()*100/testCase.getTotalTested();
-		return "<font color='"+(testCase.getTotalPassed() == testCase.getTotalTested() ? "green" : "red")+"'>"+RATE_FORMAT.format(passRate)+"%</font>"+
-		   "[<font color='green'>"+testCase.getTotalPassed()+"</font>"+
-		   "|<font color='"+(testCase.getTotalFailed() ==0 ? "green" : "red")+"'>"+testCase.getTotalFailed()+"</font>"+
-		   "|<font color='"+(testCase.getTotalSkiped() ==0 ? "green" : "yellow")+"'>"+testCase.getTotalSkiped()+"</font>]";
+		
+		int passRate = testCase.getTotalPassed()*100/testCase.getTotalTested();
+		String passRateStr = formatTestStatus(passRate);
+		String totalPassedStr = formatTestStatus(testCase.getTotalPassed());
+		String totalFailedStr = formatTestStatus(testCase.getTotalFailed());
+		String totalSkipedStr = formatTestStatus(testCase.getTotalSkiped());
+		return "<font color='"+(testCase.getTotalPassed() == testCase.getTotalTested() ? "green" : "red")+"'>"+passRateStr+"%</font>"+
+		   "[<font color='green'>"+totalPassedStr+"</font>"+
+		   "|<font color='"+(testCase.getTotalFailed() ==0 ? "green" : "red")+"'>"+totalFailedStr+"</font>"+
+		   "|<font color='"+(testCase.getTotalSkiped() ==0 ? "green" : "orange")+"'>"+totalSkipedStr+"</font>]";
 	}
 	
 	private String _getTestCaseResult(Result result){
 		switch (result) {
 		case SKIP:
-			return "<font color='yellow'>" + result.name() + "</font>";
+			return "<font color='orange'>" + result.name() + "</font>";
 		case SUCCESS:
 			return "<font color='green'>" + result.name() + "</font>";
 		case FAILURE:
@@ -209,9 +216,9 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 		case SUCCESS_PERCENTAGE_FAILURE:
 			return "<font color='green'>" + result.name() + "</font>";
 		case STARTED:
-			return "<font color='yellow'>" + result.name() + "</font>";
+			return "<font color='orange'>" + result.name() + "</font>";
 		default:
-			return "<font color='yellow'>" + result.name() + "</font>";
+			return "<font color='orange'>" + result.name() + "</font>";
 		}
 	
 	}

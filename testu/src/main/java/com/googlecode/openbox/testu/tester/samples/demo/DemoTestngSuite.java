@@ -21,7 +21,7 @@ public class DemoTestngSuite implements TestngSuite {
 
 	@Override
 	public String getTestPostfixName() {
-		return "Test";
+		return "";
 	}
 
 	@Override

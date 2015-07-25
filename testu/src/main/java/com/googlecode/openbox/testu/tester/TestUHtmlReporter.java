@@ -43,6 +43,7 @@ public class TestUHtmlReporter implements IReporter {
 	private static final String REPORT_TITLE = "Test Cases";
 	private static final TestCase ROOT = TestCase.createTestCaseFromPool(
 			REPORT_TITLE, true, TestUHtmlReporter.class.getName());
+	private static boolean expand = false;
 	private static TempForceAllTestResult TEMP_FORCE_ALL_TEST_RESULT = null;
 
 	public TestUHtmlReporter() {
@@ -107,10 +108,11 @@ public class TestUHtmlReporter implements IReporter {
 				.newInstance(reportPath);
 		CommonContext context = new BasicContext();
 		context.setAttribute(InternHtmlExporter.CONTEXT_ID, overallTestResult);
+		this.recursiveUpdateExpandStatus(expand);
 		String reportIndexFile = htmlTextExporter.export(ROOT, context);
 		if (logger.isInfoEnabled()) {
-			logger.info("TestU Report done , report location is [" + reportIndexFile
-					+ "]");
+			logger.info("TestU Report done , report location is ["
+					+ reportIndexFile + "]");
 		}
 
 	}
@@ -118,11 +120,21 @@ public class TestUHtmlReporter implements IReporter {
 	private void executeExtendedExporters() {
 		for (TestCasesExporter exporter : EXPORTERS.values()) {
 			try {
+				long startTime = System.currentTimeMillis();
 				exporter.export(ROOT);
+				long endTime = System.currentTimeMillis();
+				long duration = endTime - startTime;
+				String durationStr = null;
+				if (duration >= 1000) {
+					durationStr = ", duration [" + (duration / 1000) + "] s";
+				} else {
+					durationStr = ", duration [" + duration + "] ms";
+				}
+
 				if (logger.isInfoEnabled()) {
 					logger.info("your registed TestCaseExporter-["
 							+ exporter.getClass().getName()
-							+ "] is executed success !");
+							+ "] is executed success" + durationStr);
 				}
 			} catch (Exception e) {
 				logger.error(
@@ -135,7 +147,8 @@ public class TestUHtmlReporter implements IReporter {
 	}
 
 	private void collectExtendedExporters(Class<?> clss) {
-		TestCasesExporters extendedTestCasesExporters = clss.getAnnotation(TestCasesExporters.class);
+		TestCasesExporters extendedTestCasesExporters = clss
+				.getAnnotation(TestCasesExporters.class);
 		if (null == extendedTestCasesExporters) {
 			Class<?> superClass = clss.getSuperclass();
 			if (null != superClass) {
@@ -169,19 +182,62 @@ public class TestUHtmlReporter implements IReporter {
 
 	}
 
+	public abstract class TreeRecursiveVisitor {
+		abstract void action(TestCase testCase);
+
+		public void recursiveVisit(TestCase root) {
+			action(root);
+			for (TestCase subTestCase : root.getChildren()) {
+				recursiveVisit(subTestCase);
+			}
+
+		}
+
+	}
+
+	private void recursiveUpdateExpandStatus(final boolean expand) {
+
+		new TreeRecursiveVisitor() {
+
+			@Override
+			void action(TestCase testCase) {
+				testCase.setExpand(expand);
+			}
+
+		}.recursiveVisit(ROOT);
+		ROOT.setExpand(true);
+
+	}
+
 	private void process(ITestResult tr) {
 		ITestNGMethod testngMethod = tr.getMethod();
 		Class<?> clss = testngMethod.getRealClass();
 		String className = clss.getName();
 		String suiteName = null;
 		TestCase suiteTestFolder = null;
+		@SuppressWarnings("deprecation")
 		TestReportTitle testReportTitle = clss
 				.getAnnotation(TestReportTitle.class);
 		if (null != testReportTitle) {
+			@SuppressWarnings("deprecation")
 			String reportTitle = testReportTitle.value();
 			if (!StringUtils.isBlank(reportTitle)) {
 				ROOT.setDisplayName(reportTitle);
 			}
+		}
+		TestReport testReport = clss.getAnnotation(TestReport.class);
+		if (null != testReport) {
+			String reportTitle = testReport.title();
+			if (!StringUtils.isBlank(reportTitle)) {
+				ROOT.setDisplayName(reportTitle);
+				expand = testReport.expand();
+			}
+		}
+		Boolean isTestCaseAutomated = Boolean.TRUE;
+		
+		TestCaseAutomated testCaseAutomated = clss.getAnnotation(TestCaseAutomated.class);
+		if(null != testCaseAutomated){
+			isTestCaseAutomated = Boolean.valueOf(testCaseAutomated.value());
 		}
 
 		if (null == TEMP_FORCE_ALL_TEST_RESULT) {
@@ -197,6 +253,7 @@ public class TestUHtmlReporter implements IReporter {
 		}
 
 		CaseSuite caseSuite = clss.getAnnotation(CaseSuite.class);
+		Owner moduleLevelQA = clss.getAnnotation(Owner.class);
 		String parentModuleName = null;
 		if (null != caseSuite) {
 			parentModuleName = caseSuite.parent();
@@ -204,6 +261,9 @@ public class TestUHtmlReporter implements IReporter {
 			if (StringUtils.isNotBlank(suiteName)) {
 				suiteTestFolder = TestCase.createTestCaseFromPool(suiteName,
 						true, TestUHtmlReporter.class.getName());
+				if (null != moduleLevelQA) {
+					suiteTestFolder.setOwner(moduleLevelQA);
+				}
 			}
 		}
 
@@ -220,10 +280,13 @@ public class TestUHtmlReporter implements IReporter {
 			}
 			collectExtendedExporters(clss);
 		}
-		Owner moduleLevelQA = clss.getAnnotation(Owner.class);
 
 		Method method = testngMethod.getConstructorOrMethod().getMethod();
 		String keySeed = className;
+		TestCaseAutomated methodLevelTestCaseAutomated = method.getAnnotation(TestCaseAutomated.class);
+		if(null != methodLevelTestCaseAutomated){
+			isTestCaseAutomated = Boolean.valueOf(methodLevelTestCaseAutomated.value());
+		}
 		CaseName caseName = method.getAnnotation(CaseName.class);
 		if (null != caseName && StringUtils.isNoneBlank(caseName.value())) {
 			ParentCaseName parentCaseName = method
@@ -233,19 +296,20 @@ public class TestUHtmlReporter implements IReporter {
 					&& StringUtils.isNotBlank(parentCaseName.value())) {
 				parentTestCase = TestCase.createTestCaseFromPool(
 						parentCaseName.value(), false, keySeed);
-				if(null != suiteTestFolder){
+				if (null != suiteTestFolder) {
 					suiteTestFolder.addChild(parentTestCase);
-				}else{
+				} else {
 					ROOT.addChild(parentTestCase);
 				}
 			}
 			TestCase testCase = TestCase.createTestCaseFromPool(
 					caseName.value(), false, keySeed);
+			testCase.setTestCaseAutomated(isTestCaseAutomated);
 			if (null != parentTestCase) {
 				parentTestCase.addChild(testCase);
-			} else if(null != suiteTestFolder){
+			} else if (null != suiteTestFolder) {
 				suiteTestFolder.addChild(testCase);
-			}else{
+			} else {
 				ROOT.addChild(testCase);
 			}
 

@@ -50,9 +50,7 @@ public class TestngSuiteBuilder {
 
 	private void build() throws Exception {
 		String startPackage = suiteClass.getPackage().getName();
-		System.out.println(startPackage);
 		startPackage = startPackage.replaceAll("\\.", "\\" + File.separator);
-		System.out.println(startPackage);
 		URL url = suiteClass.getResource(".");
 		File file = new File(url.toURI());
 		builder.delete(0, builder.length());
@@ -81,7 +79,7 @@ public class TestngSuiteBuilder {
 					int pp = path.indexOf(startPackage);
 					int endPP = path.indexOf(CLASS_POSTFIX);
 					String className = path.substring(pp, endPP);
-					className = className.replaceAll("\\\\", ".");
+					className = className.replaceAll("\\" + File.separator, ".");
 					appendLine("  <test name=\"" + strName
 							+ "\" preserve-order=\"true\">");
 					appendLine("    <classes>");
@@ -98,7 +96,7 @@ public class TestngSuiteBuilder {
 		build();
 		System.out.println(builder.toString());
 		String path = new File("").getAbsolutePath() + getTestngXmlLocation();
-		path = path.replaceAll("\\\\", "/");
+		path = path.replaceAll("\\" + File.separator, "/");
 		IOUtils.writeInfoToFile(path, builder.toString());
 		return builder.toString();
 	}

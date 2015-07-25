@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Demo Suite" parallel="none">
+  <test name="DemoTestngSuite" preserve-order="true">
+    <classes>
+      <class name="com.googlecode.openbox.testu.tester.samples.demo.DemoTestngSuite"/>
+    </classes>
+  </test> <!-- Test -->
   <test name="DemoUsageParentSuiteTest" preserve-order="true">
     <classes>
       <class name="com.googlecode.openbox.testu.tester.samples.demo.DemoUsageParentSuiteTest"/>
@@ -9,6 +14,11 @@
   <test name="DemoUsageParentSuiteTest1" preserve-order="true">
     <classes>
       <class name="com.googlecode.openbox.testu.tester.samples.demo.DemoUsageParentSuiteTest1"/>
+    </classes>
+  </test> <!-- Test -->
+  <test name="DemoUsageParentSuiteTest2" preserve-order="true">
+    <classes>
+      <class name="com.googlecode.openbox.testu.tester.samples.demo.DemoUsageParentSuiteTest2"/>
     </classes>
   </test> <!-- Test -->
   <test name="DemoUsageTest" preserve-order="true">
