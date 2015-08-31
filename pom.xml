@@ -130,6 +130,8 @@
 				<module>webcontainer</module>
 				<module>log</module>
 				<module>maventools</module>
+				<module>webui</module>
+				<module>phone</module>
 			</modules>
 		</profile>
 	</profiles>
