@@ -54,6 +54,7 @@ public class TestCase {
 	private long totalDuration;
 	private boolean expand;
 	private Boolean testCaseAutomated;
+	private String[] caseObjectives;
 
 	private TestCase(String name, boolean isFolder, String keySeed) {
 		this.name = name;
@@ -411,6 +412,14 @@ public class TestCase {
 
 	public void setTestCaseAutomated(Boolean testCaseAutomated) {
 		this.testCaseAutomated = testCaseAutomated;
+	}
+
+	public String[] getCaseObjectives() {
+		return caseObjectives;
+	}
+
+	public void setCaseObjectives(String[] caseObjectives) {
+		this.caseObjectives = caseObjectives;
 	}
 
 	public String toString() {

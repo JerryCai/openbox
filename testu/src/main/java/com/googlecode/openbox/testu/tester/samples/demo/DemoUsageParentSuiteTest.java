@@ -10,6 +10,8 @@ import com.googlecode.openbox.testu.AbstractTestCase;
 import com.googlecode.openbox.testu.tester.Bugs;
 import com.googlecode.openbox.testu.tester.CaseDescriptions;
 import com.googlecode.openbox.testu.tester.CaseName;
+import com.googlecode.openbox.testu.tester.CaseObjectives;
+import com.googlecode.openbox.testu.tester.CaseObjectives.CaseObjective;
 import com.googlecode.openbox.testu.tester.CaseSuite;
 import com.googlecode.openbox.testu.tester.ExpectedResults;
 import com.googlecode.openbox.testu.tester.Owner;
@@ -20,6 +22,7 @@ import com.googlecode.openbox.testu.tester.TestReport;
 @TestReport(title = "Test Demo Foo Report")
 @CaseSuite(name="Foo")
 @Owner(name = "Jerry Cai", id = "jerrycai", email = "jerrycai.cn@gmail.com")
+@CaseObjectives({CaseObjective.Accessibility,CaseObjective.HighAvailable})
 public class DemoUsageParentSuiteTest extends AbstractTestCase{
 	private static final Logger logger = LogManager.getLogger();
 

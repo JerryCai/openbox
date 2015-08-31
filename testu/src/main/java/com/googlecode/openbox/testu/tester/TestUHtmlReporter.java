@@ -1,6 +1,7 @@
 package com.googlecode.openbox.testu.tester;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.googlecode.openbox.common.IOUtils;
 import com.googlecode.openbox.common.UtilsAPI;
 import com.googlecode.openbox.common.context.BasicContext;
 import com.googlecode.openbox.common.context.CommonContext;
+import com.googlecode.openbox.testu.tester.CaseObjectives.CaseObjective;
 import com.googlecode.openbox.testu.tester.OverallTestResult.ResultRow;
 import com.googlecode.openbox.testu.tester.OverallTestResult.SuiteResult;
 import com.googlecode.openbox.testu.tester.TestCaseResults.Result;
@@ -209,6 +211,36 @@ public class TestUHtmlReporter implements IReporter {
 
 	}
 
+	private String[] getMergedCaseObjectives(CaseObjectives... caseObjectiveSet) {
+		List<String> caseObjectivesList = new ArrayList<String>();
+
+		for (int i = 0; i < caseObjectiveSet.length; i++) {
+			CaseObjectives caseObjectives = caseObjectiveSet[i];
+			if (null != caseObjectives) {
+				CaseObjective[] caseObjectiveValues = caseObjectives.value();
+				for (CaseObjective caseObjective : caseObjectiveValues) {
+					if (!caseObjectivesList.contains(caseObjective.name())) {
+						caseObjectivesList.add(caseObjective.name());
+					}
+				}
+				String[] others = caseObjectives.others();
+				for (String other : others) {
+					if (!caseObjectivesList.contains(other)) {
+						caseObjectivesList.add(other);
+					}
+				}
+				break;
+			}
+		}
+		int size = caseObjectivesList.size();
+		String[] mergedValues = new String[size];
+		for (int i = 0; i < size; i++) {
+			mergedValues[i] = caseObjectivesList.get(i);
+		}
+
+		return mergedValues;
+	}
+
 	private void process(ITestResult tr) {
 		ITestNGMethod testngMethod = tr.getMethod();
 		Class<?> clss = testngMethod.getRealClass();
@@ -234,11 +266,15 @@ public class TestUHtmlReporter implements IReporter {
 			}
 		}
 		Boolean isTestCaseAutomated = Boolean.TRUE;
-		
-		TestCaseAutomated testCaseAutomated = clss.getAnnotation(TestCaseAutomated.class);
-		if(null != testCaseAutomated){
+
+		TestCaseAutomated testCaseAutomated = clss
+				.getAnnotation(TestCaseAutomated.class);
+		if (null != testCaseAutomated) {
 			isTestCaseAutomated = Boolean.valueOf(testCaseAutomated.value());
 		}
+
+		CaseObjectives classLevelCaseObjectives = clss
+				.getAnnotation(CaseObjectives.class);
 
 		if (null == TEMP_FORCE_ALL_TEST_RESULT) {
 			TEMP_FORCE_ALL_TEST_RESULT = clss
@@ -283,10 +319,16 @@ public class TestUHtmlReporter implements IReporter {
 
 		Method method = testngMethod.getConstructorOrMethod().getMethod();
 		String keySeed = className;
-		TestCaseAutomated methodLevelTestCaseAutomated = method.getAnnotation(TestCaseAutomated.class);
-		if(null != methodLevelTestCaseAutomated){
-			isTestCaseAutomated = Boolean.valueOf(methodLevelTestCaseAutomated.value());
+		TestCaseAutomated methodLevelTestCaseAutomated = method
+				.getAnnotation(TestCaseAutomated.class);
+		if (null != methodLevelTestCaseAutomated) {
+			isTestCaseAutomated = Boolean.valueOf(methodLevelTestCaseAutomated
+					.value());
 		}
+
+		CaseObjectives methodLevelCaseObjectives = method
+				.getAnnotation(CaseObjectives.class);
+
 		CaseName caseName = method.getAnnotation(CaseName.class);
 		if (null != caseName && StringUtils.isNoneBlank(caseName.value())) {
 			ParentCaseName parentCaseName = method
@@ -305,6 +347,9 @@ public class TestUHtmlReporter implements IReporter {
 			TestCase testCase = TestCase.createTestCaseFromPool(
 					caseName.value(), false, keySeed);
 			testCase.setTestCaseAutomated(isTestCaseAutomated);
+			String[] caseObjectives = getMergedCaseObjectives(
+					methodLevelCaseObjectives, classLevelCaseObjectives);
+			testCase.setCaseObjectives(caseObjectives);
 			if (null != parentTestCase) {
 				parentTestCase.addChild(testCase);
 			} else if (null != suiteTestFolder) {

@@ -23,6 +23,10 @@ public class Tag {
 	public void addAttribute(String attrName, String attrValue) {
 		addAttribute(Attribute.create(attrName, attrValue));
 	}
+	
+	public void addContaionsAttribute(String attrName, String attrValue) {
+		addAttribute(ContainsAttribute.create(attrName, attrValue));
+	}
 
 	public String getName() {
 		return name;

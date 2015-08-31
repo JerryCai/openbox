@@ -6,15 +6,15 @@ import org.openqa.selenium.WebElement;
 import com.googlecode.openbox.webui.obj.Attribute;
 import com.googlecode.openbox.webui.obj.Tag;
 
-public abstract class WebPage {
+public abstract class WebPageObject {
 
 	private WebUI webUI;
 
-	public WebPage(WebUI webUI) {
+	public WebPageObject(WebUI webUI) {
 		this.webUI = webUI;
 	}
 
-	public WebPage(WebDriver webDriver) {
+	public WebPageObject(WebDriver webDriver) {
 		this(WebUI.newInstance(webDriver));
 	}
 
@@ -30,6 +30,10 @@ public abstract class WebPage {
 		return webUI;
 	}
 
+	protected WebUI getWebUIWithoutSwitchFrames() {
+		return webUI;
+	}
+
 	protected void clickById(String id) {
 		getWebUI().clickById(id);
 	}
@@ -38,10 +42,10 @@ public abstract class WebPage {
 		getWebUI().inputById(id, value);
 	}
 
-	protected void inputByTag(Tag tag, String value){
+	protected void inputByTag(Tag tag, String value) {
 		getWebUI().inputByTag(tag, value);
 	}
-	
+
 	protected void emptyById(String id) {
 		getWebUI().clean(id);
 	}
@@ -50,44 +54,43 @@ public abstract class WebPage {
 		return getWebUI().getWebElementById(id);
 	}
 
-	protected  WebElement getElementByAttribute(String name, String value) {
+	protected WebElement getElementByAttribute(String name, String value) {
 		return getWebUI().getWebElementByAttribute(name, value);
 	}
 
-	protected  WebElement getElementByAttribute(String tagName, String name,
-			String value) {
+	protected WebElement getElementByAttribute(String tagName, String name, String value) {
 		return getWebUI().getWebElementByAttribute(tagName, name, value);
 	}
 
-	protected  WebElement getElementByAttribute(Attribute attribute) {
+	protected WebElement getElementByAttribute(Attribute attribute) {
 		return getWebUI().getWebElementByAttribute(attribute);
 	}
 
-	protected WebElement getElementByTagWithoutWait(Tag tag){
+	protected WebElement getElementByTagWithoutWait(Tag tag) {
 		return getWebUI().findWebElementByTagWithoutWait(tag);
 	}
-	
-	protected  WebElement getElementByTag(Tag tag) {
+
+	protected WebElement getElementByTag(Tag tag) {
 		return getWebUI().getWebElementByTag(tag);
 	}
-	
-	protected  String getAttribute(String id, String attrName) {
+
+	protected String getAttribute(String id, String attrName) {
 		return getWebUI().getAttribute(id, attrName);
 	}
-	
-	protected void acceptComfirm(){
+
+	protected void acceptComfirm() {
 		webUI.acceptComfirm();
 	}
-	
-	protected void acceptCancel(){
+
+	protected void acceptCancel() {
 		webUI.acceptCancel();
 	}
-	
-	protected void inputDialog(String msg){
+
+	protected void inputDialog(String msg) {
 		webUI.inputDialog(msg);
 	}
-	
-	protected void waitPageLoaded(){
-		getWebUI().getWait().until(WebUI.WAIT_LOADED);
+
+	protected void waitPageLoaded() {
+		getWebUIWithoutSwitchFrames().getWait().until(WebUI.WAIT_LOADED);
 	}
 }

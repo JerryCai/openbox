@@ -147,7 +147,7 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 			if (StringUtils.isBlank(email)) {
 				email = "";
 			}
-		}else if(testCase.isSuite()){
+		} else if (testCase.isSuite()) {
 			return "";
 		}
 		String emailAddr = email.replace("+", "%2B");
@@ -168,44 +168,54 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 		sb.append("Hello ,").append(split).append("Case Name : [ ")
 				.append(testCase.getDisplayName()).append(" ]").append(split)
 				.append(getCaseDescriptions(testCase)).append(split)
-				.append(split).append("Best regards!")
-				.append(split).append("--TestU Report");
+				.append(split).append("Best regards!").append(split)
+				.append("--TestU Report");
 		return StringUtils.replaceEach(sb.toString(), new String[] { "<br>",
 				"\n", "&", "@" }, new String[] { "%0D%0A", "%0D%0A", "%26",
 				"%40" });
 	}
 
 	private String getResult(TestCase testCase) {
-		if(testCase.isSuite()){
+		if (testCase.isSuite()) {
 			return _getSuiteResult(testCase);
 		}
 		TestCaseResults testCaseResult = testCase.getActualResults();
 		if (null != testCaseResult) {
 			return _getTestCaseResult(testCaseResult.getResult());
 		}
-		if(testCase.getChildren().size()>0){
+		if (testCase.getChildren().size() > 0) {
 			return _getSuiteResult(testCase);
 		}
 		return "";
 	}
-	
-	private String formatTestStatus(int number){
+
+	private String formatTestStatus(int number) {
 		return String.format("%3d", number).replaceAll(" ", "&nbsp;&nbsp;");
 	}
-	private String _getSuiteResult(TestCase testCase){
-		
-		int passRate = testCase.getTotalPassed()*100/testCase.getTotalTested();
+
+	private String _getSuiteResult(TestCase testCase) {
+
+		int passRate = 100;
+		if (testCase.getTotalTested() > 0) {
+			passRate = testCase.getTotalPassed() * 100
+					/ testCase.getTotalTested();
+		}
 		String passRateStr = formatTestStatus(passRate);
 		String totalPassedStr = formatTestStatus(testCase.getTotalPassed());
 		String totalFailedStr = formatTestStatus(testCase.getTotalFailed());
 		String totalSkipedStr = formatTestStatus(testCase.getTotalSkiped());
-		return "<font color='"+(testCase.getTotalPassed() == testCase.getTotalTested() ? "green" : "red")+"'>"+passRateStr+"%</font>"+
-		   "[<font color='green'>"+totalPassedStr+"</font>"+
-		   "|<font color='"+(testCase.getTotalFailed() ==0 ? "green" : "red")+"'>"+totalFailedStr+"</font>"+
-		   "|<font color='"+(testCase.getTotalSkiped() ==0 ? "green" : "orange")+"'>"+totalSkipedStr+"</font>]";
+		return "<font color='"
+				+ (testCase.getTotalPassed() == testCase.getTotalTested() ? "green"
+						: "red") + "'>" + passRateStr + "%</font>"
+				+ "[<font color='green'>" + totalPassedStr + "</font>"
+				+ "|<font color='"
+				+ (testCase.getTotalFailed() == 0 ? "green" : "red") + "'>"
+				+ totalFailedStr + "</font>" + "|<font color='"
+				+ (testCase.getTotalSkiped() == 0 ? "green" : "orange") + "'>"
+				+ totalSkipedStr + "</font>]";
 	}
-	
-	private String _getTestCaseResult(Result result){
+
+	private String _getTestCaseResult(Result result) {
 		switch (result) {
 		case SKIP:
 			return "<font color='orange'>" + result.name() + "</font>";
@@ -220,7 +230,7 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 		default:
 			return "<font color='orange'>" + result.name() + "</font>";
 		}
-	
+
 	}
 
 	private String getMessage(TestCase testCase) {
@@ -244,10 +254,10 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 	}
 
 	private String getDuration(TestCase testCase) {
-		if(testCase.isSuite()){
-			return HELPER.formatDuration(testCase.getTotalDuration()) +" s";
+		if (testCase.isSuite()) {
+			return HELPER.formatDuration(testCase.getTotalDuration()) + " s";
 		}
-		return testCase.getTotalDuration() +" ms";
+		return testCase.getTotalDuration() + " ms";
 	}
 
 	private String getBugs(TestCase testCase) {
@@ -266,6 +276,20 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 
 	private String getCaseDescriptions(TestCase testCase) {
 		StringBuilder descriptionsBuilder = new StringBuilder();
+//		String[] caseObjectives = testCase.getCaseObjectives();
+//		if (null != caseObjectives) {
+//			for (int i = 0; i < caseObjectives.length; i++) {
+//				if (0 == i) {
+//					descriptionsBuilder.append("Case Objectives : <br>");
+//				}
+//				descriptionsBuilder.append(caseObjectives[i]);
+//				if ((caseObjectives.length - 1) > i) {
+//					descriptionsBuilder.append("&nbsp;,&nbsp;");
+//				} else {
+//					descriptionsBuilder.append("<br><br>");
+//				}
+//			}
+//		}
 		CaseDescriptions caseDescriptions = testCase.getCaseDescriptions();
 		if (null != caseDescriptions) {
 			for (String description : caseDescriptions.value()) {
@@ -311,6 +335,6 @@ public class InternHtmlExporter implements InternTestCasesExporter {
 	}
 
 	public String getExportIndexFile() {
-		return exportLocalFile+IOUtils.PATH_SPLIT+"index.html";
+		return exportLocalFile + IOUtils.PATH_SPLIT + "index.html";
 	}
 }

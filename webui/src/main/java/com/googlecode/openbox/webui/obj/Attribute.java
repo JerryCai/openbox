@@ -4,7 +4,7 @@ public class Attribute {
 	private String name;
 	private String value;
 
-	private Attribute(String name, String value) {
+	public Attribute(String name, String value) {
 		this.name = name;
 		this.value = value;
 	}
@@ -22,7 +22,7 @@ public class Attribute {
 	}
 	
 	public String toString(){
-		return "@"+name+"='"+value+"'";
+		return "@"+getName()+"='"+getValue()+"'";
 	}
 
 }

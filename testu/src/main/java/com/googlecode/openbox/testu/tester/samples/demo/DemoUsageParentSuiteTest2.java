@@ -11,6 +11,7 @@ import com.googlecode.openbox.testu.AbstractTestCase;
 import com.googlecode.openbox.testu.tester.Bugs;
 import com.googlecode.openbox.testu.tester.CaseDescriptions;
 import com.googlecode.openbox.testu.tester.CaseName;
+import com.googlecode.openbox.testu.tester.CaseObjectives;
 import com.googlecode.openbox.testu.tester.CaseSuite;
 import com.googlecode.openbox.testu.tester.ExpectedResults;
 import com.googlecode.openbox.testu.tester.Owner;
@@ -18,9 +19,11 @@ import com.googlecode.openbox.testu.tester.ParentCaseName;
 import com.googlecode.openbox.testu.tester.Preconditions;
 import com.googlecode.openbox.testu.tester.Steps;
 import com.googlecode.openbox.testu.tester.TestCaseAutomated;
+import com.googlecode.openbox.testu.tester.CaseObjectives.CaseObjective;
 @CaseSuite(name="Foo2")
 @Owner(name = "Xiaolong Cai", id = "xiaolong", email = "xiaolongcai@gmail.com")
 @TestCaseAutomated(false)
+@CaseObjectives(value={CaseObjective.Funcationality}, others={"SpecialNameForTestCaseObjective"})
 public class DemoUsageParentSuiteTest2 extends AbstractTestCase{
 	private static final Logger logger = LogManager.getLogger();
 
@@ -46,6 +49,7 @@ public class DemoUsageParentSuiteTest2 extends AbstractTestCase{
 			"Expected Result: ", "1. Admin User can Add Foo 1 success .",
 			"2. Get Foo by return ID can success ." })
 	@Bugs({"http://bug.com/view/bug004","http://bug.com/view/bug003"})
+	@CaseObjectives(CaseObjective.Security)
 	public void testAddFooByAdmin1() {
 		logger.info("Step 1 :  login with admin user .");
 		logger.info("Step 2 : Try to add the user jerry1 .");
@@ -69,6 +73,7 @@ public class DemoUsageParentSuiteTest2 extends AbstractTestCase{
 			"2. Get Foo by return ID can success ." })
 	@Owner(name = "Jerry Cai", id = "jerrycai", email = "xiaolongcai@gmail.com")
 	@TestCaseAutomated(true)
+	@CaseObjectives(CaseObjective.Performance)
 	public void testAddFooByNormalUser1() {
 		logger.info("Step 1 :  login with admin user .");
 		logger.info("Step 2 : Try to add the user jerry1 .");

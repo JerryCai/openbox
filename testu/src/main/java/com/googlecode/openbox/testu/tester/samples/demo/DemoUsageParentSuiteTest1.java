@@ -10,6 +10,7 @@ import com.googlecode.openbox.testu.AbstractTestCase;
 import com.googlecode.openbox.testu.tester.Bugs;
 import com.googlecode.openbox.testu.tester.CaseDescriptions;
 import com.googlecode.openbox.testu.tester.CaseName;
+import com.googlecode.openbox.testu.tester.CaseObjectives;
 import com.googlecode.openbox.testu.tester.CaseSuite;
 import com.googlecode.openbox.testu.tester.Owner;
 import com.googlecode.openbox.testu.tester.ParentCaseName;
@@ -17,6 +18,7 @@ import com.googlecode.openbox.testu.tester.TestCasesExporters;
 
 @TestCasesExporters({com.googlecode.openbox.testu.tester.samples.DemoExtendedExporter.class})
 @CaseSuite(name="Foo1",parent="Foo")
+@CaseObjectives(others={"OtherObjective"})
 public class DemoUsageParentSuiteTest1 extends AbstractTestCase{
 	private static final Logger logger = LogManager.getLogger();
 
@@ -36,16 +38,16 @@ public class DemoUsageParentSuiteTest1 extends AbstractTestCase{
 	}
 	
 	@Test
-	@ParentCaseName("Add Foo")
-	@CaseName("Add Foo By Normal User xxxx6")
+	@ParentCaseName("测试用例二")
+	@CaseName("添加一个函数调用Add Foo By Normal User xxxx6")
 	@CaseDescriptions({
-			"Precondition:",
-			"1. Normal User login System and get Token .",
-			"Steps:",
+			"前提条件:",
+			"1. 输入正确的参数",
+			"步骤:",
 			"1. Use Normal User Token to call API -addFoo .",
 			"2. Check its response whether success . ",
 			"3. If success , Check its return ID whether can get Foo By this ID .",
-			"Expected Result: ", "1. Normal User can add Foo success .",
+			"预期结果: ", "1. Normal User can add Foo success .",
 			"2. Get Foo by return ID can success ." })
 	@Bugs({"http://bug.com/view/bug004","http://bug.com/view/bug003"})
 	public void testAddFooByNormalUser6() {

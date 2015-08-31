@@ -19,17 +19,18 @@ import com.googlecode.openbox.webui.obj.Attribute;
 import com.googlecode.openbox.webui.obj.Tag;
 
 /**
- * Rules: 1. use the page object based webUI test framework 2. in WebPageObject,
- * switch frame action only called by hook . 3. the webPageObject whether need
- * to cache is determined by Web page itself whether reloaded 4. the each web
- * page object recommend as final class for avoid further inherit .
+ * Rules: 
+ * 1. use the page object based webUI test framework
+ *  2. in WebPageObject,switch frame action only called by hook . 
+ *  3. the webPageObject whether need to cache is determined by Web page itself whether reloaded 
+ *  4. the each web page object recommend as final class for avoid further inherit .
  * 
  * @author Jerry Cai
  * 
  */
 public class WebUI {
 	private static final Logger logger = LogManager.getLogger();
-	public static final int DEFAULT_TIMEOUT = 30;
+	public static final long DEFAULT_TIMEOUT = 30;
 	private WebDriver driver;
 	private WebDriverWait wait;
 
@@ -38,28 +39,49 @@ public class WebUI {
 
 	public static final ExpectedCondition<Boolean> WAIT_LOADED = new ExpectedCondition<Boolean>() {
 		public Boolean apply(WebDriver driver) {
-			return "complete".equals(((JavascriptExecutor) driver)
-					.executeScript("return document.readyState").toString());
+
+			String readyState = "unknown";
+			try {
+				readyState = ((JavascriptExecutor) driver).executeScript("return document.readyState").toString();
+			} catch (Exception e) {
+				try {
+					TimeUnit.SECONDS.sleep(2);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				logger.warn("This is maybe ajax call , so return true directly after sleep 2s");
+				return true;
+			}
+
+			if (logger.isDebugEnabled()) {
+				logger.debug(readyState);
+			}
+			if ("complete".equals(readyState)) {
+				try {
+					TimeUnit.MILLISECONDS.sleep(100);
+				} catch (InterruptedException e) {
+					logger.warn(e);
+				}
+				return "complete"
+						.equals(((JavascriptExecutor) driver).executeScript("return document.readyState").toString());
+			}
+			return false;
 		}
 	};
 
-	private WebUI(WebDriver driver, int timeout) {
+	private WebUI(WebDriver driver, long timeout) {
 		this.driver = driver;
 		this.driver.manage().deleteAllCookies();
 		this.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		this.wait = new WebDriverWait(driver, timeout);
 	}
 
-	private WebUI(WebDriver driver) {
-		this(driver, DEFAULT_TIMEOUT);
-	}
-
-	public static WebUI newInstance(WebDriver driver, int timeout) {
+	public static WebUI newInstance(WebDriver driver, long timeout) {
 		return new WebUI(driver, timeout);
 	}
 
 	public static WebUI newInstance(WebDriver driver) {
-		return new WebUI(driver);
+		return new WebUI(driver, DEFAULT_TIMEOUT);
 	}
 
 	public WebUI open(final String url) {
@@ -87,8 +109,7 @@ public class WebUI {
 				@SuppressWarnings("unchecked")
 				@Override
 				public WebElement action(WebUI webUI) {
-					return wait.until(ExpectedConditions
-							.visibilityOfElementLocated(By.id(id)));
+					return wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(id)));
 				}
 
 			}.execute();
@@ -103,8 +124,7 @@ public class WebUI {
 		return getWebElementByAttribute("*", name, value);
 	}
 
-	public WebElement getWebElementByAttribute(String tagName, String name,
-			String value) {
+	public WebElement getWebElementByAttribute(String tagName, String name, String value) {
 		final String xPath = "//" + tagName + "[@" + name + "='" + value + "']";
 		try {
 
@@ -113,8 +133,7 @@ public class WebUI {
 				@SuppressWarnings("unchecked")
 				@Override
 				public WebElement action(WebUI webUI) {
-					return wait.until(ExpectedConditions
-							.visibilityOfElementLocated(By.xpath(xPath)));
+					return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xPath)));
 				}
 
 			}.execute();
@@ -127,8 +146,7 @@ public class WebUI {
 	}
 
 	public WebElement getWebElementByAttribute(Attribute attribute) {
-		return getWebElementByAttribute("*", attribute.getName(),
-				attribute.getValue());
+		return getWebElementByAttribute("*", attribute.getName(), attribute.getValue());
 	}
 
 	public WebElement findWebElementByTagWithoutWait(Tag tag) {
@@ -159,8 +177,7 @@ public class WebUI {
 				@SuppressWarnings("unchecked")
 				@Override
 				public WebElement action(WebUI webUI) {
-					return wait.until(ExpectedConditions
-							.visibilityOfElementLocated(By.xpath(xPath)));
+					return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xPath)));
 				}
 
 			}.execute();
@@ -185,16 +202,14 @@ public class WebUI {
 		if (null == element) {
 			return null;
 		}
-		return "tag=[" + element.getTagName() + "]id=["
-				+ element.getAttribute("id") + "]text=[" + element.getText()
+		return "tag=[" + element.getTagName() + "]id=[" + element.getAttribute("id") + "]text=[" + element.getText()
 				+ "]";
 	}
 
 	public WebUI inputById(final String id, final String value) {
 		WebElement element = getWebElementById(id);
 		if (logger.isInfoEnabled()) {
-			logger.info("input : " + getDesc(element) + "<==input value=["
-					+ value + "]");
+			logger.info("input : " + getDesc(element) + "<==input value=[" + value + "]");
 		}
 		element.clear();
 		element.sendKeys(value);
@@ -204,8 +219,7 @@ public class WebUI {
 	public WebUI inputByTag(final Tag tag, final String value) {
 		WebElement element = getWebElementByTag(tag);
 		if (logger.isInfoEnabled()) {
-			logger.info("input : " + getDesc(element) + "<==input value=["
-					+ value + "]");
+			logger.info("input : " + getDesc(element) + "<==input value=[" + value + "]");
 		}
 		element.clear();
 		element.sendKeys(value);
@@ -246,9 +260,7 @@ public class WebUI {
 			@SuppressWarnings("unchecked")
 			@Override
 			public String action(WebUI webUI) {
-				return wait
-						.until(ExpectedConditions.visibilityOfElementLocated(By
-								.id(id))).getAttribute(attrName);
+				return wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(id))).getAttribute(attrName);
 			}
 
 		}.execute();
@@ -261,12 +273,11 @@ public class WebUI {
 			@SuppressWarnings("unchecked")
 			@Override
 			public WebUI action(WebUI webUI) {
-				wait.until(ExpectedConditions
-						.frameToBeAvailableAndSwitchToIt(By.name(frameName)));
+				wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.name(frameName)));
 				_frameDepth.incrementAndGet();
 				_frameStack.push(frameName);
-				if (logger.isInfoEnabled()) {
-					logger.info("switch to frame [" + frameName + "] .");
+				if (logger.isDebugEnabled()) {
+					logger.debug("switch to frame [" + frameName + "] .");
 				}
 				return webUI;
 			}
@@ -306,8 +317,7 @@ public class WebUI {
 
 				String framePath = getFramePath(frameNames);
 				for (String frameName : frameNames) {
-					wait.until(ExpectedConditions
-							.frameToBeAvailableAndSwitchToIt(By.name(frameName)));
+					wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.name(frameName)));
 					_frameDepth.incrementAndGet();
 					_frameStack.push(frameName);
 				}
@@ -332,12 +342,12 @@ public class WebUI {
 			@SuppressWarnings("unchecked")
 			@Override
 			public WebUI action(WebUI webUI) {
-				driver.switchTo().defaultContent();
 				_frameStack.clear();
 				_frameDepth.set(0);
 				if (logger.isDebugEnabled()) {
 					logger.debug("switch frames to top frame !");
 				}
+				driver.switchTo().defaultContent();
 				return webUI;
 			}
 
@@ -357,9 +367,8 @@ public class WebUI {
 					_frameDepth.decrementAndGet();
 					String currentFrame = _frameStack.pop();
 					if (logger.isDebugEnabled()) {
-						logger.debug("switch frame [" + currentFrame
-								+ "] to parent frame [" + getCurrentFramePath()
-								+ "]");
+						logger.debug(
+								"switch frame [" + currentFrame + "] to parent frame [" + getCurrentFramePath() + "]");
 					}
 				}
 
@@ -386,6 +395,16 @@ public class WebUI {
 				return true;
 			}
 
+		}.execute();
+	}
+
+	public String getCurrentURL() {
+		return new PageLoadedAction(this) {
+			@SuppressWarnings("unchecked")
+			@Override
+			public String action(WebUI webUI) {
+				return webUI.getDriver().getCurrentUrl();
+			}
 		}.execute();
 	}
 
@@ -422,8 +441,7 @@ public class WebUI {
 				return action(webUI);
 			} else {
 				throw WebTestException
-						.create("The page can't be load complate during the timeout ["
-								+ DEFAULT_TIMEOUT + "]");
+						.create("The page can't be load complate during the timeout [" + DEFAULT_TIMEOUT + "]");
 			}
 
 		}
