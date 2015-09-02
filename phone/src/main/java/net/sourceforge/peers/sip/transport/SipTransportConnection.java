@@ -12,14 +12,16 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007-2013 Yohann Martineau 
+    along with this program.  If not, see <http://www.gnu.org/licenses/>;.
+   
+    Copyright 2007-2013 Yohann Martineau
  */
 
 package net.sourceforge.peers.sip.transport;
 
 import java.net.InetAddress;
+
+import net.sourceforge.peers.sip.RFC3261;
 
 public class SipTransportConnection {
 
@@ -33,8 +35,8 @@ public class SipTransportConnection {
 
 	private String transport;// UDP, TCP or SCTP
 
-	public SipTransportConnection(InetAddress localInetAddress, int localPort, InetAddress remoteInetAddress,
-			int remotePort, String transport) {
+	public SipTransportConnection(InetAddress localInetAddress, int localPort,
+			InetAddress remoteInetAddress, int remotePort, String transport) {
 		this.localInetAddress = localInetAddress;
 		this.localPort = localPort;
 		this.remoteInetAddress = remoteInetAddress;
@@ -43,53 +45,65 @@ public class SipTransportConnection {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((localInetAddress == null) ? 0 : localInetAddress.hashCode());
-		result = prime * result + localPort;
-		result = prime * result + ((remoteInetAddress == null) ? 0 : remoteInetAddress.hashCode());
-		result = prime * result + remotePort;
-		result = prime * result + ((transport == null) ? 0 : transport.hashCode());
-		return result;
-	}
-
-	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
+		if (obj.getClass() != SipTransportConnection.class) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		}
 		SipTransportConnection other = (SipTransportConnection) obj;
-		if (localInetAddress == null) {
-			if (other.localInetAddress != null)
-				return false;
-		} else if (!localInetAddress.equals(other.localInetAddress))
+		if (!transport.equalsIgnoreCase(other.transport)) {
 			return false;
-		if (localPort != other.localPort)
-			return false;
-		if (remoteInetAddress == null) {
-			if (other.remoteInetAddress != null)
-				return false;
-		} else if (!remoteInetAddress.equals(other.remoteInetAddress))
-			return false;
-		if (remotePort != other.remotePort)
-			return false;
-		if (transport == null) {
-			if (other.transport != null)
-				return false;
-		} else if (!transport.equals(other.transport))
-			return false;
-		return true;
+		}
+		boolean equals = false;
+		if (RFC3261.TRANSPORT_UDP.equalsIgnoreCase(transport)) {
+			equals = localInetAddress.equals(other.localInetAddress)
+					&& localPort == other.localPort;		
+		}
+		if(equals){
+			if(null != remoteInetAddress){
+				equals = remoteInetAddress.equals(other.remoteInetAddress)
+						&& remotePort == other.remotePort;
+			}
+		}
+
+		return equals;
 	}
 
 	@Override
 	public String toString() {
-		return "SipTransportConnection [localInetAddress=" + localInetAddress + ", localPort=" + localPort
-				+ ", remoteInetAddress=" + remoteInetAddress + ", remotePort=" + remotePort + ", transport=" + transport
-				+ "]";
+		StringBuffer buf = new StringBuffer();
+		appendInetAddress(buf, localInetAddress);
+		buf.append(':');
+		appendPort(buf, localPort);
+		buf.append('/');
+		if (!RFC3261.TRANSPORT_UDP.equalsIgnoreCase(transport)) {
+			appendInetAddress(buf, remoteInetAddress);
+			buf.append(':');
+			appendPort(buf, remotePort);
+			buf.append('/');
+		}
+		buf.append(transport.toUpperCase());
+		return buf.toString();
+	}
+
+	private void appendInetAddress(StringBuffer buf, InetAddress inetAddress) {
+		if (inetAddress != null) {
+			buf.append(inetAddress.getHostAddress());
+		} else {
+			buf.append("-");
+		}
+	}
+
+	private void appendPort(StringBuffer buf, int port) {
+		if (port != EMPTY_PORT) {
+			buf.append(port);
+		} else {
+			buf.append("-");
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
 	}
 
 	public InetAddress getLocalInetAddress() {
