@@ -466,12 +466,16 @@ public class HttpBuilder {
 			this.executorMonitorManager = executorMonitorManager;
 			if (null != this.httpResponse) {
 				try {
-					this.content = EntityUtils.toString(
-							httpResponse.getEntity(), "UTF-8");
+					HttpEntity httpEntity = httpResponse.getEntity();
+					if (null == httpEntity) {
+						this.content = "";
+					} else {
+						this.content = EntityUtils.toString(
+								httpResponse.getEntity(), "UTF-8");
+					}
 				} catch (Exception e) {
-					throw HttpClientException
-							.create("get http builder executed http response content error !",
-									e);
+					logger.error("get http builder executed http response content error !",e);
+					this.content = "";
 				} finally {
 					try {
 						this.httpResponse.close();

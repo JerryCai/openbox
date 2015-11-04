@@ -26,17 +26,17 @@ public final class ResponseUtils {
 
 		final HttpEntity entity = response.getEntity();
 		try {
-			return entity == null ? null : EntityUtils.toString(entity);
+			return entity == null ? "" : EntityUtils.toString(entity);
 		} catch (Exception e) {
 			if (logger.isWarnEnabled()) {
 				logger.warn(
-						"get string content from http response error , so return null ",
+						"get string content from http response error , so return empty ",
 						e);
 			}
 		} finally {
 			EntityUtils.consumeQuietly(entity);
 		}
-		return null;
+		return "";
 
 	}
 
