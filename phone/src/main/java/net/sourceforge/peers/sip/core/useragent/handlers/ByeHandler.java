@@ -40,14 +40,11 @@ import net.sourceforge.peers.sip.transport.SipRequest;
 import net.sourceforge.peers.sip.transport.SipResponse;
 import net.sourceforge.peers.sip.transport.TransportManager;
 
-public class ByeHandler extends DialogMethodHandler implements
-		ServerTransactionUser, ClientTransactionUser {
+public class ByeHandler extends DialogMethodHandler implements ServerTransactionUser, ClientTransactionUser {
 
-	public ByeHandler(UserAgent userAgent, DialogManager dialogManager,
-			TransactionManager transactionManager,
+	public ByeHandler(UserAgent userAgent, DialogManager dialogManager, TransactionManager transactionManager,
 			TransportManager transportManager, Logger logger) {
-		super(userAgent, dialogManager, transactionManager, transportManager,
-				logger);
+		super(userAgent, dialogManager, transactionManager, transportManager, logger);
 	}
 
 	// //////////////////////////////////////////////
@@ -77,15 +74,14 @@ public class ByeHandler extends DialogMethodHandler implements
 		logger.debug("removed dialog " + dialog.getId());
 		userAgent.getMediaManager().stopSession();
 
-		SipResponse sipResponse = RequestManager.generateResponse(sipRequest,
-				dialog, RFC3261.CODE_200_OK, RFC3261.REASON_200_OK);
+		SipResponse sipResponse = RequestManager.generateResponse(sipRequest, dialog, RFC3261.CODE_200_OK,
+				RFC3261.REASON_200_OK);
 
 		// TODO determine port and transport for server transaction>transport
 		// from initial invite
 		// FIXME determine port and transport for server transaction>transport
-		ServerTransaction serverTransaction = transactionManager
-				.createServerTransaction(sipResponse, userAgent.getSipPort(),
-						RFC3261.TRANSPORT_UDP, this, sipRequest);
+		ServerTransaction serverTransaction = transactionManager.createServerTransaction(sipResponse,
+				userAgent.getSipPort(), RFC3261.TRANSPORT_UDP, this, sipRequest);
 
 		serverTransaction.start();
 
@@ -102,26 +98,28 @@ public class ByeHandler extends DialogMethodHandler implements
 
 		// setChanged();
 		// notifyObservers(sipRequest);
-		
-		//TODO add this logical by jerry cai for support Also
-		handleByeAlso(sipRequest,dialog);
+
+		// TODO add this logical by jerry cai for support Also
+		handleByeAlso(sipRequest, dialog);
 	}
 
 	private void handleByeAlso(SipRequest sipRequest, Dialog dialog) {
-		SipHeaderFieldValue alsoValue = sipRequest.getSipHeaders()
-				.get(new SipHeaderFieldName(RFC3261.HDR_ALSO));
-		if(null == alsoValue){
+		handleReInvite(sipRequest, dialog, RFC3261.HDR_ALSO);
+	}
+
+	protected void handleReInvite(SipRequest sipRequest, Dialog dialog, String inviteSipAddressHeaderName) {
+		SipHeaderFieldValue reInviteSipAddress = sipRequest.getSipHeaders()
+				.get(new SipHeaderFieldName(inviteSipAddressHeaderName));
+		if (null == reInviteSipAddress) {
 			return;
 		}
-		String alsoSipUrl = alsoValue.getValue();	
-		dialog.setRemoteUri(alsoSipUrl);
+		String reInviteSipUrl = reInviteSipAddress.getValue();
+		dialog.setRemoteUri(reInviteSipUrl);
 		try {
-			userAgent.invite(alsoSipUrl,
-					dialog.getCallId()+"_Also");
+			userAgent.invite(reInviteSipUrl, dialog.getCallId() + "_" + inviteSipAddressHeaderName);
 		} catch (SipUriSyntaxException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	// /////////////////////////////////////
@@ -142,8 +140,7 @@ public class ByeHandler extends DialogMethodHandler implements
 	}
 
 	@Override
-	public void provResponseReceived(SipResponse sipResponse,
-			Transaction transaction) {
+	public void provResponseReceived(SipResponse sipResponse, Transaction transaction) {
 		// TODO Auto-generated method stub
 
 	}
@@ -152,8 +149,7 @@ public class ByeHandler extends DialogMethodHandler implements
 	public void errResponseReceived(SipResponse sipResponse) {
 		int statusCode = sipResponse.getStatusCode();
 		if (statusCode == RFC3261.CODE_401_UNAUTHORIZED
-				|| statusCode == RFC3261.CODE_407_PROXY_AUTHENTICATION_REQUIRED
-				&& !challenged) {
+				|| statusCode == RFC3261.CODE_407_PROXY_AUTHENTICATION_REQUIRED && !challenged) {
 			NonInviteClientTransaction nonInviteClientTransaction = (NonInviteClientTransaction) transactionManager
 					.getClientTransaction(sipResponse);
 			SipRequest sipRequest = nonInviteClientTransaction.getRequest();
@@ -168,8 +164,7 @@ public class ByeHandler extends DialogMethodHandler implements
 	}
 
 	@Override
-	public void successResponseReceived(SipResponse sipResponse,
-			Transaction transaction) {
+	public void successResponseReceived(SipResponse sipResponse, Transaction transaction) {
 		Dialog dialog = dialogManager.getDialog(sipResponse);
 		if (dialog == null) {
 			return;

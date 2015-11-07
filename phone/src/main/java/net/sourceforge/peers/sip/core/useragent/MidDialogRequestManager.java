@@ -29,6 +29,7 @@ import net.sourceforge.peers.sip.core.useragent.handlers.ByeHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.CancelHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.InviteHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.OptionsHandler;
+import net.sourceforge.peers.sip.core.useragent.handlers.ReferHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.RegisterHandler;
 import net.sourceforge.peers.sip.syntaxencoding.SipHeaderFieldName;
 import net.sourceforge.peers.sip.syntaxencoding.SipHeaderFieldValue;
@@ -54,6 +55,7 @@ public class MidDialogRequestManager extends RequestManager
             InviteHandler inviteHandler,
             CancelHandler cancelHandler,
             ByeHandler byeHandler,
+            ReferHandler referHandler,
             OptionsHandler optionsHandler,
             RegisterHandler registerHandler,
             DialogManager dialogManager,
@@ -64,6 +66,7 @@ public class MidDialogRequestManager extends RequestManager
                 inviteHandler,
                 cancelHandler,
                 byeHandler,
+                referHandler,
                 optionsHandler,
                 registerHandler,
                 dialogManager,
@@ -198,6 +201,8 @@ public class MidDialogRequestManager extends RequestManager
             inviteHandler.handleAck(sipRequest, dialog);
         } else if (RFC3261.METHOD_OPTIONS.equals(method)) {
             optionsHandler.handleOptions(sipRequest);
+        }else if (RFC3261.METHOD_REFER.equals(method)){
+        	referHandler.handleBye(sipRequest, dialog);
         }
     }
 

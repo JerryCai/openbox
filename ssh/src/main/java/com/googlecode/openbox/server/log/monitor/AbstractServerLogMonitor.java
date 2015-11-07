@@ -13,15 +13,16 @@ import com.googlecode.openbox.server.log.ServerLog;
 
 public abstract class AbstractServerLogMonitor<T> implements
 		ServerLogMonitor<T> {
-
 	private static final Logger logger = LogManager.getLogger();
 
+	private boolean enable;
 	private List<ServerLogHandler<T>> handlers;
 	private Map<String, Integer> startLineNumbers;
 	private List<ServerLogProvider> serverLogProviders;
 	private List<ServerLog> serverLogs;
 
-	public AbstractServerLogMonitor() {
+	public AbstractServerLogMonitor(boolean enable) {
+		this.enable = enable;
 		this.serverLogs = new LinkedList<ServerLog>();
 		this.serverLogProviders = new LinkedList<ServerLogProvider>();
 		this.handlers = new LinkedList<ServerLogHandler<T>>();
@@ -31,38 +32,52 @@ public abstract class AbstractServerLogMonitor<T> implements
 	}
 
 	@Override
-	public void addServerLogProvider(ServerLogProvider serverLogProvider) {
+	public ServerLogMonitor<T> addServerLogProvider(
+			ServerLogProvider serverLogProvider) {
 		serverLogProviders.add(serverLogProvider);
+		return this;
 	}
 
 	@Override
-	public void addServerLog(ServerLog serverLog) {
+	public ServerLogMonitor<T> addServerLog(ServerLog serverLog) {
 		serverLogs.add(serverLog);
+		return this;
 	}
 
 	@Override
-	public AbstractServerLogMonitor<T> addServerLogHandler(
-			ServerLogHandler<T> handler) {
-		handlers.add(handler);
+	public ServerLogMonitor<T> addServerLogHandler(ServerLogHandler<T> checker) {
+		handlers.add(checker);
 		return this;
 	}
 
 	@Override
 	public T execute() throws Exception {
+		if (this.enable) {
+			return executeWithMonitorEnabled();
+		}
+		return triggerActions();
+	}
+
+	private T executeWithMonitorEnabled() throws Exception {
 		init();
 		start();
 		T t = null;
 		try {
 			t = triggerActions();
 		} finally {
-			String logs = getMergedTriggerDuringLogs();
+			String logs = getMergedTriggerDuringLogs(t);
 			verify(t, logs);
 		}
 		return t;
 	}
 
 	private void init() {
+		cleanPreviousExecutedLogs();
 		collectServerLogsFromServerLogProvider();
+	}
+
+	private void cleanPreviousExecutedLogs() {
+		serverLogs.clear();
 	}
 
 	private void collectServerLogsFromServerLogProvider() {
@@ -87,14 +102,21 @@ public abstract class AbstractServerLogMonitor<T> implements
 		}
 	}
 
-	private String getMergedTriggerDuringLogs() {
+	private String getMergedTriggerDuringLogs(T t) {
 		String content = "";
 		for (ServerLog serverLog : serverLogs) {
 			try {
 				TimeUnit.SECONDS.sleep(10);
 				int startLineNum = startLineNumbers.get(serverLog.toString());
-				content = content + "\n" + serverLog.getServer() + "\n"
-						+ serverLog.getLastestContent(startLineNum);
+				String[] logFilterKeys = getLogFilterKeys(t);
+				String logs = null;
+				if ((null == logFilterKeys) || (logFilterKeys.length <= 0)) {
+					logs = serverLog.getLastestContent(startLineNum);
+				} else {
+					logs = serverLog.grepContentByKeysFrom(startLineNum,
+							logFilterKeys);
+				}
+				content = content + "\n" + serverLog.getServer() + "\n" + logs;
 			} catch (Exception e) {
 				logger.warn(e.getMessage());
 			}

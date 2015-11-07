@@ -32,6 +32,7 @@ public final class RFC3261 {
     public static final String METHOD_REGISTER = "REGISTER";
     public static final String METHOD_BYE      = "BYE";
     public static final String METHOD_REFER      = "REFER";
+    public static final String METHOD_NOTIFY      = "NOTIFY";
     public static final String METHOD_OPTIONS  = "OPTIONS";
     public static final String METHOD_CANCEL   = "CANCEL";
     
@@ -58,7 +59,9 @@ public final class RFC3261 {
     public static final String HDR_VIA                 = "Via";
     public static final String HDR_WWW_AUTHENTICATE    = "WWW-Authenticate";
     public static final String HDR_ALSO    = "Also";
-    
+    public static final String HDR_REFER_TO = "Refer-To";
+    public static final String HDR_SUBSCRIPTION_STATE  = "Subscription-State";
+    public static final String HDR_EVENT  = "Event";
         //Compact form
     
     public static final char COMPACT_HDR_CALLID           = 'i';
@@ -108,6 +111,7 @@ public final class RFC3261 {
     public static final int CODE_100_TRYING                          = 100;
     public static final int CODE_180_RINGING                         = 180;
     public static final int CODE_200_OK                              = 200;
+    public static final int CODE_202_ACCEPTED                        = 202;
     public static final int CODE_401_UNAUTHORIZED                    = 401;
     public static final int CODE_405_METHOD_NOT_ALLOWED              = 405;
     public static final int CODE_407_PROXY_AUTHENTICATION_REQUIRED   = 407;
@@ -119,6 +123,7 @@ public final class RFC3261 {
       //REASON PHRASES
     public static final String REASON_180_RINGING  = "Ringing";
     public static final String REASON_200_OK       = "OK";
+    public static final String REASON_202_ACCEPTED       = "Accepted";
     public static final String REASON_405_METHOD_NOT_ALLOWED =
         "Method Not Allowed";
     public static final String REASON_481_CALL_TRANSACTION_DOES_NOT_EXIST =
@@ -168,6 +173,7 @@ public final class RFC3261 {
     //CORE
     
     public static final String CONTENT_TYPE_SDP = "application/sdp";
+    public static final String CONTENT_TYPE_MESSAGE = "message/sipfrag";
     public static final int DEFAULT_EXPIRES = 3600;
     
 }

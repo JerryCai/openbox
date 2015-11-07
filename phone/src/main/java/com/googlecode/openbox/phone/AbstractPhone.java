@@ -108,13 +108,14 @@ public abstract class AbstractPhone implements Phone {
 
 	@Override
 	public void invite(final String requestUri, final String callId) {
-		this.callId = callId;
+		final String nonEmptyCallId = (callId == null ? "phone_"
+				+ UUID.randomUUID().toString() : callId);
+		this.callId = nonEmptyCallId;
 		boolean isSuccess = PhoneThread.execute(new PhoneThread(
 				getOperationInterval()) {
 			@Override
 			public void action() {
-				String nonEmptyCallId = (callId == null ? "phone_"
-						+ UUID.randomUUID().toString() : callId);
+				
 				try {
 
 					sipRequest = getUserAgent().invite(requestUri,

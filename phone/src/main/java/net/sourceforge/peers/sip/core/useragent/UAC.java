@@ -132,6 +132,11 @@ public class UAC {
 				RFC3261.METHOD_INVITE, profileUri, callId);
 
 	}
+	
+	SipRequest notify(SipRequest referRequest, String subscriptionState)
+			throws SipUriSyntaxException {
+		return initialRequestManager.createNotifyRequest(referRequest,subscriptionState, profileUri);
+	}
 
 	private SipRequest getInviteWithAuth(String callId) {
 		List<ClientTransaction> clientTransactions = transactionManager

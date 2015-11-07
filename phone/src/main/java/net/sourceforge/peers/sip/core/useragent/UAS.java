@@ -47,6 +47,7 @@ public class UAS implements SipServerTransportUser {
         SUPPORTED_METHODS.add(RFC3261.METHOD_CANCEL);
         SUPPORTED_METHODS.add(RFC3261.METHOD_OPTIONS);
         SUPPORTED_METHODS.add(RFC3261.METHOD_BYE);
+       // SUPPORTED_METHODS.add(RFC3261.METHOD_NOTIFY);
     };
     
     private InitialRequestManager initialRequestManager;

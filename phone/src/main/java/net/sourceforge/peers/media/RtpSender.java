@@ -60,6 +60,7 @@ public class RtpSender implements Runnable {
 		this.codec = codec;
 		this.peersHome = peersHome;
 		this.latch = latch;
+		this.logger = logger;
 		isStopped = false;
 		pushedPackets = Collections
 				.synchronizedList(new ArrayList<RtpPacket>());
@@ -142,6 +143,12 @@ public class RtpSender implements Runnable {
 						lastSentTime = System.nanoTime();
 						offset = 0;
 					} else {
+						// fix send dtmf lost issue
+						try {
+							Thread.sleep(20);
+						} catch (InterruptedException e) {
+							logger.error("Thread interrupted", e);
+						}
 						rtpSession.send(rtpPacket);
 						lastSentTime = System.nanoTime();
 						if (sleepTime < -20000000) {

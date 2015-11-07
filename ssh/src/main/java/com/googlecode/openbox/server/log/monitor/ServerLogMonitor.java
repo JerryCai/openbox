@@ -4,14 +4,16 @@ import com.googlecode.openbox.server.log.ServerLog;
 
 public interface ServerLogMonitor<T> {
 
-	void addServerLogProvider(ServerLogProvider serverLogProvider);
+	ServerLogMonitor<T> addServerLogProvider(ServerLogProvider serverLogProvider);
 
-	void addServerLog(ServerLog serverLog);
+	ServerLogMonitor<T> addServerLog(ServerLog serverLog);
 
-	ServerLogMonitor<T> addServerLogHandler(ServerLogHandler<T> checker);
+	ServerLogMonitor<T> addServerLogHandler(ServerLogHandler<T> handler);
 
 	T triggerActions() throws Exception;
 
 	T execute() throws Exception;
+
+	String[] getLogFilterKeys(T t);
 
 }

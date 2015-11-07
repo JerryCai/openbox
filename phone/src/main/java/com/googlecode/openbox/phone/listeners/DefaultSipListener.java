@@ -1,14 +1,7 @@
 package com.googlecode.openbox.phone.listeners;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import net.sourceforge.peers.sip.RFC3261;
-import net.sourceforge.peers.sip.core.useragent.SipListener;
-import net.sourceforge.peers.sip.core.useragent.UserAgent;
-import net.sourceforge.peers.sip.syntaxencoding.SipHeaderFieldName;
-import net.sourceforge.peers.sip.transport.SipRequest;
-import net.sourceforge.peers.sip.transport.SipResponse;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +10,13 @@ import com.googlecode.openbox.phone.Phone;
 import com.googlecode.openbox.phone.PhoneException;
 import com.googlecode.openbox.phone.PhoneStatus;
 
+import net.sourceforge.peers.sip.RFC3261;
+import net.sourceforge.peers.sip.core.useragent.SipListener;
+import net.sourceforge.peers.sip.core.useragent.UserAgent;
+import net.sourceforge.peers.sip.syntaxencoding.SipHeaderFieldName;
+import net.sourceforge.peers.sip.transport.SipRequest;
+import net.sourceforge.peers.sip.transport.SipResponse;
+
 public abstract class DefaultSipListener implements SipListener {
 	private static final Logger logger = LogManager.getLogger();
 
@@ -24,13 +24,13 @@ public abstract class DefaultSipListener implements SipListener {
 	private PhoneStatus phoneStatus;
 	private SipRequest currentSipRequest;
 
-	private List<IncomingCallRecord> incomingHistory;
+	private Queue<IncomingCallRecord> incomingHistory;
 	private IncomingCallRecord currentIncomingCallRecord;
 
 	public DefaultSipListener(Phone phone) {
 		this.phone = phone;
 		this.phone.setSipListener(this);
-		this.incomingHistory = new LinkedList<IncomingCallRecord>();
+		this.incomingHistory = new ConcurrentLinkedDeque<IncomingCallRecord>();
 	}
 
 	public abstract PhoneType getType();
@@ -39,7 +39,7 @@ public abstract class DefaultSipListener implements SipListener {
 		return incomingHistory.size();
 	}
 
-	public List<IncomingCallRecord> getIncomingHistory() {
+	public Queue<IncomingCallRecord> getIncomingHistory() {
 		return incomingHistory;
 	}
 

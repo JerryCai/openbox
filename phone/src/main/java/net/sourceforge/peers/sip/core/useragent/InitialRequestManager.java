@@ -26,6 +26,7 @@ import net.sourceforge.peers.sip.core.useragent.handlers.ByeHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.CancelHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.InviteHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.OptionsHandler;
+import net.sourceforge.peers.sip.core.useragent.handlers.ReferHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.RegisterHandler;
 import net.sourceforge.peers.sip.syntaxencoding.NameAddress;
 import net.sourceforge.peers.sip.syntaxencoding.SipHeaderFieldName;
@@ -50,6 +51,7 @@ public class InitialRequestManager extends RequestManager
             InviteHandler inviteHandler,
             CancelHandler cancelHandler,
             ByeHandler byeHandler,
+            ReferHandler referHandler,
             OptionsHandler optionsHandler,
             RegisterHandler registerHandler,
             DialogManager dialogManager,
@@ -60,6 +62,7 @@ public class InitialRequestManager extends RequestManager
                 inviteHandler,
                 cancelHandler,
                 byeHandler,
+                referHandler,
                 optionsHandler,
                 registerHandler,
                 dialogManager,
@@ -140,6 +143,43 @@ public class InitialRequestManager extends RequestManager
         
         return request;
     }
+    
+    public SipRequest getGenericNotifyRequest(SipRequest referRequest, String method,
+            String profileUri, String fromTag)
+            throws SipUriSyntaxException {
+    	
+    	String notifySipUrl = Utils.getSipUrlFromHeader(referRequest, RFC3261.HDR_CONTACT);
+        SipRequest request = new SipRequest(method, new SipURI(notifySipUrl));
+
+    	String callId = Utils.getMessageCallId(referRequest);
+        String toHeaderValue = Utils.getSipHeaderFullValue(referRequest,RFC3261.HDR_FROM);//new NameAddress().toString();
+        String fromHeaderValue = Utils.getSipHeaderFullValue(referRequest,RFC3261.HDR_TO);
+        Utils.resetSipRequestHeader(request, RFC3261.HDR_TO, toHeaderValue);
+        Utils.resetSipRequestHeader(request,RFC3261.HDR_FROM, fromHeaderValue);
+        
+        
+        //8.1.1
+        SipHeaders headers = request.getSipHeaders();
+        Utils.addCommonHeaders(headers);
+        //Call-ID
+        SipHeaderFieldName callIdName =
+            new SipHeaderFieldName(RFC3261.HDR_CALLID);
+        String localCallId;
+        if (callId != null) {
+            localCallId = callId;
+        } else {
+            localCallId = Utils.generateCallID(
+                    userAgent.getConfig().getLocalInetAddress());
+        }
+        headers.add(callIdName, new SipHeaderFieldValue(localCallId));
+        
+        //CSeq
+        
+        headers.add(new SipHeaderFieldName(RFC3261.HDR_CSEQ),
+                new SipHeaderFieldValue(userAgent.generateCSeq(method)));
+        
+        return request;
+    }
  
     public SipRequest createInitialRequest(String requestUri, String method,
             String profileUri) throws SipUriSyntaxException {
@@ -150,6 +190,13 @@ public class InitialRequestManager extends RequestManager
             String profileUri, String callId) throws SipUriSyntaxException {
         
         return createInitialRequest(requestUri, method, profileUri, callId,
+                null, null);
+    }
+    
+    public SipRequest createNotifyRequest(SipRequest referRequest, String subscriptionState,
+            String profileUri) throws SipUriSyntaxException {
+        
+        return createNotifyRequest(referRequest, subscriptionState, profileUri,
                 null, null);
     }
     
@@ -173,9 +220,42 @@ public class InitialRequestManager extends RequestManager
         ClientTransaction clientTransaction = null;
         if (RFC3261.METHOD_INVITE.equals(method)) {
             clientTransaction = inviteHandler.preProcessInvite(sipRequest);
+            Utils.resetSipRequestHeader(sipRequest,new SipHeaderFieldName(RFC3261.HDR_CONTENT_TYPE),
+    				new SipHeaderFieldValue(RFC3261.CONTENT_TYPE_SDP));
         } else if (RFC3261.METHOD_REGISTER.equals(method)) {
             clientTransaction = registerHandler.preProcessRegister(sipRequest);
         }
+        createInitialRequestEnd(sipRequest, clientTransaction, profileUri,
+                messageInterceptor, true);
+        return sipRequest;
+    }
+    
+
+    
+    public SipRequest createNotifyRequest(SipRequest referRequest, String subscriptionState,
+            String profileUri, String fromTag,
+            MessageInterceptor messageInterceptor)
+                throws SipUriSyntaxException {
+    	
+        SipRequest sipRequest = getGenericNotifyRequest(referRequest, RFC3261.METHOD_NOTIFY,
+                profileUri, fromTag);
+        Utils.resetSipRequestHeader(sipRequest, RFC3261.HDR_SUBSCRIPTION_STATE, subscriptionState);
+        Utils.resetSipRequestHeader(sipRequest, RFC3261.HDR_EVENT, "refer");
+       
+        
+        // TODO add route header for outbound proxy give it to xxxHandler to create
+        // clientTransaction
+        SipURI outboundProxy = userAgent.getOutboundProxy();
+        if (outboundProxy != null) {
+            NameAddress outboundProxyNameAddress =
+                new NameAddress(outboundProxy.toString());
+            sipRequest.getSipHeaders().add(new SipHeaderFieldName(RFC3261.HDR_ROUTE),
+                    new SipHeaderFieldValue(outboundProxyNameAddress.toString()), 0);
+        }
+        ClientTransaction clientTransaction = inviteHandler.preProcessInvite(sipRequest);
+        Utils.resetSipRequestHeader(sipRequest,new SipHeaderFieldName(RFC3261.HDR_CONTENT_TYPE),
+				new SipHeaderFieldValue(RFC3261.CONTENT_TYPE_MESSAGE));
+        
         createInitialRequestEnd(sipRequest, clientTransaction, profileUri,
                 messageInterceptor, true);
         return sipRequest;
@@ -273,6 +353,8 @@ public class InitialRequestManager extends RequestManager
             cancelHandler.handleCancel(sipRequest);
         } else if (RFC3261.METHOD_OPTIONS.equals(method)) {
             optionsHandler.handleOptions(sipRequest);
+        }else if(RFC3261.METHOD_NOTIFY.equals(method)){
+        	referHandler.handleInitialRefer(sipRequest);
         }
     }
 

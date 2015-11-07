@@ -7,5 +7,4 @@ import com.googlecode.openbox.server.log.ServerLog;
 public interface ServerLogProvider {
 	
 	List<ServerLog> getServerLogs();
-
 }

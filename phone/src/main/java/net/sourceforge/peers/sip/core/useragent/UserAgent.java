@@ -38,6 +38,7 @@ import net.sourceforge.peers.sip.core.useragent.handlers.ByeHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.CancelHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.InviteHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.OptionsHandler;
+import net.sourceforge.peers.sip.core.useragent.handlers.ReferHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.RegisterHandler;
 import net.sourceforge.peers.sip.syntaxencoding.SipURI;
 import net.sourceforge.peers.sip.syntaxencoding.SipUriSyntaxException;
@@ -158,6 +159,11 @@ public class UserAgent {
                 transactionManager,
                 transportManager,
                 logger);
+        ReferHandler referHandler=new ReferHandler(this,
+                dialogManager,
+                transactionManager,
+                transportManager,
+                logger);
         OptionsHandler optionsHandler = new OptionsHandler(this,
                 transactionManager,
                 transportManager,
@@ -173,6 +179,7 @@ public class UserAgent {
                 inviteHandler,
                 cancelHandler,
                 byeHandler,
+                referHandler,
                 optionsHandler,
                 registerHandler,
                 dialogManager,
@@ -185,6 +192,7 @@ public class UserAgent {
                 inviteHandler,
                 cancelHandler,
                 byeHandler,
+                referHandler,
                 optionsHandler,
                 registerHandler,
                 dialogManager,
@@ -248,6 +256,9 @@ public class UserAgent {
         return uac.invite(requestUri, callId);
     }
     
+    public SipRequest notify(SipRequest referRequest, String subscriptionState ) throws SipUriSyntaxException{
+    	return uac.notify(referRequest, subscriptionState);
+    }
     public void terminate(SipRequest sipRequest) {
         uac.terminate(sipRequest);
     }

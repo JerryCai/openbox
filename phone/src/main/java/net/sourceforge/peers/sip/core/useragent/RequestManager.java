@@ -25,6 +25,7 @@ import net.sourceforge.peers.sip.core.useragent.handlers.ByeHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.CancelHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.InviteHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.OptionsHandler;
+import net.sourceforge.peers.sip.core.useragent.handlers.ReferHandler;
 import net.sourceforge.peers.sip.core.useragent.handlers.RegisterHandler;
 import net.sourceforge.peers.sip.syntaxencoding.NameAddress;
 import net.sourceforge.peers.sip.syntaxencoding.SipHeaderFieldName;
@@ -94,6 +95,7 @@ public abstract class RequestManager {
     protected InviteHandler inviteHandler;
     protected CancelHandler cancelHandler;
     protected ByeHandler byeHandler;
+    protected ReferHandler referHandler;
     protected OptionsHandler optionsHandler;
     protected RegisterHandler registerHandler;
     
@@ -106,6 +108,7 @@ public abstract class RequestManager {
             InviteHandler inviteHandler,
             CancelHandler cancelHandler,
             ByeHandler byeHandler,
+            ReferHandler referHandler,
             OptionsHandler optionsHandler,
             RegisterHandler registerHandler,
             DialogManager dialogManager,
@@ -116,6 +119,7 @@ public abstract class RequestManager {
         this.inviteHandler = inviteHandler;
         this.cancelHandler = cancelHandler;
         this.byeHandler = byeHandler;
+        this.referHandler = referHandler;
         this.optionsHandler = optionsHandler;
         this.registerHandler = registerHandler;
         this.transactionManager = transactionManager;
