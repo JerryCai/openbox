@@ -105,10 +105,10 @@ public class RtpSession {
 		if (datagramSocket == null) {
 			return;
 		}
-		byte[] buf = rtpParser.encode(rtpPacket);
-		final DatagramPacket datagramPacket = new DatagramPacket(buf, buf.length, remoteAddress, remotePort);
-
+		
 		if (!datagramSocket.isClosed()) {
+			byte[] buf = rtpParser.encode(rtpPacket);
+			final DatagramPacket datagramPacket = new DatagramPacket(buf, buf.length, remoteAddress, remotePort);
 			// AccessController.doPrivileged added for plugin compatibility
 			AccessController.doPrivileged(new PrivilegedAction<Void>() {
 
@@ -147,6 +147,10 @@ public class RtpSession {
 		if (mediaDebug) {
 			try {
 				rtpSessionOutput.close();
+			} catch (IOException e) {
+				logger.error("cannot close file", e);
+			}
+			try {
 				rtpSessionInput.close();
 			} catch (IOException e) {
 				logger.error("cannot close file", e);
@@ -157,6 +161,7 @@ public class RtpSession {
 			@Override
 			public Void run() {
 				datagramSocket.close();
+				datagramSocket = null;
 				return null;
 			}
 		});

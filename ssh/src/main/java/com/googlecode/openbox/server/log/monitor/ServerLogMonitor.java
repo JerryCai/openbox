@@ -9,7 +9,9 @@ public interface ServerLogMonitor<T> {
 	ServerLogMonitor<T> addServerLog(ServerLog serverLog);
 
 	ServerLogMonitor<T> addServerLogHandler(ServerLogHandler<T> handler);
-
+	
+	ServerLogMonitor<T> setParallelCount(int parallelCount) ;
+	
 	T triggerActions() throws Exception;
 
 	T execute() throws Exception;

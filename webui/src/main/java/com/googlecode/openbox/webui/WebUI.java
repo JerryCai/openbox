@@ -58,12 +58,17 @@ public class WebUI {
 			}
 			if ("complete".equals(readyState)) {
 				try {
-					TimeUnit.MILLISECONDS.sleep(100);
+					TimeUnit.MILLISECONDS.sleep(500);
 				} catch (InterruptedException e) {
 					logger.warn(e);
 				}
 				return "complete"
 						.equals(((JavascriptExecutor) driver).executeScript("return document.readyState").toString());
+			}
+			try {
+				TimeUnit.MILLISECONDS.sleep(500);
+			} catch (InterruptedException e) {
+				logger.warn(e);
 			}
 			return false;
 		}
