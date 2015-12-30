@@ -143,7 +143,7 @@ public abstract class AbstractServerLogMonitor<T> implements
 					startLineNumbers.put(serverLog.toString(),currentLineNum);
 					return currentLineNum;
 				} catch (Exception e) {
-					logger.warn(e.getMessage());
+					logger.error(e);
 					return -1;
 				}
 			}
