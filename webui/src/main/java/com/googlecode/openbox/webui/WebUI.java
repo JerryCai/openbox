@@ -33,6 +33,7 @@ public class WebUI {
 	public static final long DEFAULT_TIMEOUT = 30;
 	private WebDriver driver;
 	private WebDriverWait wait;
+	private long timeout;
 
 	private final AtomicInteger _frameDepth = new AtomicInteger(0);
 	private final Stack<String> _frameStack = new Stack<String>();
@@ -76,6 +77,7 @@ public class WebUI {
 
 	private WebUI(WebDriver driver, long timeout) {
 		this.driver = driver;
+		this.timeout = timeout;
 		this.driver.manage().deleteAllCookies();
 		this.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		this.wait = new WebDriverWait(driver, timeout);
@@ -446,7 +448,7 @@ public class WebUI {
 				return action(webUI);
 			} else {
 				throw WebTestException
-						.create("The page can't be load complate during the timeout [" + DEFAULT_TIMEOUT + "]");
+						.create("The page can't be load complate during the timeout [" + timeout + "]");
 			}
 
 		}

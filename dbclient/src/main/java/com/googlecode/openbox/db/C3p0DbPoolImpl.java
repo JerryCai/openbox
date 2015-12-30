@@ -238,8 +238,9 @@ public class C3p0DbPoolImpl implements DbPool {
 	}
 
 	public void close(Connection conn) {
-		if (conn == null)
+		if (conn == null){
 			return;
+		}
 		try {
 			conn.close();
 		} catch (SQLException e) {

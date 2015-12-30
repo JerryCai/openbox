@@ -76,7 +76,9 @@ public abstract class AbstractServerLog implements ServerLog {
 	public String grepContentByKeysFrom(int beginLineNum, String... keys) {
 		String command = "sed -n '" + beginLineNum + ",$p' " +getPath();
 		for (int i = 0; i < keys.length; i++) {
-			command = command + " | grep " + keys[i];
+			if(null != keys[i] && !keys[i].trim().equals("")){
+				command = command + " | grep " + keys[i];
+			}
 		}
 		return getContentWithFullCommand(command);
 	}

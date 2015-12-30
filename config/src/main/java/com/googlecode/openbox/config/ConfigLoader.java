@@ -76,7 +76,7 @@ public final class ConfigLoader {
 
 		if (null == item || "".equals(item.trim())) {
 			String message = "config item [" + key
-					+ "] is not configed in config file [" + path + "]";
+					+ "] is not configed or empty value in config file [" + path + "]";
 			if (logger.isWarnEnabled()) {
 				logger.warn(message);
 			}

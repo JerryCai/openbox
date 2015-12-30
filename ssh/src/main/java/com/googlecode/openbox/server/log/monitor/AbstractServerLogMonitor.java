@@ -32,7 +32,6 @@ public abstract class AbstractServerLogMonitor<T> implements
 		this.serverLogProviders = new LinkedList<ServerLogProvider>();
 		this.handlers = new LinkedList<ServerLogHandler<T>>();
 		this.startLineNumbers = new ConcurrentHashMap<String, Integer>();
-		this.addServerLogHandler(new LogPrintHandler<T>());
 		this.parallelCount = -1;
 	}
 
@@ -73,12 +72,18 @@ public abstract class AbstractServerLogMonitor<T> implements
 		init();
 		start();
 		T t = null;
+		String logs = null;
 		try {
 			t = triggerActions();
 		} finally {
-			String logs = getMergedTriggerDuringLogs(t);
-			verify(t, logs);
+			logs = getMergedTriggerDuringLogs(t);
+			if (logger.isInfoEnabled()) {
+				logger.info("###################################################");
+				logger.info(logs);
+				logger.info("###################################################");
+			}
 		}
+		verify(t, logs);
 		return t;
 	}
 
@@ -114,7 +119,7 @@ public abstract class AbstractServerLogMonitor<T> implements
 		int taskCount = serverLogs.size();
 		@SuppressWarnings("unchecked")
 		Future<A>[] serverLogTaskResults = new Future[taskCount];
-		for (int i =0 ; i< poolSize ; i++) {
+		for (int i =0 ; i< taskCount ; i++) {
 			final ServerLog serverLog = serverLogs.get(i);
 			serverLogTaskResults[i] = executorService.submit(new Callable<A>(){
 				@Override
