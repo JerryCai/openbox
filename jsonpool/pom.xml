@@ -3,17 +3,17 @@
 	<parent>
 		<groupId>com.googlecode.openbox</groupId>
 		<artifactId>openbox</artifactId>
-		<version>2.0.17</version>
+		<version>2.0.18-SNAPSHOT</version>
 	</parent>
 	<artifactId>jsonpool</artifactId>
-  <version>2.0.17</version>
+  <version>2.0.18-SNAPSHOT</version>
 	<name>JsonObjectStorePool</name>
 	<description>This is common Json Object Store Pool</description>
 	<dependencies>
 		<dependency>
 			<groupId>com.googlecode.openbox</groupId>
 			<artifactId>common</artifactId>
-			<version>2.0.17</version>
+			<version>2.0.18-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
