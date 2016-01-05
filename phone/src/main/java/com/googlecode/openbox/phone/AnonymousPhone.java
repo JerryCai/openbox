@@ -97,4 +97,12 @@ public class AnonymousPhone extends AbstractPhone {
 		return tempMediaFile;
 	}
 
+	@Override
+	public void disableRealVoiceOnWindows() {
+		if (SystemUtils.IS_OS_WINDOWS) {
+			this.soundManager = new LinuxDtmfSuccessSoundManager();
+			logger.warn(
+					"phone is setup on Windows OS , you manual disabled its real voice like on Linux VM System, actually this is only required when multi-threads runing on Windows VM system");
+		}
+	}
 }

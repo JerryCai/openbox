@@ -59,7 +59,7 @@ public class WebUI {
 			}
 			if ("complete".equals(readyState)) {
 				try {
-					TimeUnit.MILLISECONDS.sleep(500);
+					TimeUnit.MILLISECONDS.sleep(100);
 				} catch (InterruptedException e) {
 					logger.warn(e);
 				}
@@ -67,7 +67,7 @@ public class WebUI {
 						.equals(((JavascriptExecutor) driver).executeScript("return document.readyState").toString());
 			}
 			try {
-				TimeUnit.MILLISECONDS.sleep(500);
+				TimeUnit.MILLISECONDS.sleep(100);
 			} catch (InterruptedException e) {
 				logger.warn(e);
 			}

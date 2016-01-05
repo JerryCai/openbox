@@ -10,6 +10,8 @@ public interface Phone {
 
 	void setOperationInterval(int senconds);
 
+	void disableRealVoiceOnWindows();
+
 	UserAgent getUserAgent();
 	
 	String getCallID();
