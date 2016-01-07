@@ -1,16 +1,17 @@
 package com.googlecode.openbox.phone;
 
-import net.sourceforge.peers.sip.core.useragent.UserAgent;
-import net.sourceforge.peers.sip.transport.SipRequest;
-
 import com.googlecode.openbox.phone.listeners.DefaultSipListener;
 import com.googlecode.openbox.phone.listeners.PhoneType;
+import net.sourceforge.peers.sip.core.useragent.UserAgent;
+import net.sourceforge.peers.sip.transport.SipRequest;
 
 public interface Phone {
 
 	void setOperationInterval(int senconds);
 
 	void disableRealVoiceOnWindows();
+
+	void disableRealVoice();
 
 	UserAgent getUserAgent();
 	

@@ -1,15 +1,13 @@
 package com.googlecode.openbox.phone;
 
+import net.sourceforge.peers.sip.RFC3261;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
-import net.sourceforge.peers.sip.RFC3261;
+import java.util.*;
 
 public class PhoneUtils {
 	
@@ -30,10 +28,17 @@ public class PhoneUtils {
 		try {
 			InetAddress candidateAddress = null;
 			// Iterate all NICs (network interface cards)...
-			for (Enumeration<NetworkInterface> ifaces = NetworkInterface
-					.getNetworkInterfaces(); ifaces.hasMoreElements();) {
-				NetworkInterface iface = (NetworkInterface) ifaces
-						.nextElement();
+
+			Enumeration<NetworkInterface> ifaces = NetworkInterface
+					.getNetworkInterfaces();
+
+			List<NetworkInterface> ifacesList = Collections.list(ifaces);
+			Collections.sort(ifacesList, new Comparator<NetworkInterface>(){
+				@Override
+				public int compare(NetworkInterface o1, NetworkInterface o2) {
+					return o1.getIndex() - o2.getIndex();
+				}});
+			for (NetworkInterface iface : ifacesList) {
 				// Iterate all IP addresses assigned to each card...
 				for (Enumeration<InetAddress> inetAddrs = iface
 						.getInetAddresses(); inetAddrs.hasMoreElements();) {
@@ -84,6 +89,7 @@ public class PhoneUtils {
 			throw unknownHostException;
 		}
 	}
+
 
 	public static int[] getAvailablePorts(int portNumber) throws IOException {
 		int[] result = new int[portNumber];

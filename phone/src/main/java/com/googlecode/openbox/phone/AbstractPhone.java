@@ -1,8 +1,6 @@
 package com.googlecode.openbox.phone;
 
-import java.io.File;
-import java.util.UUID;
-
+import com.googlecode.openbox.phone.listeners.*;
 import net.sourceforge.peers.Config;
 import net.sourceforge.peers.sip.Utils;
 import net.sourceforge.peers.sip.core.useragent.UserAgent;
@@ -10,15 +8,12 @@ import net.sourceforge.peers.sip.syntaxencoding.SipUriSyntaxException;
 import net.sourceforge.peers.sip.transactionuser.Dialog;
 import net.sourceforge.peers.sip.transactionuser.DialogManager;
 import net.sourceforge.peers.sip.transport.SipRequest;
-
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.googlecode.openbox.phone.listeners.AutoPickupPhoneListener;
-import com.googlecode.openbox.phone.listeners.AutoRejectIncommingPhoneListener;
-import com.googlecode.openbox.phone.listeners.DefaultSipListener;
-import com.googlecode.openbox.phone.listeners.NoAnswerIncommingPhoneListener;
-import com.googlecode.openbox.phone.listeners.PhoneType;
+import java.io.File;
+import java.util.UUID;
 
 public abstract class AbstractPhone implements Phone {
 	public static final net.sourceforge.peers.Logger LOGGER = PhoneLogger
@@ -342,6 +337,16 @@ public abstract class AbstractPhone implements Phone {
 				throw new PhoneException("Phone [" + getPhoneNumber()
 						+ "] Thread execute --close-- failed !");
 			}
+		}
+	}
+
+	@Override
+	public void disableRealVoiceOnWindows() {
+		if (SystemUtils.IS_OS_WINDOWS) {
+			disableRealVoice();
+			logger.warn(
+					"phone is setup on Windows OS , you manual disabled its real voice like on Linux VM System, actually this is only required when multi-threads runing on Windows VM system");
+
 		}
 	}
 
