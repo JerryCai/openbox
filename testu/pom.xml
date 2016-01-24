@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>6.9.4</version>
+			<version>6.9.10</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.openbox</groupId>
@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>org.uncommons</groupId>
 			<artifactId>reportng</artifactId>
-			<version>1.1.2</version>
+			<version>1.1.4</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.testng</groupId>

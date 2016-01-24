@@ -38,7 +38,6 @@ public class TestUHtmlReporter implements IReporter {
 
 	private static final ReportNGUtils HELPER = new ReportNGUtils();
 	private static final Set<String> HANDLED_CLASS_NAMES = new HashSet<String>();
-	private static final HTMLReporter REPORTNG = new HTMLReporter();
 	private static final Map<String, TestCasesExporter> EXPORTERS = new HashMap<String, TestCasesExporter>();
 	private static boolean _executed = false;
 	private static final Set<String> ERROR_EXPORTER_RECORDS = new HashSet<String>();
@@ -63,7 +62,13 @@ public class TestUHtmlReporter implements IReporter {
 		// integration with reportNG,that means , if you add this listerner,
 		// by default , reportNG is auto registed too , This is more easy to
 		// use.
-		REPORTNG.generateReport(xmlSuites, suites, outputDirectoryName);
+		try {
+			new HTMLReporter().generateReport(xmlSuites, suites, outputDirectoryName);
+		} catch (Exception e) {
+			// reportng is just additional tool, its error shouldn't impact normal testu report
+			logger.error("ReportNG generate its report failed !",e);
+		}
+
 		ITestContext textContext = null;
 		OverallTestResult overallTestResult = new OverallTestResult();
 
