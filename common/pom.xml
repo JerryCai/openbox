@@ -3,10 +3,10 @@
 	<parent>
 		<groupId>com.googlecode.openbox</groupId>
 		<artifactId>openbox</artifactId>
-		<version>2.0.20</version>
+		<version>2.0.21-SNAPSHOT</version>
 	</parent>
 	<artifactId>common</artifactId>
-	<version>2.0.20</version>
+	<version>2.0.21-SNAPSHOT</version>
 	<name>Common</name>
 	<description>Tool base common libs</description>
 	<dependencies>
