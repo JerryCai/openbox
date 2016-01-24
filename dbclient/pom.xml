@@ -3,10 +3,10 @@
 	<parent>
 		<groupId>com.googlecode.openbox</groupId>
 		<artifactId>openbox</artifactId>
-		<version>2.0.20-SNAPSHOT</version>
+		<version>2.0.20</version>
 	</parent>
 	<artifactId>dbclient</artifactId>
-  <version>2.0.20-SNAPSHOT</version>
+  <version>2.0.20</version>
 	<name>DBClient</name>
 	<description>This is common DB client </description>
 	<dependencies>
