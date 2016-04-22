@@ -132,7 +132,7 @@ public class ReferHandler extends ByeHandler {
 		if (null == reInviteSipAddress) {
 			return;
 		}
-		String reInviteSipUrl = reInviteSipAddress.getValue();
+		String reInviteSipUrl = reInviteSipAddress.getValue().replaceAll("<","").replaceAll(">","");
 		dialog.setRemoteUri(reInviteSipUrl);
 		try {
 			userAgent.invite(reInviteSipUrl, dialog.getCallId() + "_" + RFC3261.HDR_REFER_TO);

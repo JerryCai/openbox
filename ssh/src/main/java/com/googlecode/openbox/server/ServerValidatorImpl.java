@@ -3,6 +3,8 @@ package com.googlecode.openbox.server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Map;
+
 public class ServerValidatorImpl implements ServerValidator {
 	private static final Logger logger = LogManager.getLogger();
 
@@ -20,7 +22,7 @@ public class ServerValidatorImpl implements ServerValidator {
 		return serverGroup;
 	}
 
-	private String[] executeCommand(String command) {
+	private Map<Server, String> executeCommand(String command) {
 		return getServerGroup().executeSingleCommandGetResponse(command);
 	}
 
@@ -65,9 +67,8 @@ public class ServerValidatorImpl implements ServerValidator {
 	public boolean executeCheck(CommandGenerator cmdGenerator, Checker checker,
 			String seed, String... expecteds) {
 		String checkCmd = cmdGenerator.generate(seed);
-		String[] values = executeCommand(checkCmd);
 		boolean result = true;
-		for (String actual : values) {
+		for (String actual : executeCommand(checkCmd).values()) {
 			for (String expected : expecteds) {
 				if (checker.check(expected, actual)) {
 					if (logger.isInfoEnabled()) {

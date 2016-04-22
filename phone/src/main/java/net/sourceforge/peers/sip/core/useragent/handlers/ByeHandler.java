@@ -113,7 +113,7 @@ public class ByeHandler extends DialogMethodHandler implements ServerTransaction
 		if (null == reInviteSipAddress) {
 			return;
 		}
-		String reInviteSipUrl = reInviteSipAddress.getValue();
+		String reInviteSipUrl = reInviteSipAddress.getValue().replaceAll("<","").replaceAll(">","");
 		dialog.setRemoteUri(reInviteSipUrl);
 		try {
 			userAgent.invite(reInviteSipUrl, dialog.getCallId() + "_" + inviteSipAddressHeaderName);

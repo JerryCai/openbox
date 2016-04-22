@@ -1,13 +1,7 @@
 package com.googlecode.openbox.server.ssh;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.io.*;
+import java.util.concurrent.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +38,59 @@ public class CommonSshClient extends DefaultSshClient {
 		return conn;
 	}
 
-	public void executeCommand(OutputStream output, String command) {
+//	@Override
+//	public String executeSingleCommand(OutputStream output, String command) {
+//		Connection conn = null;
+//		try {
+//			conn = getConnection();
+//		} catch (Exception e) {
+//			throw new SshException("create ssh session failed with ip=["
+//					+ this.getIp() + "],port=[" + this.getPort()
+//					+ "],username=[" + this.getUsername() + "],password=["
+//					+ this.getPassword() + "]", e);
+//		}
+//		Session session = null;
+//		String wrappedCommand = wrapperInput(command);
+//		String response = "Execute Command ["+command+"] ERROR";
+//		try {
+//			session = conn.openSession();
+//			session.requestPTY("dumb");
+//			session.startShell();
+//			ExecutorService exec = Executors.newSingleThreadExecutor();
+//			Future<String> task = exec.submit(new OutputTask(session, output));
+//			PrintWriter out = new PrintWriter(session.getStdin());
+//			String commands[] = wrappedCommand.split("\n");
+//			for (int i = 0; i < commands.length; i++) {
+//				String cmd = commands[i];
+//				if ("".equals(cmd.trim()))
+//					continue;
+//				out.println(cmd);
+//				TimeUnit.SECONDS.sleep(1);
+//			}
+//			out.println("exit 0");
+//			out.close();
+//			response = task.get();
+//			exec.shutdown();
+//			if (logger.isInfoEnabled()) {
+//				logger.info("exit status -->" + session.getExitStatus());
+//			}
+//
+//			return SshUtils.parseCommandResponse(response,command);
+//		} catch (Exception e) {
+//			String msg = "execute commds=[" + wrappedCommand + "]failed !";
+//			throw new SshException(msg, e);
+//		} finally {
+//			if (null != session) {
+//				session.close();
+//			}
+//			if (null != conn) {
+//				conn.close();
+//			}
+//		}
+//	}
+
+
+	public String[] executeCommand(OutputStream output, String command) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -56,6 +102,7 @@ public class CommonSshClient extends DefaultSshClient {
 		}
 		Session session = null;
 		String wrappedCommand = wrapperInput(command);
+		String response = "Execute Command ["+command+"] ERROR";
 		try {
 			session = conn.openSession();
 			session.requestPTY("dumb");
@@ -69,14 +116,16 @@ public class CommonSshClient extends DefaultSshClient {
 				if ("".equals(cmd.trim()))
 					continue;
 				out.println(cmd);
+				TimeUnit.SECONDS.sleep(1);
 			}
 			out.println("exit 0");
 			out.close();
-			task.get();
+			response = task.get();
 			exec.shutdown();
 			if (logger.isInfoEnabled()) {
 				logger.info("exit status -->" + session.getExitStatus());
 			}
+			return SshUtils.parseCommandResponses(response,command.split("\n"));
 		} catch (Exception e) {
 			String msg = "execute commds=[" + wrappedCommand + "]failed !";
 			throw new SshException(msg, e);
@@ -95,7 +144,14 @@ public class CommonSshClient extends DefaultSshClient {
 		public String execute() throws IOException, InterruptedException {
 			InputStream stdout = session.getStdout();
 			InputStream stderr = session.getStderr();
-			byte[] buffer = new byte[8192];
+			char[] buffer = new char[8192];
+			StringBuilder stringBuilder = new StringBuilder();
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(output));
+
+			BufferedReader errBr = new BufferedReader(new InputStreamReader(stderr));
+
 			while (true) {
 				if ((stdout.available() == 0) && (stderr.available() == 0)) {
 					int conditions = session.waitForCondition(
@@ -114,21 +170,27 @@ public class CommonSshClient extends DefaultSshClient {
 				}
 
 				while (stdout.available() > 0) {
-					int len = stdout.read(buffer);
-					if (len > 0)
-						output.write(buffer, 0, len);
+					int len = br.read(buffer);
+					if (len > 0) {
+						bw.write(buffer, 0, len);
+						bw.flush();
+						stringBuilder.append(buffer, 0, len);
+					}
 				}
 
 				while (stderr.available() > 0) {
-					int len = stderr.read(buffer);
-					if (len > 0)
-						output.write(buffer, 0, len);
+					int len = errBr.read(buffer);
+					if (len > 0) {
+						bw.write(buffer, 0, len);
+						bw.flush();
+						stringBuilder.append(buffer, 0, len);
+					}
 				}
 			}
 			if (logger.isInfoEnabled()) {
 				logger.info("####################################");
 			}
-			return "SUCCESS";
+			return stringBuilder.toString();
 		}
 
 		public String call() throws Exception {

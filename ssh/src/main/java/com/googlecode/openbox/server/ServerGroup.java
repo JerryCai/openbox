@@ -1,6 +1,7 @@
 package com.googlecode.openbox.server;
 
-import com.googlecode.openbox.common.ExecuteResult;
+import java.util.Map;
+
 
 public interface ServerGroup {
 	
@@ -21,10 +22,23 @@ public interface ServerGroup {
 	Server[] listServers();
 	
 	String[] listServerHosts();
-	
-	ExecuteResult executeShell(String shell);
-	
-	ExecuteResult executeCommands(String command);
-	
-	String[] executeSingleCommandGetResponse(String command);
+
+	Map<Server,String>  executeShell(String shell);
+
+	Map<Server,String[]>  executeCommands(String commands);
+
+	Map<Server,String> executeSingleCommandGetResponse(String command);
+
+	public interface ServerAction<T> {
+		T access(Server server);
+	}
+
+	<T> Map<Server, T> visit(ServerAction<T> action) ;
+
+	public interface ServerHandler {
+		void execute(Server server);
+	}
+
+	void visit(ServerHandler serverHandler) ;
+
 }
