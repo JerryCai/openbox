@@ -20,6 +20,7 @@ public class EmmaTool extends CodeCoverageTool {
     private static final Logger logger = LogManager.getLogger();
 
     private String emmaFilterParams;
+    private String extraNeedMergeFileList;
 
     public interface Config {
 
@@ -29,11 +30,15 @@ public class EmmaTool extends CodeCoverageTool {
 
         String appPath();
 
+        String getExtraNeedMergeFileList();
+
         String emmaFilterParams();
 
         String getRunUserAndGroup();
 
         String getStartCommands();
+
+        String getStopCommands();
 
         String getStopEnvironmentCommands();
 
@@ -42,17 +47,18 @@ public class EmmaTool extends CodeCoverageTool {
         String getExtraEmmaParams();
     }
 
-    private static EmmaTool newInstance(ServerGroup serverGroup, String appPath, boolean enable, String stopEnvironmentCommands, String recoverEnvironmentCommands, String startCommands, String userAndGroup, String emmFilterParams, String extraEmmaParams) {
-        return new EmmaTool(serverGroup, appPath, enable, stopEnvironmentCommands, recoverEnvironmentCommands, startCommands, userAndGroup, emmFilterParams, extraEmmaParams);
+    private static EmmaTool newInstance(ServerGroup serverGroup, String appPath, boolean enable, String stopEnvironmentCommands, String recoverEnvironmentCommands, String startCommands, String stopCommands, String userAndGroup, String emmFilterParams, String extraEmmaParams, String extraNeedMergeFileList) {
+        return new EmmaTool(serverGroup, appPath, enable, stopEnvironmentCommands, recoverEnvironmentCommands, startCommands, stopCommands, userAndGroup, emmFilterParams, extraEmmaParams, extraNeedMergeFileList);
     }
 
     public static EmmaTool newInstance(Config config) {
-        return newInstance(config.serverGroup(), config.appPath(), config.isEnable(), config.getStopEnvironmentCommands(), config.getRecoverEnvironmentCommands(), config.getStartCommands(), config.getRunUserAndGroup(), config.emmaFilterParams(), config.getExtraEmmaParams());
+        return newInstance(config.serverGroup(), config.appPath(), config.isEnable(), config.getStopEnvironmentCommands(), config.getRecoverEnvironmentCommands(), config.getStartCommands(), config.getStopCommands(), config.getRunUserAndGroup(), config.emmaFilterParams(), config.getExtraEmmaParams(), config.getExtraNeedMergeFileList());
     }
 
-    private EmmaTool(ServerGroup serverGroup, String appPath, boolean enable, String stopEnvironmentCommands, String recoverEnvironmentCommands, String startCommands, String userAndGroup, String emmFilterParams, String extraEmmaParams) {
-        super(serverGroup, appPath, enable, stopEnvironmentCommands, recoverEnvironmentCommands, extraEmmaParams, startCommands, null, userAndGroup);
+    private EmmaTool(ServerGroup serverGroup, String appPath, boolean enable, String stopEnvironmentCommands, String recoverEnvironmentCommands, String startCommands, String stopCommands, String userAndGroup, String emmFilterParams, String extraEmmaParams, String extraNeedMergeFileList) {
+        super(serverGroup, appPath, enable, stopEnvironmentCommands, recoverEnvironmentCommands, extraEmmaParams, startCommands, stopCommands, userAndGroup);
         this.emmaFilterParams = emmFilterParams;
+        this.extraNeedMergeFileList = extraNeedMergeFileList;
     }
 
     @Override
@@ -110,7 +116,7 @@ public class EmmaTool extends CodeCoverageTool {
 
     public void collectCoverageDataOnEachServer() {
         String ecFile = getEmmaECFile();
-        String command = "rm -rf " + ecFile + " && java emma ctl -connect localhost:47653 -command coverage.get," + ecFile;
+        String command = "rm -rf " + ecFile + " && java emma ctl -connect localhost:47653 -command coverage.get," + ecFile + " && " + getStopCommands();
         executeCommands(command);
     }
 
@@ -150,9 +156,39 @@ public class EmmaTool extends CodeCoverageTool {
             mergeFileList = mergeFileList + "," + mergeFilePath;
         }
 
+        if (StringUtils.isNotBlank(extraNeedMergeFileList)) {
+            mergeFileList = mergeFileList + "," + extraNeedMergeFileList;
+        }
+
+        mergeFileList = skipNonExistedFiles(firstServer,mergeFileList);
         String ecFile = getMergedEmmaEcFilePath();
         String command = "rm -rf " + getHtmlReportLocaltion() + " && mkdir " + getHtmlReportLocaltion() + " && " + "java emma merge -input " + mergeFileList + " -out " + ecFile;
         firstServer.getSshClient().executeCommand(System.out, command);
+    }
+
+    private String skipNonExistedFiles(Server firstServer, String fileList) {
+        if (logger.isInfoEnabled()) {
+            logger.info("wait to merge emma coverage file list [" + fileList + "]");
+        }
+        String[] files = fileList.split(",");
+        StringBuilder result = new StringBuilder();
+        boolean isFirst = true;
+        for (String file : files) {
+            try {
+                if (SshUtils.isFileExisted(firstServer, file)) {
+                    if (!isFirst) {
+                        result.append(",");
+                    }
+                    result.append(file);
+                    isFirst = false;
+                } else {
+                    logger.error("ignore non-existed emma coverage file or it is folder path as [" + file + "] on merge server [" + firstServer + "]");
+                }
+            } catch (Exception e) {
+                logger.error("emma data file path [" + file + "] is wrong!", e);
+            }
+        }
+        return result.toString();
     }
 
     @Override
@@ -213,5 +249,3 @@ public class EmmaTool extends CodeCoverageTool {
 
 
 }
-
-
