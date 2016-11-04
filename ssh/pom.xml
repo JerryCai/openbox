@@ -4,17 +4,17 @@
 	<parent>
 		<groupId>com.googlecode.openbox</groupId>
 		<artifactId>openbox</artifactId>
-		<version>2.1.1-SNAPSHOT</version>
+		<version>2.1.1</version>
 	</parent>
 	<artifactId>ssh</artifactId>
-  <version>2.1.1-SNAPSHOT</version>
+  <version>2.1.1</version>
 	<name>SSH2</name>
 	<description>This is remote linux SSH module</description>
 	<dependencies>
 		<dependency>
 			<groupId>com.googlecode.openbox</groupId>
 			<artifactId>common</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
+			<version>2.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.trilead</groupId>
