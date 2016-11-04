@@ -77,11 +77,6 @@ public abstract class AbstractServerLogMonitor<T> implements
             t = triggerActions();
         } finally {
             logs = getMergedTriggerDuringLogs(t);
-            if (logger.isInfoEnabled()) {
-                logger.info("###################################################");
-                logger.info(logs);
-                logger.info("###################################################");
-            }
         }
         verify(t, logs);
         return t;
@@ -191,7 +186,11 @@ public abstract class AbstractServerLogMonitor<T> implements
                         logs = serverLog.grepContentByKeysFrom(startLineNum,
                                 logFilterKeys);
                     }
-                    return "\n" + serverLog.getServer() + "\n" + logs;
+
+                    if (logger.isInfoEnabled()) {
+                        logger.info("\n" + serverLog.getServer() + "\n" + logs);
+                    }
+                    return logs;
                 } catch (Exception e) {
                     logger.error(e);
                     return "\n" + serverLog.getServer() + "\n fetch server log error as :" + e.getMessage();
@@ -203,7 +202,7 @@ public abstract class AbstractServerLogMonitor<T> implements
                 StringBuilder logs = new StringBuilder();
                 for (Future<String> serverLogTaskResult : serverLogTaskResults) {
                     try {
-                        logs.append(serverLogTaskResult.get(1, TimeUnit.MINUTES));
+                        logs.append(serverLogTaskResult.get(1, TimeUnit.MINUTES)).append("\n");
                     } catch (Exception e) {
                         logger.error(e);
                     }

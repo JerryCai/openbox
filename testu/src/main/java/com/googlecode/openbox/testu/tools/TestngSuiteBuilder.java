@@ -14,6 +14,7 @@ public class TestngSuiteBuilder {
 	private String testModuleName;
 	private String testPrefixName;
 	private String testPostfixName;
+
 	private Class<?> suiteClass;
 	private String testngXmlLocation;
 
@@ -56,7 +57,7 @@ public class TestngSuiteBuilder {
 		builder.delete(0, builder.length());
 		appendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		appendLine("<!DOCTYPE suite SYSTEM \"http://testng.org/testng-1.0.dtd\">");
-		appendLine("<suite name=\"" + suiteName + "\" parallel=\"none\">");
+		appendLine("<suite name=\"" + suiteName + "\" parallel=\"false\">");
 		searchTestngClass(file, startPackage);
 		appendLine("</suite> <!-- Suite -->");
 	}

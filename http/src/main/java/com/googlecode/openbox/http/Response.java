@@ -7,8 +7,12 @@ public interface Response {
 	int getStatusCode();
 
 	Header[] getHeaders();
+
+	String getHeaderValue( String headerName);
 	
 	String getContent();
-	
+
+	byte[] getBodyData();
+
 	TimeLine getTimeLine();
 }

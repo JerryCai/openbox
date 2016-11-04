@@ -1,10 +1,12 @@
 package com.googlecode.openbox.server.ssh;
 
-import com.googlecode.openbox.common.InputStreamConsumer;
 import com.googlecode.openbox.server.Server;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.*;
+import java.util.concurrent.TimeUnit;
 
 public final class SshUtils {
     private static final Logger logger = LogManager.getLogger();
@@ -14,11 +16,11 @@ public final class SshUtils {
     }
 
     public static void uploadResourceLevelFileToServerLocation(Server server, String resourcePath, String remoteFolder) {
-        server.getSshClient().uploadResourceLevelFileToServerLocation(resourcePath,remoteFolder);
+        server.getSshClient().uploadResourceLevelFileToServerLocation(resourcePath, remoteFolder);
     }
 
     public static void uploadResourceLevelFileToServer(Server server, String resourcePath, String remoteFilePath) {
-        server.getSshClient().uploadResourceLevelFileToServer(resourcePath,remoteFilePath);
+        server.getSshClient().uploadResourceLevelFileToServer(resourcePath, remoteFilePath);
     }
 
     public static void uploadFileToServer(Server server, String localFilePath, String remoteFilePath) {
@@ -26,31 +28,47 @@ public final class SshUtils {
     }
 
     public static void downloadFileToServer(Server server, String remoteFilePath, String localFilePath) {
-       server.getSshClient().downloadFileFromServer(remoteFilePath, localFilePath);
+        server.getSshClient().downloadFileFromServer(remoteFilePath, localFilePath);
     }
 
     public static void downloadFolderFromServer(Server server, String remoteLocation, String localLocation) {
-       server.getSshClient().downloadFolderFromServer(remoteLocation, localLocation);
+        server.getSshClient().downloadFolderFromServer(remoteLocation, localLocation);
     }
 
     public static void executeCommandOnLocalLinux(String command) {
         try {
             if (logger.isInfoEnabled()) {
-                logger.info("start to execute local command [/bin/bash -c '"+command+"']");
+                logger.info("start to execute local command [/bin/bash -c '" + command + "']");
             }
 
             ProcessBuilder pb = new ProcessBuilder("/bin/bash", "-c", command);
-            pb.redirectError();
+            pb.redirectErrorStream(true);
             Process p = pb.start();
-            new Thread(new InputStreamConsumer(p.getInputStream(),System.out)).start();
+            InputStream processStream = p.getInputStream();
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+            BufferedReader br = new BufferedReader(new InputStreamReader(processStream));
+
+            try {
+                String line = null;
+                while (null != (line = br.readLine())) {
+                    bw.write(line);
+                    bw.flush();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+                if(null != processStream) {
+                    processStream.close();
+                }
+            }
+            TimeUnit.SECONDS.sleep(5);
             int result = p.waitFor();
             if (logger.isInfoEnabled()) {
-                logger.info("execute local command [/bin/bash -c "+command+"] result ["+result+"]");
+                logger.info("execute local command [/bin/bash -c " + command + "] result [" + result + "]");
             }
         } catch (Exception e) {
-            logger.error("execute local command [/bin/bash -c "+command+"] result [error]",e);
+            logger.error("execute local command [/bin/bash -c " + command + "] result [error]", e);
             throw new SshException("Execute local linux command [" + command + "] error!", e);
-
         }
     }
 
@@ -123,9 +141,9 @@ public final class SshUtils {
         return server.getSshClient().getVariableValue(variable);
     }
 
-    public static String[] parseCommandResponses(String response, String[] commands){
+    public static String[] parseCommandResponses(String response, String[] commands) {
         String[] responses = new String[commands.length];
-        for(int i = 0 ; i< commands.length ; i++) {
+        for (int i = 0; i < commands.length; i++) {
             String command = commands[i];
             responses[i] = parseCommandResponse(response, command);
         }
@@ -133,7 +151,7 @@ public final class SshUtils {
     }
 
     public static String parseCommandResponse(String response, String command) {
-        int start = response.lastIndexOf(command)+command.length()+1;
+        int start = response.lastIndexOf(command) + command.length() + 1;
         int end = response.indexOf("[", start);
         try {
             return response.substring(start, end).trim();

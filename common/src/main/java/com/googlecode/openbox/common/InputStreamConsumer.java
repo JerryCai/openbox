@@ -16,20 +16,25 @@ public class InputStreamConsumer implements Runnable {
 
     @Override
     public void run() {
-        char[] buffer = new char[2048];
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(output));
         BufferedReader br = new BufferedReader(new InputStreamReader(input));
 
         try {
-            while (input.available() > 0) {
-                int len = br.read(buffer);
-                if (len > 0) {
-                    bw.write(buffer, 0, len);
-                    bw.flush();
-                }
+            String line = null;
+            while (null != (line = br.readLine())) {
+                bw.write(line);
+                bw.flush();
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            if(null != input) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.googlecode.openbox.http.responses;
 
+import org.apache.http.Consts;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -9,39 +10,39 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public final class ResponseUtils {
-	private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
-	private ResponseUtils() {
-	}
+    private ResponseUtils() {
+    }
 
-	public static int getStatusCode(HttpResponse response) {
-		return response.getStatusLine().getStatusCode();
-	}
+    public static int getStatusCode(HttpResponse response) {
+        return response.getStatusLine().getStatusCode();
+    }
 
-	public static Header[] getAllHeaders(HttpResponse response) {
-		return response.getAllHeaders();
-	}
+    public static Header[] getAllHeaders(HttpResponse response) {
+        return response.getAllHeaders();
+    }
 
-	public static String getStringContent(HttpResponse response) {
+    public static String getStringContent(HttpResponse response) {
 
-		final HttpEntity entity = response.getEntity();
-		try {
-			return entity == null ? "" : EntityUtils.toString(entity);
-		} catch (Exception e) {
-			if (logger.isWarnEnabled()) {
-				logger.warn(
-						"get string content from http response error , so return empty ",
-						e);
-			}
-		} finally {
-			EntityUtils.consumeQuietly(entity);
-		}
-		return "";
+        final HttpEntity entity = response.getEntity();
+        try {
+            return entity == null ? "" : EntityUtils.toString(entity, Consts.UTF_8);
+        } catch (Exception e) {
+            if (logger.isWarnEnabled()) {
+                logger.warn(
+                        "get string content from http response error , so return empty ",
+                        e);
+            }
+        } finally {
+            EntityUtils.consumeQuietly(entity);
+        }
+        return "";
 
-	}
+    }
 
-	public static void assertContentType(ContentType[] supportedTypes,
-			HttpResponse httpResponse) {
+    public static void assertContentType(ContentType[] supportedTypes,
+                                         HttpResponse httpResponse) {
 //		if (null == supportedTypes) {
 //			// if supportedTypes is null , it means support any content type or
 //			// null content type
@@ -92,6 +93,6 @@ public final class ResponseUtils {
 //			}
 //
 //		}
-	}
+    }
 
 }

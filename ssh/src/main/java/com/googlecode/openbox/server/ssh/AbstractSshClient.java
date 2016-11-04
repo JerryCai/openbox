@@ -144,13 +144,15 @@ public abstract class AbstractSshClient implements SshClient {
     }
 
     public void downloadFolderFromServer(String remoteLocation, String localLocation) {
-        //zip -r /opt/webex/dsagent/java/emma_report.zip /opt/webex/dsagent/java/emma_report
-
         String location = UtilsAPI.getParentPath(remoteLocation, "/");
         String folderName = UtilsAPI.getLastPath(remoteLocation, "/");
         String fileName = folderName + ".zip";
-
-        String localZipedFilePath = localLocation + "/" + fileName;
+        String localZipedFilePath = null;
+        if(localLocation.endsWith("/")){
+            localZipedFilePath = localLocation + fileName;
+        }else{
+            localZipedFilePath = localLocation + "/" + fileName;
+        }
 
         String zipCommands = "cd " + location + " && zip -r " + fileName + " " + folderName;
         String remoteZipedFilePath = location + "/" + fileName;
