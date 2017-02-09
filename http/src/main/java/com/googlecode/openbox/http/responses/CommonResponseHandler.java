@@ -1,30 +1,28 @@
 package com.googlecode.openbox.http.responses;
 
-import java.io.IOException;
-
+import com.googlecode.openbox.http.AbstractResponseHandler;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 
-import com.googlecode.openbox.http.AbstractResponseHandler;
+import java.io.IOException;
 
 public class CommonResponseHandler extends
-		AbstractResponseHandler<CommonResponse> {
+        AbstractResponseHandler<CommonResponse> {
 
-	private static final CommonResponseHandler instance = new CommonResponseHandler();
 
-	private CommonResponseHandler() {
-	}
+    public CommonResponseHandler() {
+    }
 
-	public static final CommonResponseHandler getInstance() {
-		return instance;
-	}
+    public static CommonResponseHandler newInstance() {
+        return new CommonResponseHandler();
+    }
 
-	@Override
-	public CommonResponse handleResponse(HttpResponse response)
-			throws ClientProtocolException, IOException {
+    @Override
+    public CommonResponse handleResponse(HttpResponse response)
+            throws ClientProtocolException, IOException {
 
-		return new CommonResponse(response, getHttpContext(),
-				getExecutorMonitorManager());
-	}
+        return new CommonResponse(response, getHttpContext(),
+                getExecutorMonitorManager());
+    }
 
 }

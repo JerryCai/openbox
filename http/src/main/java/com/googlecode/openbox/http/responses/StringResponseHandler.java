@@ -1,27 +1,23 @@
 package com.googlecode.openbox.http.responses;
 
-import java.io.IOException;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-
 import com.googlecode.openbox.http.AbstractResponseHandler;
+import org.apache.http.HttpResponse;
+
+import java.io.IOException;
 
 public class StringResponseHandler extends
 		AbstractResponseHandler<StringResponse> {
 
-	private static final StringResponseHandler instance = new StringResponseHandler();
-
-	private StringResponseHandler() {
+	public StringResponseHandler() {
 	}
 
-	public static final StringResponseHandler getInstance() {
-		return instance;
+	public static final StringResponseHandler newInstance() {
+		return new StringResponseHandler();
 	}
 
 	@Override
 	public StringResponse handleResponse(HttpResponse response)
-			throws ClientProtocolException, IOException {
+			throws IOException {
 		return new StringResponse(response, getHttpContext(),
 				getExecutorMonitorManager());
 	}
